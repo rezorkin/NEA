@@ -11,7 +11,9 @@ namespace PharmacySalesAnalysis
     {
         static void Main(string[] args)
         {
-            SQLiteConnection conn = new SQLiteConnection("Data Source= PharmacyDB.db;");
+            string path = "PharmacyDB.db;";
+            string connectionString = "Data Source= " + path;
+            SQLiteConnection conn = new SQLiteConnection(connectionString);
             conn.Open();
             SQLiteCommand cmd = new SQLiteCommand(conn);
             cmd.CommandText = "INSERT INTO \"AssortmentOfTheMedicalSupplies\"\r\nVALUES (3, 'TEST', 'TEST', 'TEST', 0, 'TEST')"; //it works!
