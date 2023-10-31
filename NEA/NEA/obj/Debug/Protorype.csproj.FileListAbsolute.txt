@@ -1,0 +1,11 @@
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\obj\Debug\Protorype.csproj.AssemblyReference.cache
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\obj\Debug\Protorype.csproj.SuggestedBindingRedirects.cache
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\obj\Debug\Protorype.csproj.CoreCompileInputs.cache
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\obj\Debug\NEA.exe
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\obj\Debug\NEA.pdb
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\bin\Debug\NEA.exe.config
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\bin\Debug\NEA.exe
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\bin\Debug\NEA.pdb
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\bin\Debug\System.Data.SQLite.dll
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\bin\Debug\System.Data.SQLite.xml
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\obj\Debug\Protorype.csproj.CopyComplete

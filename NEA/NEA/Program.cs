@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
+using Prototype.Domain;
+using Prototype.DAO;
+using System.Net.Http.Headers;
 
 namespace PharmacySalesAnalysis
 {
@@ -11,13 +14,11 @@ namespace PharmacySalesAnalysis
     {
         static void Main(string[] args)
         {
-            string path = "PharmacyDB.db;";
-            string connectionString = "Data Source= " + path;
-            SQLiteConnection conn = new SQLiteConnection(connectionString);
-            conn.Open();
-            SQLiteCommand cmd = new SQLiteCommand(conn);
-            cmd.CommandText = "INSERT INTO \"AssortmentOfTheMedicalSupplies\"\r\nVALUES (3, 'TEST', 'TEST', 'TEST', 0, 'TEST')"; //it works!
-            cmd.ExecuteNonQuery();
+            MedicineDAO MedicineDAO = new MedicineDAO();
+            foreach (Medicine m in MedicineDAO.FindAllByActiveSubstance("A0JWA85V8F"))
+            {
+                Console.WriteLine(m.ToString());
+            }
             Console.ReadKey();
         }
     }

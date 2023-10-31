@@ -1,0 +1,8 @@
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\Release\bin\Debug\Release.exe.config
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\Release\bin\Debug\Release.exe
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\Release\bin\Debug\Release.pdb
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\Release\obj\Debug\Release.csproj.AssemblyReference.cache
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\Release\obj\Debug\Release.csproj.SuggestedBindingRedirects.cache
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\Release\obj\Debug\Release.csproj.CoreCompileInputs.cache
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\Release\obj\Debug\Release.exe
+C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\Release\obj\Debug\Release.pdb

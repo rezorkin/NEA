@@ -1,20 +1,22 @@
-﻿using System;
+﻿using Prototype.Domain;
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PharmacySalesAnalysis
+namespace Prototype.Domain
 {
     internal class Medicine
     {
-        private string name { get; set; }
-        private string companyName { get; set; }
-        private string activeSubstance { get; set; }
-        private int ID { get; set; }
+        private int ID;
+        private string name;
+        private string companyName;
+        private string activeSubstance;
+        private WarehouseInspection lastInspection;
 
-        public Medicine(string name, string companyName, int ID, string activeSubstance)
+        public Medicine(int ID, string name, string companyName, string activeSubstance)
         {
             this.name = name;
             this.companyName = companyName;
@@ -22,6 +24,22 @@ namespace PharmacySalesAnalysis
             this.activeSubstance = activeSubstance;    
         }
 
+        public string GetName()
+        {
+            return name;
+        }
+        public string GetCompanyName()
+        {
+            return companyName;
+        }
+        public int GetID()
+        {
+            return ID;
+        }
+        public string GetActiveSubstance()
+        {
+            return activeSubstance;
+        }
         public override bool Equals(object obj)
         {
             return obj is Medicine medicine &&
@@ -44,7 +62,7 @@ namespace PharmacySalesAnalysis
         }
         public override string ToString()
         {
-            return $"Name: {name}, company name: {companyName}, active substance: {activeSubstance}, ID: , {ID}";
+            return $"Name: {name}, company name: {companyName}, active substance: {activeSubstance}, ID: {ID}";
         }
 
     }
