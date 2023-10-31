@@ -23,23 +23,12 @@ namespace Prototype.Domain
             this.ID = ID;
             this.activeSubstance = activeSubstance;    
         }
+        public Medicine() { }
 
-        public string GetName()
-        {
-            return name;
-        }
-        public string GetCompanyName()
-        {
-            return companyName;
-        }
-        public int GetID()
-        {
-            return ID;
-        }
-        public string GetActiveSubstance()
-        {
-            return activeSubstance;
-        }
+        public string GetName() { return name; }
+        public string GetCompanyName() { return companyName; }
+        public int GetID() { return ID; }
+        public string GetActiveSubstance() { return activeSubstance; }
         public override bool Equals(object obj)
         {
             return obj is Medicine medicine &&

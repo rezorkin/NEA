@@ -15,33 +15,24 @@ namespace Prototype.DAO
     {
         public MedicineDAO() : base() {}
 
-        private List<Medicine> FindAllByAttribute(string attributeName, string value)
-        {
-            List<Medicine> result = new List<Medicine>();
-            List<NameValueCollection> undecodedResultSet = GetMatchedRows("AssortmentOfTheMedicalSupplies", attributeName, value);
-            foreach (NameValueCollection row in undecodedResultSet)
-            {
-                result.Add(SetRetrievedValuesFromDBRow(row));
-            }
-            return result;
-        }
+       
         public List<Medicine> FindAllByActiveSubstance(string activeSubstance)
         {
-            return FindAllByAttribute("ActiveSubstance", activeSubstance);
+            return FindAllByAttribute("AssortmentOfTheMedicalSupplies" , "ActiveSubstance", activeSubstance);
         }
         public List<Medicine> FindAllByCompanyName(string companyName)
         {
-            return FindAllByAttribute("CompanyName", companyName);
+            return FindAllByAttribute("AssortmentOfTheMedicalSupplies", "CompanyName", companyName);
         }
 
         public List<Medicine> FindAllByName(string name)
         {
-            return FindAllByAttribute("ProductName", name);
+            return FindAllByAttribute("AssortmentOfTheMedicalSupplies", "ProductName", name);
         }
 
         public Medicine FindById(int id)
         {
-            List<Medicine> result = FindAllByAttribute("ProductID", id.ToString());
+            List<Medicine> result = FindAllByAttribute("AssortmentOfTheMedicalSupplies", "ProductID", id.ToString());
             if (result.Count > 1)
             {
                 throw new DAOException("Was found more than one medicine with following ID, howewer the value must be unique");
@@ -52,10 +43,10 @@ namespace Prototype.DAO
             } 
         }
 
-        public override List<Medicine> GetAll() 
+        public override List<Medicine> FindAll() 
         {
           List<Medicine> result = new List<Medicine>();
-          foreach(NameValueCollection row in GetMatchedRows("AssortmentOfTheMedicalSupplies")
+          foreach(NameValueCollection row in GetMatchedRows("AssortmentOfTheMedicalSupplies"))
           {
                 result.Add(SetRetrievedValuesFromDBRow(row));
           }

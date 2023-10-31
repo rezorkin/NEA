@@ -9,7 +9,8 @@ namespace Prototype.DAO
 {
     internal interface IDAO<T>
     {   
-        List<T> GetAll();
+        List<T> FindAll();
+       
         int Insert(T entity);
     }
 }

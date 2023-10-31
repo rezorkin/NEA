@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace Prototype.DAO
 {
-    internal abstract class DAO<T> : IDAO<T> where T : class
+    internal abstract class DAO<T> 
     {
         private string path;
         private string connectionString;
@@ -21,8 +21,16 @@ namespace Prototype.DAO
             connectionString = "Data Source= " + path;
         }
         protected abstract T SetRetrievedValuesFromDBRow(NameValueCollection row);
-        public abstract List<T> GetAll();
-        public abstract int Insert(T entity);
+        protected virtual List<T> FindAllByAttribute(string tableName, string attributeName, string value)
+        {
+            List<T> result = new List<T>();
+            List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName, attributeName, value);
+            foreach (NameValueCollection row in undecodedResultSet)
+            {
+                result.Add(SetRetrievedValuesFromDBRow(row));
+            }
+            return result;
+        }
         protected List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value)
         {
             List<NameValueCollection> result = new List<NameValueCollection>();

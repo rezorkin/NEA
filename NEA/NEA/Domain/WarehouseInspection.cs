@@ -12,5 +12,15 @@ namespace Prototype.Domain
         private Medicine medicineInspected;
         private int amountLeft;
         private DateTime inspectionDate;
+        public WarehouseInspection() { }
+        public WarehouseInspection(Medicine medicineInspected, int amountLeft, DateTime inspectionDate)
+        {
+            this.medicineInspected = medicineInspected;
+            this.amountLeft = amountLeft;
+            this.inspectionDate = inspectionDate;
+        }
+        public Medicine getMedicine() {  return medicineInspected; }
+        public int getAmountLeft() {  return amountLeft; }
+        public DateTime getInspectionDate() {  return inspectionDate; }
     }
 }

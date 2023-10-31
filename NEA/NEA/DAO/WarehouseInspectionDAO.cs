@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -10,14 +11,14 @@ namespace Prototype.DAO
 {
     internal class WarehouseInspectionDAO : DAO<WarehouseInspection>, IWarehouseInspectionDAO
     {
-        public override List<WarehouseInspection> GetAll()
+        public override List<WarehouseInspection> FindAll()
         {
-            throw new NotImplementedException();
+            return FindAllByAttribute("WarehouseInspectionHistory", "MedicineID", selectedMedicine.GetID().ToString());
         }
 
         public List<WarehouseInspection> GetCountHistory(Medicine selectedMedicine)
         {
-            throw new NotImplementedException();
+            return FindAllByAttribute("WarehouseInspectionHistory", "MedicineID", selectedMedicine.GetID().ToString());
         }
 
         public override int Insert(WarehouseInspection entity)
@@ -27,7 +28,20 @@ namespace Prototype.DAO
 
         protected override WarehouseInspection SetRetrievedValuesFromDBRow(NameValueCollection row)
         {
-            throw new NotImplementedException();
+            DateTime dateOfInspection = ConvertStringDate(row["Date"]);
+            int amountOfMedicine = int.Parse(row["Amount"]);
+            int inspectedMedicineID = int.Parse(row["MedicineID"]);
+            Medicine inspectedMedicine = new MedicineDAO().FindById(inspectedMedicineID);
+          
+            return new WarehouseInspection(inspectedMedicine, amountOfMedicine, dateOfInspection);
+        }
+        private DateTime ConvertStringDate(string date) 
+        {
+            string[] dateParts = date.Split('/');
+            int day = int.Parse(dateParts[0]);
+            int month = int.Parse(dateParts[1]);
+            int year = int.Parse(dateParts[2]);
+            return new DateTime(year, month, day);
         }
     }
 }

@@ -8,7 +8,7 @@ using Prototype.Domain;
 
 namespace Prototype.DAO
 {
-    internal interface IMedicineDAO 
+    internal interface IMedicineDAO : IDAO<Medicine>
     {
         List<Medicine> FindAllByName(string name);
         List<Medicine> FindAllByCompanyName(string companyName);

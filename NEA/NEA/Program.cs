@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.SQLite;
 using Prototype.Domain;
 using Prototype.DAO;
-using System.Net.Http.Headers;
+
 
 namespace PharmacySalesAnalysis
 {
