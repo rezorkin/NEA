@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\NEA",
-    "\\NEA\\NEA"
+    "\\DAO"
   ],
-  "SelectedNode": "\\NEA",
+  "SelectedNode": "\\DAO\\DAO.cs",
   "PreviewInSolutionExplorer": false
 }

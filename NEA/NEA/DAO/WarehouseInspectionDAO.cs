@@ -11,37 +11,52 @@ namespace Prototype.DAO
 {
     internal class WarehouseInspectionDAO : DAO<WarehouseInspection>, IWarehouseInspectionDAO
     {
-        public override List<WarehouseInspection> FindAll()
+        public WarehouseInspection GetByDateID(Medicine selectedMedicine, DateTime Date)
         {
-            return FindAllByAttribute("WarehouseInspectionHistory", "MedicineID", selectedMedicine.GetID().ToString());
+            List<WarehouseInspection> FoundOnlyByDate = FindAll("WarehouseInspectionHistory", "Date", ConvertDateToString(Date));
+            List<WarehouseInspection> FoundOnlyByMedicineID = FindAll("WarehouseInspectionHistory", "MedicineID", selectedMedicine.GetID().ToString());
+            foreach(WarehouseInspection inspection in FoundOnlyByDate)
+            {
+                for(int i = 0; i < FoundOnlyByMedicineID.Count; i++)
+                {
+                    if (inspection == FoundOnlyByMedicineID[i])
+                    {
+                        return inspection;
+                    }
+                }
+            }
+            throw new DAOException("Particular Inspection by Date and ID was not found");
         }
 
         public List<WarehouseInspection> GetCountHistory(Medicine selectedMedicine)
         {
-            return FindAllByAttribute("WarehouseInspectionHistory", "MedicineID", selectedMedicine.GetID().ToString());
+            return FindAll("WarehouseInspectionHistory", "MedicineID", selectedMedicine.GetID().ToString());
         }
 
-        public override int Insert(WarehouseInspection entity)
+        protected override WarehouseInspection SetValuesFromTableToObjectFields(NameValueCollection row)
         {
-            throw new NotImplementedException();
-        }
-
-        protected override WarehouseInspection SetRetrievedValuesFromDBRow(NameValueCollection row)
-        {
-            DateTime dateOfInspection = ConvertStringDate(row["Date"]);
+            DateTime dateOfInspection = ConvertStringToDate(row["Date"]);
             int amountOfMedicine = int.Parse(row["Amount"]);
             int inspectedMedicineID = int.Parse(row["MedicineID"]);
             Medicine inspectedMedicine = new MedicineDAO().FindById(inspectedMedicineID);
           
             return new WarehouseInspection(inspectedMedicine, amountOfMedicine, dateOfInspection);
         }
-        private DateTime ConvertStringDate(string date) 
+        private DateTime ConvertStringToDate(string date) 
         {
             string[] dateParts = date.Split('/');
             int day = int.Parse(dateParts[0]);
             int month = int.Parse(dateParts[1]);
             int year = int.Parse(dateParts[2]);
             return new DateTime(year, month, day);
+        }
+        private string ConvertDateToString(DateTime Date)
+        {
+            string[] dateParts = new string[3];
+            dateParts[0] = Date.Day.ToString();
+            dateParts[1] = Date.Month.ToString();
+            dateParts[2] = Date.Year.ToString();
+            return dateParts[0] + "/" + dateParts[1] + "/" + dateParts[2];
         }
     }
 }

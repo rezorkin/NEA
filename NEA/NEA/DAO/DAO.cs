@@ -14,24 +14,33 @@ namespace Prototype.DAO
     {
         private string path;
         private string connectionString;
-        
         public DAO()
         {
             path = "PharmacyDB.db;";
             connectionString = "Data Source= " + path;
         }
-        protected abstract T SetRetrievedValuesFromDBRow(NameValueCollection row);
-        protected virtual List<T> FindAllByAttribute(string tableName, string attributeName, string value)
+        protected abstract T SetValuesFromTableToObjectFields(NameValueCollection row);
+        protected virtual List<T> FindAll(string tableName, string attributeName, string attributeValue)
         {
             List<T> result = new List<T>();
-            List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName, attributeName, value);
+            List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName, attributeName, attributeValue);
             foreach (NameValueCollection row in undecodedResultSet)
             {
-                result.Add(SetRetrievedValuesFromDBRow(row));
+                result.Add(SetValuesFromTableToObjectFields(row));
             }
             return result;
         }
-        protected List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value)
+        protected virtual List<T> FindAll(string tableName)
+        {
+            List<T> result = new List<T>();
+            List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName);
+            foreach (NameValueCollection row in undecodedResultSet)
+            {
+                result.Add(SetValuesFromTableToObjectFields(row));
+            }
+            return result;
+        }
+        private List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value)
         {
             List<NameValueCollection> result = new List<NameValueCollection>();
 
@@ -56,7 +65,7 @@ namespace Prototype.DAO
 
             return result;
         }
-        protected List<NameValueCollection> GetMatchedRows(string table)
+        private List<NameValueCollection> GetMatchedRows(string table)
         {
             List<NameValueCollection> result = new List<NameValueCollection>();
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Prototype.Domain
 {
@@ -22,5 +23,26 @@ namespace Prototype.Domain
         public Medicine getMedicine() {  return medicineInspected; }
         public int getAmountLeft() {  return amountLeft; }
         public DateTime getInspectionDate() {  return inspectionDate; }
+        public override bool Equals(object obj)
+        {
+            return obj is WarehouseInspection inspection &&
+                   medicineInspected == inspection.medicineInspected &&
+                   amountLeft == inspection.amountLeft &&
+                   inspectionDate.Day == inspection.inspectionDate.Day &&
+                   inspectionDate.Month == inspection.inspectionDate.Month &&
+                   inspectionDate.Year == inspection.inspectionDate.Year;
+        }
+        public static bool operator ==(WarehouseInspection left, WarehouseInspection right)
+        {
+            return left.Equals(right);
+        }
+        public static bool operator !=(WarehouseInspection left, WarehouseInspection right)
+        {
+            return !left.Equals(right);
+        }
+        public override string ToString()
+        {
+            return $"Medicine ID: {medicineInspected.GetID()}, inspection date: {}, active substance: {activeSubstance}, ID: {ID}";
+        }
     }
 }

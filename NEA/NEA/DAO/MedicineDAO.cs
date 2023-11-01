@@ -18,21 +18,21 @@ namespace Prototype.DAO
        
         public List<Medicine> FindAllByActiveSubstance(string activeSubstance)
         {
-            return FindAllByAttribute("AssortmentOfTheMedicalSupplies" , "ActiveSubstance", activeSubstance);
+            return FindAll("AssortmentOfTheMedicalSupplies" , "ActiveSubstance", activeSubstance);
         }
         public List<Medicine> FindAllByCompanyName(string companyName)
         {
-            return FindAllByAttribute("AssortmentOfTheMedicalSupplies", "CompanyName", companyName);
+            return FindAll("AssortmentOfTheMedicalSupplies", "CompanyName", companyName);
         }
 
         public List<Medicine> FindAllByName(string name)
         {
-            return FindAllByAttribute("AssortmentOfTheMedicalSupplies", "ProductName", name);
+            return FindAll("AssortmentOfTheMedicalSupplies", "ProductName", name);
         }
 
         public Medicine FindById(int id)
         {
-            List<Medicine> result = FindAllByAttribute("AssortmentOfTheMedicalSupplies", "ProductID", id.ToString());
+            List<Medicine> result = FindAll("AssortmentOfTheMedicalSupplies", "ProductID", id.ToString());
             if (result.Count > 1)
             {
                 throw new DAOException("Was found more than one medicine with following ID, howewer the value must be unique");
@@ -42,22 +42,7 @@ namespace Prototype.DAO
                 return result[0];
             } 
         }
-
-        public override List<Medicine> FindAll() 
-        {
-          List<Medicine> result = new List<Medicine>();
-          foreach(NameValueCollection row in GetMatchedRows("AssortmentOfTheMedicalSupplies"))
-          {
-                result.Add(SetRetrievedValuesFromDBRow(row));
-          }
-          return result;
-        }
-        public override int Insert(Medicine entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Medicine SetRetrievedValuesFromDBRow(NameValueCollection row)
+        protected override Medicine SetValuesFromTableToObjectFields(NameValueCollection row)
         {
             int medicineID = int.Parse(row["ProductID"]);
             string medicineName = row["ProductName"];

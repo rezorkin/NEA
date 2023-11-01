@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="DAO\DAO.cs" />
     <Compile Include="DAO\DAOException.cs" />
-    <Compile Include="DAO\IDAO.cs" />
     <Compile Include="DAO\IMedicineDAO.cs" />
     <Compile Include="DAO\IWarehouseInspectionDAO.cs" />
     <Compile Include="DAO\MedicineDAO.cs" />

@@ -8,9 +8,9 @@ using Prototype.Domain;
 
 namespace Prototype.DAO
 {
-    internal interface IWarehouseInspectionDAO : IDAO<WarehouseInspection>
+    internal interface IWarehouseInspectionDAO
     {
         List<WarehouseInspection> GetCountHistory(Medicine selectedMedicine);
-        WarehouseInspection GetByDateID(Medicine selectedMedicine);
+        WarehouseInspection GetByDateID(Medicine selectedMedicine, DateTime Date);
     }
 }

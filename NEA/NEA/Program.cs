@@ -13,6 +13,8 @@ namespace PharmacySalesAnalysis
     {
         static void Main(string[] args)
         {
+            DateTime dateTime = DateTime.Now;
+            Console.WriteLine(dateTime.Year);
             MedicineDAO MedicineDAO = new MedicineDAO();
             foreach (Medicine m in MedicineDAO.FindAllByActiveSubstance("A0JWA85V8F"))
             {
