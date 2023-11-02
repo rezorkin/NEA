@@ -42,6 +42,12 @@ namespace Prototype.DAO
                 return result[0];
             } 
         }
+
+        public List<Medicine> GetAll()
+        {
+            return FindAll("AssortmentOfTheMedicalSupplies");
+        }
+
         protected override Medicine SetValuesFromTableToObjectFields(NameValueCollection row)
         {
             int medicineID = int.Parse(row["ProductID"]);

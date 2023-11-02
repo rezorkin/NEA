@@ -10,6 +10,7 @@ namespace Prototype.DAO
 {
     internal interface IMedicineDAO
     {
+        List<Medicine> GetAll();
         List<Medicine> FindAllByName(string name);
         List<Medicine> FindAllByCompanyName(string companyName);
         List<Medicine> FindAllByActiveSubstance(string activeSubstance);

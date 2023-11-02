@@ -3,6 +3,7 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,17 +15,37 @@ namespace Prototype.Domain
         private string name;
         private string companyName;
         private string activeSubstance;
-        private WarehouseInspection lastInspection;
+        private List<WarehouseInspection> inspectionHistory;
+        private WarehouseInspection lastInspection { get { return inspectionHistory.Last(); } }
 
         public Medicine(int ID, string name, string companyName, string activeSubstance)
         {
             this.name = name;
             this.companyName = companyName;
             this.ID = ID;
-            this.activeSubstance = activeSubstance;    
+            this.activeSubstance = activeSubstance;
+            inspectionHistory = new List<WarehouseInspection>();
         }
-        public Medicine() { }
-
+        public void AddNewInspection(WarehouseInspection newInspection) 
+        {
+            if (inspectionHistory.Count == 0)
+            {
+                inspectionHistory.Add(newInspection);
+            }
+            else
+            {
+                int i = 0;
+                do
+                {
+                    if (inspectionHistory[i] == newInspection)
+                    {
+                        throw new DomainException("this inspection is already in the list");
+                    }
+                    i++;
+                }
+                while (i < inspectionHistory.Count);
+            }
+        }
         public string GetName() { return name; }
         public string GetCompanyName() { return companyName; }
         public int GetID() { return ID; }

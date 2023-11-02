@@ -13,7 +13,6 @@ namespace Prototype.Domain
         private Medicine medicineInspected;
         private int amountLeft;
         private DateTime inspectionDate;
-        public WarehouseInspection() { }
         public WarehouseInspection(Medicine medicineInspected, int amountLeft, DateTime inspectionDate)
         {
             this.medicineInspected = medicineInspected;
@@ -42,7 +41,12 @@ namespace Prototype.Domain
         }
         public override string ToString()
         {
-            return $"Medicine ID: {medicineInspected.GetID()}, inspection date: {}, active substance: {activeSubstance}, ID: {ID}";
+            return $"Medicine ID: {medicineInspected.GetID()}, inspection date: {inspectionDate.Day}/{inspectionDate.Month}/{inspectionDate.Year}, amount in the stock: {amountLeft}";
+        }
+
+        public override int GetHashCode()
+        {
+            return medicineInspected.GetHashCode() ^ amountLeft.GetHashCode() ^ inspectionDate.GetHashCode();
         }
     }
 }

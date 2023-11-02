@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Prototype.Domain;
 using Prototype.DAO;
-
+using Prototype.MENU;
 
 namespace PharmacySalesAnalysis
 {
@@ -13,14 +13,7 @@ namespace PharmacySalesAnalysis
     {
         static void Main(string[] args)
         {
-            DateTime dateTime = DateTime.Now;
-            Console.WriteLine(dateTime.Year);
-            MedicineDAO MedicineDAO = new MedicineDAO();
-            foreach (Medicine m in MedicineDAO.FindAllByActiveSubstance("A0JWA85V8F"))
-            {
-                Console.WriteLine(m.ToString());
-            }
-            Console.ReadKey();
+            Menu.Start();
         }
     }
 }
