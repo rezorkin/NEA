@@ -46,10 +46,17 @@ namespace Prototype.Domain
                 while (i < inspectionHistory.Count);
             }
         }
+        public void SetNewInspectionHistory(List<WarehouseInspection> inspectionHistory)
+        {
+            this.inspectionHistory.Clear();
+            this.inspectionHistory = inspectionHistory;
+        }
         public string GetName() { return name; }
         public string GetCompanyName() { return companyName; }
         public int GetID() { return ID; }
         public string GetActiveSubstance() { return activeSubstance; }
+        public WarehouseInspection GetLastInspection() { return lastInspection; }
+        public List<WarehouseInspection> GetInspectionHistory() { return inspectionHistory; }
         public override bool Equals(object obj)
         {
             return obj is Medicine medicine &&
@@ -72,7 +79,7 @@ namespace Prototype.Domain
         }
         public override string ToString()
         {
-            return $"Name: {name}, company name: {companyName}, active substance: {activeSubstance}, ID: {ID}";
+            return $"ID: {ID}, name: {name}, company name: {companyName}, active substance: {activeSubstance}";
         }
 
     }

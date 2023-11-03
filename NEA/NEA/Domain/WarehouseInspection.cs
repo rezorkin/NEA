@@ -41,7 +41,7 @@ namespace Prototype.Domain
         }
         public override string ToString()
         {
-            return $"Medicine ID: {medicineInspected.GetID()}, inspection date: {inspectionDate.Day}/{inspectionDate.Month}/{inspectionDate.Year}, amount in the stock: {amountLeft}";
+            return $"Medicine ID: {medicineInspected.GetID()}, last inspection date: {inspectionDate.Day}/{inspectionDate.Month}/{inspectionDate.Year}, amount in the stock: {amountLeft}";
         }
 
         public override int GetHashCode()

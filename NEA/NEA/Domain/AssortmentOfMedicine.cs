@@ -16,27 +16,32 @@ namespace Prototype.Domain
         {
             medicineDAO = new MedicineDAO();
             inspectionDAO = new WarehouseInspectionDAO();
-            assortment = medicineDAO.GetAll();
-            foreach (Medicine medicine in assortment)
-            {
-                List<WarehouseInspection> inspectionHistory = inspectionDAO.GetCountHistory(medicine);
-                for(int i = 0; i < inspectionHistory.Count; i++)
-                {
-                    medicine.AddNewInspection(inspectionHistory[i]);
-                }
-            }
         }
-        public string[] GetMedicinesToStrings()
+        public Medicine findByID(int id)
         {
-            string[] medicinesTostrings = new string[assortment.Count];
-            for(int i = 0;i < assortment.Count;i++)
+            try
             {
-                medicinesTostrings[i] = assortment[i].ToString();
+                Medicine foundMedicine = medicineDAO.FindById(id);
+                foundMedicine.SetNewInspectionHistory(inspectionDAO.GetCountHistory(foundMedicine));
+                return foundMedicine;
             }
-            return medicinesTostrings;
+            catch(DAOException e)
+            { 
+                throw new DomainException("Particular medicine was not found", e); 
+            }
         }
-
-
-
+        public List<Medicine> GetAll() 
+        {
+            try
+            {
+                List<Medicine> allMedicines = medicineDAO.GetAll();
+                return allMedicines;
+            }
+            catch (DAOException)
+            {
+                throw new DomainException();
+            }
+        }
+        
     }
 }
