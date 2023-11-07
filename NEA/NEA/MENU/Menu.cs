@@ -33,8 +33,7 @@ namespace Prototype.MENU
         }
         private static void ShowMedicineCountHistory(Medicine medicine)
         {
-            var countHistory = new List<WarehouseInspection>();
-            countHistory = medicine.GetInspectionHistory();
+            List<WarehouseInspection> countHistory = medicine.GetInspectionHistory();
             foreach(WarehouseInspection inspection in  countHistory) 
             {
                 Console.WriteLine(inspection.ToString());
