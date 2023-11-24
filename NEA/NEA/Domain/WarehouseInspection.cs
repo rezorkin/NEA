@@ -8,45 +8,14 @@ using System.Xml.Linq;
 
 namespace Prototype.Domain
 {
-    internal class WarehouseInspection
+    internal class WarehouseInspection : MedicineRecord
     {
-        private Medicine medicineInspected;
-        private int amountLeft;
-        private DateTime inspectionDate;
-        public WarehouseInspection(Medicine medicineInspected, int amountLeft, DateTime inspectionDate)
+        public WarehouseInspection(Medicine medicineInspected, int amountLeft, DateTime inspectionDate) : base(medicineInspected, amountLeft, inspectionDate)
         {
-            this.medicineInspected = medicineInspected;
-            this.amountLeft = amountLeft;
-            this.inspectionDate = inspectionDate;
-        }
-        public Medicine getMedicine() {  return medicineInspected; }
-        public int getAmountLeft() {  return amountLeft; }
-        public DateTime getInspectionDate() {  return inspectionDate; }
-        public override bool Equals(object obj)
-        {
-            return obj is WarehouseInspection inspection &&
-                   medicineInspected == inspection.medicineInspected &&
-                   amountLeft == inspection.amountLeft &&
-                   inspectionDate.Day == inspection.inspectionDate.Day &&
-                   inspectionDate.Month == inspection.inspectionDate.Month &&
-                   inspectionDate.Year == inspection.inspectionDate.Year;
-        }
-        public static bool operator ==(WarehouseInspection left, WarehouseInspection right)
-        {
-            return left.Equals(right);
-        }
-        public static bool operator !=(WarehouseInspection left, WarehouseInspection right)
-        {
-            return !left.Equals(right);
         }
         public override string ToString()
         {
-            return $"Medicine ID: {medicineInspected.GetID()}, last inspection date: {inspectionDate.Day}/{inspectionDate.Month}/{inspectionDate.Year}, amount in the stock: {amountLeft}";
-        }
-
-        public override int GetHashCode()
-        {
-            return medicineInspected.GetHashCode() ^ amountLeft.GetHashCode() ^ inspectionDate.GetHashCode();
+            return $"Medicine ID: {getMedicine().GetID()}, last inspection date: {getRecordDate()}, amount in the stock: {getAmount()}";
         }
     }
 }

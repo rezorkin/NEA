@@ -53,10 +53,14 @@
     <Compile Include="DAO\IMedicineDAO.cs" />
     <Compile Include="DAO\IWarehouseInspectionDAO.cs" />
     <Compile Include="DAO\MedicineDAO.cs" />
+    <Compile Include="DAO\MedicineRecordDAO.cs" />
+    <Compile Include="DAO\PurchaseOrderDAO.cs" />
     <Compile Include="DAO\WarehouseInspectionDAO.cs" />
-    <Compile Include="Domain\AssortmentOfMedicine.cs" />
+    <Compile Include="Domain\Stock.cs" />
     <Compile Include="Domain\DomainException.cs" />
     <Compile Include="Domain\Medicine.cs" />
+    <Compile Include="Domain\MedicineRecord.cs" />
+    <Compile Include="Domain\PurchaseOrder.cs" />
     <Compile Include="Domain\WarehouseInspection.cs" />
     <Compile Include="MENU\Menu.cs" />
     <Compile Include="Program.cs" />

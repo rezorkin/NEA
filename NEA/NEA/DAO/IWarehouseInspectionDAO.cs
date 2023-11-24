@@ -10,7 +10,7 @@ namespace Prototype.DAO
 {
     internal interface IWarehouseInspectionDAO
     {
-        List<WarehouseInspection> GetCountHistory(Medicine selectedMedicine);
+        List<WarehouseInspection> GetRecordHistory(Medicine selectedMedicine);
         WarehouseInspection GetByDateID(Medicine selectedMedicine, DateTime Date);
     }
 }

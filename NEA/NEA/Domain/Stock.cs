@@ -7,12 +7,12 @@ using Prototype.DAO;
 
 namespace Prototype.Domain
 {
-    internal class AssortmentOfMedicine
+    internal class Stock
     {
         private List<Medicine> assortment;
         MedicineDAO medicineDAO;
         WarehouseInspectionDAO inspectionDAO;
-        public AssortmentOfMedicine() 
+        public Stock() 
         {
             medicineDAO = new MedicineDAO();
             inspectionDAO = new WarehouseInspectionDAO();
@@ -22,7 +22,7 @@ namespace Prototype.Domain
             try
             {
                 Medicine foundMedicine = medicineDAO.FindById(id);
-                foundMedicine.SetNewInspectionHistory(inspectionDAO.GetCountHistory(foundMedicine));
+                foundMedicine.SetNewInspectionHistory(inspectionDAO.GetRecordHistory(foundMedicine));
                 return foundMedicine;
             }
             catch(DAOException e)
@@ -30,7 +30,7 @@ namespace Prototype.Domain
                 throw new DomainException("Particular medicine was not found", e); 
             }
         }
-        public List<Medicine> GetAll() 
+        public List<Medicine> GetCurrentAssortment() 
         {
             try
             {

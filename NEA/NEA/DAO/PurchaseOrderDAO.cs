@@ -1,34 +1,34 @@
-﻿using System;
-using System.Data;
+﻿using Prototype.DAO;
+using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Prototype.Domain;
+using System.Collections.Specialized;
 
 namespace Prototype.DAO
 {
-    internal class WarehouseInspectionDAO : MedicineRecordDAO<WarehouseInspection>, IWarehouseInspectionDAO
+    internal class PurchaseOrderDAO : MedicineRecordDAO<PurchaseOrder>
     {
-        public WarehouseInspectionDAO() : base()
-        {}
+        public PurchaseOrderDAO() : base()
+        { }
         protected override string setTableName()
         {
-            return "WarehouseInspections";
+            return "PurchaseOrders";
         }
-        protected override WarehouseInspection SetValuesFromTableToObjectFields(NameValueCollection row)
+        protected override PurchaseOrder SetValuesFromTableToObjectFields(NameValueCollection row)
         {
             DateTime dateOfInspection = ConvertStringToDate(row["Date"]);
             int amountOfMedicine = int.Parse(row["Amount"]);
             int inspectedMedicineID = int.Parse(row["MedicineID"]);
             Medicine inspectedMedicine = new MedicineDAO().FindById(inspectedMedicineID);
-          
-            return new WarehouseInspection(inspectedMedicine, amountOfMedicine, dateOfInspection);
+
+            return new PurchaseOrder(inspectedMedicine, amountOfMedicine, dateOfInspection);
         }
-        protected override WarehouseInspection FindByDateID(List<WarehouseInspection> foundByDate, List<WarehouseInspection> foundByID)
+        protected override PurchaseOrder FindByDateID(List<PurchaseOrder> foundByDate, List<PurchaseOrder> foundByID)
         {
-            foreach (WarehouseInspection record in foundByDate)
+            foreach (PurchaseOrder record in foundByDate)
             {
                 for (int i = 0; i < foundByID.Count; i++)
                 {

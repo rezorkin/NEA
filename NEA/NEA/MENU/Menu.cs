@@ -9,11 +9,11 @@ namespace Prototype.MENU
 {
     static internal class Menu
     {
-        static AssortmentOfMedicine assortment;
+        static Stock assortment;
         public static void Start()
         {
-            Menu.assortment = new AssortmentOfMedicine();
-            string[] medicines = GetMedicinesToStrings(Menu.assortment.GetAll());
+            Menu.assortment = new Stock();
+            string[] medicines = GetMedicinesToStrings(Menu.assortment.GetCurrentAssortment());
             foreach (var medicine in medicines)
             {
                 Console.WriteLine(medicine);
