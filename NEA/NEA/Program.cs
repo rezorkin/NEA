@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Prototype.Domain;
-using Prototype.DAO;
-using Prototype.MENU;
+using NEA.Domain;
+using NEA.DAO;
+using NEA.MENU;
 
 namespace PharmacySalesAnalysis
 {

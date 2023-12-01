@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Prototype.Domain
+namespace NEA.Domain
 {
-    internal class WarehouseInspection : MedicineRecord
+    internal class StockInspection : MedicineRecord
     {
-        public WarehouseInspection(Medicine medicineInspected, int amountLeft, DateTime inspectionDate) : base(medicineInspected, amountLeft, inspectionDate)
+        public StockInspection(Medicine medicineInspected, int amountLeft, DateTime inspectionDate) : base(medicineInspected, amountLeft, inspectionDate)
         {
         }
         public override string ToString()

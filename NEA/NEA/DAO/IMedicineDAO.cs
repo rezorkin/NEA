@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
-using Prototype.Domain;
+using NEA.Domain;
 
-namespace Prototype.DAO
+namespace NEA.DAO
 {
     internal interface IMedicineDAO
     {

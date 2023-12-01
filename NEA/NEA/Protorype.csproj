@@ -51,18 +51,23 @@
     <Compile Include="DAO\DAO.cs" />
     <Compile Include="DAO\DAOException.cs" />
     <Compile Include="DAO\IMedicineDAO.cs" />
-    <Compile Include="DAO\IWarehouseInspectionDAO.cs" />
+    <Compile Include="DAO\IStockInspectionDAO.cs" />
     <Compile Include="DAO\MedicineDAO.cs" />
     <Compile Include="DAO\MedicineRecordDAO.cs" />
     <Compile Include="DAO\PurchaseOrderDAO.cs" />
-    <Compile Include="DAO\WarehouseInspectionDAO.cs" />
+    <Compile Include="DAO\StockInspectionDAO.cs" />
+    <Compile Include="Domain\SalesAnalyser.cs" />
     <Compile Include="Domain\Stock.cs" />
     <Compile Include="Domain\DomainException.cs" />
     <Compile Include="Domain\Medicine.cs" />
     <Compile Include="Domain\MedicineRecord.cs" />
     <Compile Include="Domain\PurchaseOrder.cs" />
-    <Compile Include="Domain\WarehouseInspection.cs" />
+    <Compile Include="Domain\StockInspection.cs" />
+    <Compile Include="MENU\MedicineTable.cs" />
     <Compile Include="MENU\Menu.cs" />
+    <Compile Include="MENU\Order.cs" />
+    <Compile Include="MENU\Page.cs" />
+    <Compile Include="MENU\Table.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

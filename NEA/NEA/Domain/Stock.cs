@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Prototype.DAO;
+using NEA.DAO;
 
-namespace Prototype.Domain
+namespace NEA.Domain
 {
     internal class Stock
     {
-        private List<Medicine> assortment;
         MedicineDAO medicineDAO;
-        WarehouseInspectionDAO inspectionDAO;
+        StockInspectionDAO inspectionDAO;
         public Stock() 
         {
             medicineDAO = new MedicineDAO();
-            inspectionDAO = new WarehouseInspectionDAO();
+            inspectionDAO = new StockInspectionDAO();
         }
         public Medicine findByID(int id)
         {

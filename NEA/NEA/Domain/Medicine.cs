@@ -1,4 +1,4 @@
-﻿using Prototype.Domain;
+﻿using NEA.Domain;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Prototype.Domain
+namespace NEA.Domain
 {
     internal class Medicine
     {
@@ -15,8 +15,8 @@ namespace Prototype.Domain
         private string name;
         private string companyName;
         private string activeSubstance;
-        private List<WarehouseInspection> inspectionHistory;
-        private WarehouseInspection lastInspection { get { return inspectionHistory.Last(); } }
+        private List<StockInspection> inspectionHistory;
+        private StockInspection lastInspection { get { return inspectionHistory.Last(); } }
 
         public Medicine(int ID, string name, string companyName, string activeSubstance)
         {
@@ -24,9 +24,9 @@ namespace Prototype.Domain
             this.companyName = companyName;
             this.ID = ID;
             this.activeSubstance = activeSubstance;
-            inspectionHistory = new List<WarehouseInspection>();
+            inspectionHistory = new List<StockInspection>();
         }
-        public void AddNewInspection(WarehouseInspection newInspection) 
+        public void AddNewInspection(StockInspection newInspection) 
         {
             if (inspectionHistory.Count == 0)
             {
@@ -46,7 +46,7 @@ namespace Prototype.Domain
                 while (i < inspectionHistory.Count);
             }
         }
-        public void SetNewInspectionHistory(List<WarehouseInspection> inspectionHistory)
+        public void SetNewInspectionHistory(List<StockInspection> inspectionHistory)
         {
             this.inspectionHistory.Clear();
             this.inspectionHistory = inspectionHistory;
@@ -55,8 +55,8 @@ namespace Prototype.Domain
         public string GetCompanyName() { return companyName; }
         public int GetID() { return ID; }
         public string GetActiveSubstance() { return activeSubstance; }
-        public WarehouseInspection GetLastInspection() { return lastInspection; }
-        public List<WarehouseInspection> GetInspectionHistory() { return inspectionHistory; }
+        public StockInspection GetLastInspection() { return lastInspection; }
+        public List<StockInspection> GetInspectionHistory() { return inspectionHistory; }
         public override bool Equals(object obj)
         {
             return obj is Medicine medicine &&
@@ -79,7 +79,7 @@ namespace Prototype.Domain
         }
         public override string ToString()
         {
-            return $"ID: {ID}, name: {name}, company name: {companyName}, active substance: {activeSubstance}";
+            return $"{ID},{name},{companyName},{activeSubstance}";
         }
 
     }

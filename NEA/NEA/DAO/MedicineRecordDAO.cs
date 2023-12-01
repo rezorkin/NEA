@@ -4,9 +4,9 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Prototype.Domain;
+using NEA.Domain;
 
-namespace Prototype.DAO
+namespace NEA.DAO
 {
     internal abstract class MedicineRecordDAO<T> : DAO<T>
     {

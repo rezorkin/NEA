@@ -1,4 +1,4 @@
-﻿using Prototype.Domain;
+﻿using NEA.Domain;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -8,15 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Prototype.DAO
+namespace NEA.DAO
 {
     internal abstract class DAO<T> 
     {
-        private string path;
-        private string connectionString;
+        private readonly string path;
+        private readonly string connectionString;
         public DAO()
         {
             path = "PharmacyDB.db;";
+            connectionString = "Data Source= " + path;
+        }
+        public DAO(string fileName)
+        {
+            path = fileName;
             connectionString = "Data Source= " + path;
         }
         protected abstract T SetValuesFromTableToObjectFields(NameValueCollection row);

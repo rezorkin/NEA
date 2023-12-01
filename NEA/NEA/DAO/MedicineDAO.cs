@@ -1,4 +1,4 @@
-﻿using Prototype.Domain;
+﻿using NEA.Domain;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Prototype.DAO
+namespace NEA.DAO
 {
     internal class MedicineDAO : DAO<Medicine>, IMedicineDAO
     {
@@ -35,7 +35,7 @@ namespace Prototype.DAO
             List<Medicine> result = FindAll("AssortmentOfTheMedicalSupplies", "ProductID", id.ToString());
             if (result.Count > 1)
             {
-                throw new DAOException("Was found more than one medicine with following ID, howewer the value must be unique");
+                throw new DAOException("Was found more than one medicine with following ID; howewer, the value must be unique");
             }
             else
             {

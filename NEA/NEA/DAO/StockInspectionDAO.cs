@@ -5,30 +5,30 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Prototype.Domain;
+using NEA.Domain;
 
-namespace Prototype.DAO
+namespace NEA.DAO
 {
-    internal class WarehouseInspectionDAO : MedicineRecordDAO<WarehouseInspection>, IWarehouseInspectionDAO
+    internal class StockInspectionDAO : MedicineRecordDAO<StockInspection>, IStockInspectionDAO
     {
-        public WarehouseInspectionDAO() : base()
+        public StockInspectionDAO() : base()
         {}
         protected override string setTableName()
         {
             return "WarehouseInspections";
         }
-        protected override WarehouseInspection SetValuesFromTableToObjectFields(NameValueCollection row)
+        protected override StockInspection SetValuesFromTableToObjectFields(NameValueCollection row)
         {
             DateTime dateOfInspection = ConvertStringToDate(row["Date"]);
             int amountOfMedicine = int.Parse(row["Amount"]);
             int inspectedMedicineID = int.Parse(row["MedicineID"]);
             Medicine inspectedMedicine = new MedicineDAO().FindById(inspectedMedicineID);
           
-            return new WarehouseInspection(inspectedMedicine, amountOfMedicine, dateOfInspection);
+            return new StockInspection(inspectedMedicine, amountOfMedicine, dateOfInspection);
         }
-        protected override WarehouseInspection FindByDateID(List<WarehouseInspection> foundByDate, List<WarehouseInspection> foundByID)
+        protected override StockInspection FindByDateID(List<StockInspection> foundByDate, List<StockInspection> foundByID)
         {
-            foreach (WarehouseInspection record in foundByDate)
+            foreach (StockInspection record in foundByDate)
             {
                 for (int i = 0; i < foundByID.Count; i++)
                 {

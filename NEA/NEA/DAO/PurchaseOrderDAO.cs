@@ -1,13 +1,13 @@
-﻿using Prototype.DAO;
+﻿using NEA.DAO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Prototype.Domain;
+using NEA.Domain;
 using System.Collections.Specialized;
 
-namespace Prototype.DAO
+namespace NEA.DAO
 {
     internal class PurchaseOrderDAO : MedicineRecordDAO<PurchaseOrder>
     {

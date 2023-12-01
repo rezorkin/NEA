@@ -3,42 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Prototype.Domain;
+using NEA.Domain;
 
-namespace Prototype.MENU
+namespace NEA.MENU
 {
     static internal class Menu
     {
-        static Stock assortment;
         public static void Start()
         {
-            Menu.assortment = new Stock();
-            string[] medicines = GetMedicinesToStrings(Menu.assortment.GetCurrentAssortment());
-            foreach (var medicine in medicines)
-            {
-                Console.WriteLine(medicine);
-            }
-            MakeChoice();
+
+            OpenAssortmentOfMedicine();
             Console.ReadKey();
 
         }
-        private static void MakeChoice()
+        private static void OpenAssortmentOfMedicine()
         {
-            Console.WriteLine("Enter ID number to select medicine");
-            int enteredID = int.Parse(Console.ReadLine());
-            Medicine selectedMedicine = assortment.findByID(enteredID);
-            Console.WriteLine();
-            Console.WriteLine("Medicine selected:" + selectedMedicine.ToString());
-            ShowMedicineCountHistory(selectedMedicine);
+            MedicineTable table = new MedicineTable(10);
+            table.OutputPage();
+
         }
-        private static void ShowMedicineCountHistory(Medicine medicine)
-        {
-            List<WarehouseInspection> countHistory = medicine.GetInspectionHistory();
-            foreach(WarehouseInspection inspection in  countHistory) 
-            {
-                Console.WriteLine(inspection.ToString());
-            }
-        }
+       
+       
         public static string[] GetMedicinesToStrings(List<Medicine> medicines)
         {
             string[] medicinesTostrings = new string[medicines.Count];
