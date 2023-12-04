@@ -18,20 +18,32 @@ namespace NEA.MENU
         }
         private static void OpenAssortmentOfMedicine()
         {
-            MedicineTable table = new MedicineTable(10);
-            table.OutputPage();
+            MedicineTable table = new MedicineTable(2);
+            var furtherAction = MenuAction.Default;
+            while (furtherAction == MenuAction.Default) 
+            {
+                table.OutputPage();
+                furtherAction = table.MakeChoice();
+                Console.Clear();
+                if(furtherAction == MenuAction.GoToNextPage || furtherAction == MenuAction.GoToPreviousPage)
+                {
+                    table.GoToAnotherPage(furtherAction);
+                    furtherAction = MenuAction.Default;
+                }
+                else if(furtherAction == MenuAction.ViewAllCommands)
+                {
+                    table.OutputPage();
+                    table.ViewAllCommands();
+                    furtherAction = MenuAction.Default;
+                }
+            }
+            
 
         }
-       
-       
-        public static string[] GetMedicinesToStrings(List<Medicine> medicines)
+        private static void OpenAnalysisTable(List<Medicine> sample)
         {
-            string[] medicinesTostrings = new string[medicines.Count];
-            for (int i = 0; i < medicines.Count; i++)
-            {
-                medicinesTostrings[i] = medicines[i].ToString();
-            }
-            return medicinesTostrings;
+            AnalysisTable table = new AnalysisTable(2,sample);
+
         }
     }
 }

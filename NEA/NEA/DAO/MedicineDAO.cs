@@ -18,21 +18,21 @@ namespace NEA.DAO
        
         public List<Medicine> FindAllByActiveSubstance(string activeSubstance)
         {
-            return FindAll("AssortmentOfTheMedicalSupplies" , "ActiveSubstance", activeSubstance);
+            return FindByAttributeValue("AssortmentOfTheMedicalSupplies" , "ActiveSubstance", activeSubstance);
         }
         public List<Medicine> FindAllByCompanyName(string companyName)
         {
-            return FindAll("AssortmentOfTheMedicalSupplies", "CompanyName", companyName);
+            return FindByAttributeValue("AssortmentOfTheMedicalSupplies", "CompanyName", companyName);
         }
 
         public List<Medicine> FindAllByName(string name)
         {
-            return FindAll("AssortmentOfTheMedicalSupplies", "ProductName", name);
+            return FindByAttributeValue("AssortmentOfTheMedicalSupplies", "ProductName", name);
         }
 
-        public Medicine FindById(int id)
+        public Medicine FindByID(int id)
         {
-            List<Medicine> result = FindAll("AssortmentOfTheMedicalSupplies", "ProductID", id.ToString());
+            List<Medicine> result = FindByAttributeValue("AssortmentOfTheMedicalSupplies", "ProductID", id.ToString());
             if (result.Count > 1)
             {
                 throw new DAOException("Was found more than one medicine with following ID; howewer, the value must be unique");
@@ -45,7 +45,7 @@ namespace NEA.DAO
 
         public List<Medicine> GetAll()
         {
-            return FindAll("AssortmentOfTheMedicalSupplies");
+          return GetAll("AssortmentOfTheMedicalSupplies");
         }
 
         protected override Medicine SetValuesFromTableToObjectFields(NameValueCollection row)

@@ -24,38 +24,47 @@ namespace NEA.MENU
         }
         protected abstract List<string> getRowSet();
         protected abstract List<string> getAttributes();
-        public abstract List<string> ViewAllCommands();
-        public abstract void MakeChoice();
+        public abstract void ViewAllCommands();
+        public abstract MenuAction MakeChoice();
         public abstract void Sort(string attribute, Order order);
-        protected abstract void Select();
+        protected abstract MenuAction Select();
         public void OutputPage()
         {
-            Console.Clear();
             pages[currentPageIndex].DisplayPage();
-            MakeChoice();
+            Console.Write($"Current page: {currentPageIndex+1}                                       Pages:");
+            for(int i = 1; i <= pages.Count; i++) 
+            {
+                if(i == currentPageIndex + 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                Console.Write(i + " ");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+        public void GoToAnotherPage(MenuAction direction)
+        {
+            if(direction == MenuAction.GoToPreviousPage)
+            {
+                GoToPreviousPage();
+            }
+            if(direction == MenuAction.GoToNextPage)
+            { 
+                GoToNextPage(); 
+            }
         }
         public void GoToNextPage() 
         {
-            if (currentPageIndex == pages.Count - 1)
-            {
-              OutputPage();
-            }
-            else 
+            if (currentPageIndex != pages.Count - 1)
             {
               currentPageIndex++;
-              OutputPage();
             }
         }
         public void GoToPreviousPage() 
         {
-            if(currentPageIndex == 0)
-            {
-                OutputPage();
-            }
-            else
+            if(currentPageIndex != 0)
             {
                 currentPageIndex--;
-                OutputPage();
             }
         }
         private List<Page> CutRowSet() 

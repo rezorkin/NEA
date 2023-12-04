@@ -22,23 +22,9 @@ namespace NEA.DAO
             DateTime dateOfInspection = ConvertStringToDate(row["Date"]);
             int amountOfMedicine = int.Parse(row["Amount"]);
             int inspectedMedicineID = int.Parse(row["MedicineID"]);
-            Medicine inspectedMedicine = new MedicineDAO().FindById(inspectedMedicineID);
+            Medicine inspectedMedicine = new MedicineDAO().FindByID(inspectedMedicineID);
           
             return new StockInspection(inspectedMedicine, amountOfMedicine, dateOfInspection);
-        }
-        protected override StockInspection FindByDateID(List<StockInspection> foundByDate, List<StockInspection> foundByID)
-        {
-            foreach (StockInspection record in foundByDate)
-            {
-                for (int i = 0; i < foundByID.Count; i++)
-                {
-                    if (record == foundByID[i])
-                    {
-                        return record;
-                    }
-                }
-            }
-            throw new DAOException("Particular record by Date and ID was not found");
         }
     }
 }

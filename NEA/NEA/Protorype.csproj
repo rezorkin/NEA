@@ -65,8 +65,11 @@
     <Compile Include="Domain\StockInspection.cs" />
     <Compile Include="MENU\MedicineTable.cs" />
     <Compile Include="MENU\Menu.cs" />
+    <Compile Include="MENU\MenuAction.cs" />
+    <Compile Include="MENU\MenuException.cs" />
     <Compile Include="MENU\Order.cs" />
     <Compile Include="MENU\Page.cs" />
+    <Compile Include="MENU\AnalysisTable.cs" />
     <Compile Include="MENU\Table.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

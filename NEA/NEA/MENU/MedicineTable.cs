@@ -11,23 +11,37 @@ namespace NEA.MENU
     {
         private List<Medicine> assortment;
         private Stock stock;
+        private List<Medicine> selectedMedicines;
 
         public MedicineTable(int pageLength):base(pageLength) 
         {
             stock = new Stock();
             assortment = stock.GetCurrentAssortment();
+            selectedMedicines = new List<Medicine>();
         } 
-        public override void MakeChoice()
+        public List<Medicine> GetSample()
         {
+            return selectedMedicines;
+        }
+        public override MenuAction MakeChoice()
+        {
+
             Console.WriteLine("Press Left or Right arrow to navigate on the pages");
-            if(Console.ReadKey(false).Key == ConsoleKey.RightArrow)
+            Console.WriteLine("Press V to 'View All Commands' ");
+            if (Console.ReadKey(false).Key == ConsoleKey.RightArrow)
             {
-                GoToNextPage();
+                return MenuAction.GoToNextPage;
             }
             else if (Console.ReadKey(false).Key == ConsoleKey.LeftArrow)
             {
-                GoToPreviousPage();
+                return MenuAction.GoToPreviousPage;
             }
+            else if(Console.ReadKey(false).Key == ConsoleKey.V)
+            {
+                return MenuAction.ViewAllCommands;
+            }
+            else
+                return MenuAction.Default;
            
         }
 
@@ -35,18 +49,26 @@ namespace NEA.MENU
         {
             throw new NotImplementedException();
         }
-        protected override void Select()
+        protected override MenuAction Select()
         {
-            Console.WriteLine("Enter ID number to select medicine");
+            Console.WriteLine("Enter ID number to select medicine or press = to proceed further calculations with selected medicines");
+            Console.WriteLine("Selected medicines: " + selectedMedicines.Count);
             int enteredID = int.Parse(Console.ReadLine());
-            Medicine selectedMedicine = stock.findByID(enteredID);
-            Console.WriteLine();
-            Console.WriteLine("Medicine selected:" + selectedMedicine.ToString());
-            ShowMedicineCountHistory(selectedMedicine);
+            selectedMedicines.Add(stock.FindByID(enteredID));
+            if(Console.ReadKey(false).Key == ConsoleKey.UpArrow)
+            {
+                if(selectedMedicines.Count > 0)
+                {
+                    return MenuAction.GoToAnalysisTable;
+                }
+                else { Console.WriteLine("You have not select any medecine"); }
+            }
+            throw new MenuException();
         }
-        public override List<string> ViewAllCommands()
+        public override void ViewAllCommands()
         {
-            throw new NotImplementedException();
+           Console.WriteLine("Press S to enter fwejfkwejfwnekfw");
+           Console.WriteLine("Press M to enter medicine name ");
         }
 
         protected override List<string> getAttributes()

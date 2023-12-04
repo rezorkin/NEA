@@ -25,7 +25,7 @@ namespace NEA.DAO
             connectionString = "Data Source= " + path;
         }
         protected abstract T SetValuesFromTableToObjectFields(NameValueCollection row);
-        protected virtual List<T> FindAll(string tableName, string attributeName, string attributeValue)
+        protected virtual List<T> FindByAttributeValue(string tableName, string attributeName, string attributeValue)
         {
             List<T> result = new List<T>();
             List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName, attributeName, attributeValue);
@@ -35,15 +35,22 @@ namespace NEA.DAO
             }
             return result;
         }
-        protected virtual List<T> FindAll(string tableName)
+        protected virtual List<T> GetAll(string tableName)
         {
-            List<T> result = new List<T>();
-            List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName);
-            foreach (NameValueCollection row in undecodedResultSet)
+            try
             {
-                result.Add(SetValuesFromTableToObjectFields(row));
+                List<T> result = new List<T>();
+                List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName);
+                foreach (NameValueCollection row in undecodedResultSet)
+                {
+                    result.Add(SetValuesFromTableToObjectFields(row));
+                }
+                return result;
             }
-            return result;
+            catch (Exception) 
+            {
+                throw new DAOException("Table was not found");
+            }
         }
         private List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value)
         {

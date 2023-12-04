@@ -14,7 +14,7 @@ namespace NEA.DAO
         List<Medicine> FindAllByName(string name);
         List<Medicine> FindAllByCompanyName(string companyName);
         List<Medicine> FindAllByActiveSubstance(string activeSubstance);
-        Medicine FindById(int id);
+        Medicine FindByID(int id);
 
     }
 }
