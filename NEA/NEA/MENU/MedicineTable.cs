@@ -29,13 +29,13 @@ namespace NEA.MENU
 
             Console.WriteLine("Press Left or Right arrow to navigate on the pages");
             Console.WriteLine("Press V to 'View All Commands' ");
-           
+            
         }
 
         public override void Sort(string command)
         {
             
-            Console.WriteLine(b);
+            
             Console.ReadKey();
         }
         protected override void Select()
@@ -60,8 +60,8 @@ namespace NEA.MENU
            Console.WriteLine("Commands:");
            Console.WriteLine("Press S to see the sort command explanation");
            Console.WriteLine("Press M to see the search command explanation");
-           
-          
+           Console.WriteLine();
+
         }
         public void SortCommandExplanation()
         {

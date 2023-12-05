@@ -56,6 +56,7 @@
     <Compile Include="DAO\MedicineRecordDAO.cs" />
     <Compile Include="DAO\PurchaseOrderDAO.cs" />
     <Compile Include="DAO\StockInspectionDAO.cs" />
+    <Compile Include="Domain\AttributeSorter.cs" />
     <Compile Include="Domain\SalesAnalyser.cs" />
     <Compile Include="Domain\Stock.cs" />
     <Compile Include="Domain\DomainException.cs" />

@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\NEA",
-    "\\NEA\\NEA"
+    "\\NEA\\NEA",
+    "\\NEA\\NEA\\MENU"
   ],
-  "SelectedNode": "\\NEA",
+  "SelectedNode": "\\NEA\\NEA\\MENU\\MedicineTable.cs",
   "PreviewInSolutionExplorer": false
 }
