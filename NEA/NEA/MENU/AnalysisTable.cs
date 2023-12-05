@@ -15,12 +15,12 @@ namespace NEA.MENU
         {
             this.sample = sample;
         }
-        public override MenuAction MakeChoice()
+        public override void MakeChoice()
         {
             throw new NotImplementedException();
         }
 
-        public override void Sort(string attribute, Order order)
+        public override void Sort(string command)
         {
             throw new NotImplementedException();
         }
@@ -40,7 +40,7 @@ namespace NEA.MENU
             throw new NotImplementedException();
         }
 
-        protected override MenuAction Select()
+        protected override void Select()
         {
             throw new NotImplementedException();
         }

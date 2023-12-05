@@ -25,9 +25,9 @@ namespace NEA.MENU
         protected abstract List<string> getRowSet();
         protected abstract List<string> getAttributes();
         public abstract void ViewAllCommands();
-        public abstract MenuAction MakeChoice();
-        public abstract void Sort(string attribute, Order order);
-        protected abstract MenuAction Select();
+        public abstract void MakeChoice();
+        public abstract void Sort(string command);
+        protected abstract void Select();
         public void OutputPage()
         {
             pages[currentPageIndex].DisplayPage();

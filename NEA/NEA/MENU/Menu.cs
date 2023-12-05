@@ -20,21 +20,49 @@ namespace NEA.MENU
         {
             MedicineTable table = new MedicineTable(2);
             var furtherAction = MenuAction.Default;
-            while (furtherAction == MenuAction.Default) 
+            while (furtherAction != MenuAction.GoToAnalysisTable) 
             {
-                table.OutputPage();
-                furtherAction = table.MakeChoice();
                 Console.Clear();
+                table.OutputPage();
+                table.MakeChoice();
+                ConsoleKey key = Console.ReadKey(true).Key;
+                if (key == ConsoleKey.RightArrow)
+                {
+                    furtherAction = MenuAction.GoToNextPage;
+                }
+                else if (key == ConsoleKey.LeftArrow)
+                {
+                    furtherAction = MenuAction.GoToPreviousPage;
+                }
+                else if (key == ConsoleKey.V)
+                {
+                    furtherAction = MenuAction.ViewAllCommands;
+                }
                 if(furtherAction == MenuAction.GoToNextPage || furtherAction == MenuAction.GoToPreviousPage)
                 {
                     table.GoToAnotherPage(furtherAction);
-                    furtherAction = MenuAction.Default;
                 }
                 else if(furtherAction == MenuAction.ViewAllCommands)
                 {
-                    table.OutputPage();
                     table.ViewAllCommands();
-                    furtherAction = MenuAction.Default;
+                    bool IsAlreadySortOnScreen = false;
+                    bool IsAlreadySearchOnScreen = false;
+                    while(key == ConsoleKey.V || key == ConsoleKey.S || key == ConsoleKey.M)
+                    {
+                        key = Console.ReadKey(true).Key;
+                        if (key == ConsoleKey.S && IsAlreadySortOnScreen != true)
+                        {
+                            table.SortCommandExplanation();
+                            IsAlreadySortOnScreen = true;
+                        }
+                        else if (key == ConsoleKey.M && IsAlreadySearchOnScreen != true)
+                        {
+                            table.SearchCommandExplanation();
+                            IsAlreadySearchOnScreen = true;
+                        }
+                           
+                    }
+                    
                 }
             }
             
