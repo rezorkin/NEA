@@ -13,5 +13,7 @@ namespace NEA.MENU
         GoToPreviousPage,
         GoToAnalysisTable,
         ViewAllCommands,
+        SortCommand,
+        SearchCommand
     }
 }

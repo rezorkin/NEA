@@ -8,16 +8,14 @@ using NEA.Domain;
 
 namespace NEA.MENU
 {
-    internal class MedicineTable : Table
+    internal class MedicineTable : Table<Medicine>
     {
-        private List<Medicine> assortment;
         private Stock stock;
         private List<Medicine> selectedMedicines;
 
         public MedicineTable(int pageLength):base(pageLength) 
         {
             stock = new Stock();
-            assortment = stock.GetCurrentAssortment();
             selectedMedicines = new List<Medicine>();
         } 
         public List<Medicine> GetSample()
@@ -29,14 +27,48 @@ namespace NEA.MENU
 
             Console.WriteLine("Press Left or Right arrow to navigate on the pages");
             Console.WriteLine("Press V to 'View All Commands' ");
+            Console.WriteLine("Press P to enter a medicine's id you want to select. ");
+            Console.WriteLine("Press A to open analysis table");
+            Console.WriteLine("Press S to enter a sort command");
+            Console.WriteLine("Press M to enter a search commmand");
             
         }
 
-        public override void Sort(string command)
+        protected override List<Medicine> Sort(string command, List<Medicine> sample)
         {
-            
-            
-            Console.ReadKey();
+            command = command.ToLower();
+            if (IsSortCommand(command) == true)
+            {
+                Order order;
+                if (command.Contains("asc") == true)
+                {
+                    order = Order.ascending;
+                }
+                else
+                {
+                    order = Order.descending;
+                }
+
+                if (command.Contains("id") == true)
+                {
+                    return AttributeSorter.MergeSortByID(sample, order);
+                }
+                else if (command.Contains("name") == true)
+                {
+                    return AttributeSorter.MergeSortByName(sample, order);
+                }
+                else if(command.Contains("compname") == true)
+                {
+                    return AttributeSorter.MergeSortByCompName(sample, order);
+                }
+                else
+                    return AttributeSorter.MergeSortByActiveSubstance(sample, order);
+
+            }
+            else
+            {
+                throw new MenuException("Is not a sort command");
+            }
         }
         protected override void Select()
         {
@@ -84,7 +116,7 @@ namespace NEA.MENU
             {
                 Console.Write(attribute + ", ");
             }
-            Console.WriteLine("Enter attribute followed by ':' and a value without spaces between semicolumn and the value(you can use spaces in value if it is a name)");
+            Console.WriteLine("Enter attribute followed by '=' and a value without spaces between semicolumn and the value(you can use spaces in value if it is a name)");
             Console.WriteLine("You can enter 'compname' for 'CompanyName' and 'sub' for 'Active substance'. Examples: compname:NHS, name:Lisinopril, id:4");
             Console.WriteLine();
         }
@@ -110,23 +142,19 @@ namespace NEA.MENU
             return result;
         }
 
-        protected override List<string> getRowSet()
+        protected override List<Medicine> getItems()
         {
-            var result = new List<string>();
-            if(assortment == null) 
+            var result = new List<Medicine>();
+            stock = new Stock();
+            foreach (var item in stock.GetCurrentAssortment()) 
             {
-                stock = new Stock();
-                assortment = stock.GetCurrentAssortment();
-            }
-            foreach (var item in assortment) 
-            {
-                result.Add(item.ToString());
+                result.Add(item);
             }
             return result;
         }
         private void ShowMedicineCountHistory(Medicine medicine)
         {
-            List<StockInspection> countHistory = medicine.GetInspectionHistory();
+            List<StockInspection> countHistory = stock.GetStockInspectionHistory(medicine);
             foreach (StockInspection inspection in countHistory)
             {
                 Console.WriteLine(inspection.ToString());

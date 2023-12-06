@@ -35,9 +35,29 @@ namespace NEA.Domain
             try
             {
                 Medicine foundMedicine = medicineDAO.FindByID(id);
-                foundMedicine.SetNewInspectionHistory(inspectionDAO.GetRecordHistory(foundMedicine));
-                foundMedicine.SetNewPurchaseOrders(purchaseOrderDAO.GetRecordHistory(foundMedicine));
                 return foundMedicine;
+            }
+            catch (DAOException e)
+            {
+                throw new DomainException(e.Message, e);
+            }
+        }
+        public List<PurchaseOrder> GetPurchaseOrderHistory(Medicine medicine)
+        {
+            try
+            {
+                return purchaseOrderDAO.GetRecordHistory(medicine);
+            }
+            catch (DAOException e)
+            {
+                throw new DomainException(e.Message, e);
+            }
+        }
+        public List<StockInspection> GetStockInspectionHistory(Medicine medicine)
+        {
+            try
+            {
+                return inspectionDAO.GetRecordHistory(medicine);
             }
             catch (DAOException e)
             {

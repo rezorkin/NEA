@@ -18,16 +18,11 @@ namespace NEA.Domain
         List<StockInspection> inspections;
         List<SaleDate> salesHistory;
 
-        public SalesAnalyser(List<PurchaseOrder> purchaseOrderHistory, List<StockInspection> inspectionHistory)
-        {
-            this.purchaseOrders = purchaseOrderHistory;
-            this.inspections = inspectionHistory;
-            salesHistory = CalculateSalesHistory();
-        }
         public SalesAnalyser(Medicine medicine) 
         {
-            purchaseOrders = medicine.GetPurchaseOrders();
-            inspections = medicine.GetInspectionHistory();
+            var stock = new Stock();
+            purchaseOrders = stock.GetPurchaseOrderHistory(medicine);
+            inspections = stock.GetStockInspectionHistory(medicine);
             salesHistory = CalculateSalesHistory();
         }
         public double getMedian()

@@ -4,29 +4,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NEA.Domain;
 
 namespace NEA.MENU
 {
-    internal abstract class Table
+    internal abstract class Table<T>
     {
-        private List<string> rowSet;
+        private List<T> items;
         private List<Page> pages;
         private int currentPageIndex;
         private readonly int pageLength;
 
         public Table(int pageLength)
         {
-            this.rowSet = getRowSet();
+            this.items = getItems();
             currentPageIndex = 0;
             this.pageLength = pageLength;
             pages = CutRowSet();
 
         }
-        protected abstract List<string> getRowSet();
+        protected abstract List<T> getItems();
         protected abstract List<string> getAttributes();
         public abstract void ViewAllCommands();
         public abstract void MakeChoice();
-        public abstract void Sort(string command);
+        public void SortItems(string command)
+        {
+            items = Sort(command, items);
+            pages = CutRowSet();
+        }
+        protected abstract List<T> Sort(string command, List<T> sample);
         protected abstract void Select();
         public void OutputPage()
         {
@@ -72,7 +78,7 @@ namespace NEA.MENU
             var result = new List<Page>();
             int g = 0;
             string[] cutedSet = new string[pageLength];
-            for(int i = 0; i < rowSet.Count; i++)
+            for(int i = 0; i < items.Count; i++)
             {
                 if(g == pageLength) 
                 {
@@ -80,7 +86,7 @@ namespace NEA.MENU
                     g = 0;
                     cutedSet = new string[pageLength];
                 }
-                cutedSet[g] = rowSet[i];
+                cutedSet[g] = items[i].ToString();
                 g++;
             }
             result.Add(new Page(getAttributes(), cutedSet));

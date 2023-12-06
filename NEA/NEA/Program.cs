@@ -14,7 +14,7 @@ namespace PharmacySalesAnalysis
         static void Main(string[] args)
         {
             int[] a = { 1,567,34,21,78,4,9,43,25,567,5435,67,98,0,98,54,235,654,2342,6,87,8};
-            int[] sortedA = AttributeSorter.MergeSort(a, Order.descending);
+            int[] sortedA = AttributeSorter.MergeSort(a, Order.ascending);
             foreach (var item in sortedA)
             {
                 Console.Write(item + " ");
