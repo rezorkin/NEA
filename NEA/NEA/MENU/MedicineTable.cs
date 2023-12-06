@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using NEA.Domain;
 
 namespace NEA.MENU
@@ -33,7 +35,18 @@ namespace NEA.MENU
             Console.WriteLine("Press M to enter a search commmand");
             
         }
-
+        protected override List<Medicine> Search(string command, List<Medicine> sample)
+        {
+            command = command.ToLower();
+            if(IsSearchCommand(command) == true)
+            {
+                
+            }
+            else
+            {
+                throw new MenuException("Is not a search command");
+            }
+        }
         protected override List<Medicine> Sort(string command, List<Medicine> sample)
         {
             command = command.ToLower();
@@ -118,16 +131,23 @@ namespace NEA.MENU
             }
             Console.WriteLine("Enter attribute followed by '=' and a value without spaces between semicolumn and the value(you can use spaces in value if it is a name)");
             Console.WriteLine("You can enter 'compname' for 'CompanyName' and 'sub' for 'Active substance'. Examples: compname:NHS, name:Lisinopril, id:4");
+            Console.WriteLine("You can enter boundaries for id values domain using '>' or '<'. Examples: 3<id<9, id<5, 2>id.");
+            Console.WriteLine("You can enter only few subgroups of the active substance's ATC code and will show all medicines that are in entered groups:");
+            Console.WriteLine("for example you can enter 'A' to see all drugs that are in the first level anatomical group 'ALIMENTARY TRACT AND METABOLISM',");
+            Console.WriteLine("or enter 'B01' to see all 'ANTITHROMBOTIC AGENTS'. Also, you can enter only first digit of the 2nd and 5th level group to see all all subgroups from 01 to 09");
             Console.WriteLine();
         }
-        public bool IsSortCommand(string command)
+        private bool IsSortCommand(string command)
         {
             Regex allowedSortCommands = new Regex("(id|sub|name|compname)(asc|desc)");
             return allowedSortCommands.IsMatch(command);
         }
-        public bool IsSearchCommand(string command)
+        private bool IsSearchCommand(string command)
         {
-            Regex allowedsearchCommmands = new Regex("(id|sub|name|compname):\\w+.*");
+            string nonzeroDigits = "1|2|3|4|5|6|7|8|9";
+            string firstOption = "((id|sub|name|compname)=\\w+.*)";
+            string secondOption = ""
+            Regex allowedsearchCommmands = new Regex($"|((({nonzeroDigits})\\d*<|>)?id(<|>({nonzeroDigits})))");
             return allowedsearchCommmands.IsMatch(command);
         }
         protected override List<string> getAttributes()

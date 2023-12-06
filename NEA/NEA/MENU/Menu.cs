@@ -59,7 +59,7 @@ namespace NEA.MENU
                 else if(furtherAction == MenuAction.SearchCommand)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("Enter search command");
+                    Console.WriteLine("Enter search command:");
                 }
             }
             

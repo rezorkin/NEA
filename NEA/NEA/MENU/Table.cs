@@ -27,12 +27,18 @@ namespace NEA.MENU
         protected abstract List<string> getAttributes();
         public abstract void ViewAllCommands();
         public abstract void MakeChoice();
+        public void SearchItems(string command)
+        {
+            items = Search(command, items);
+            pages = CutRowSet();    
+        }
         public void SortItems(string command)
         {
             items = Sort(command, items);
             pages = CutRowSet();
         }
         protected abstract List<T> Sort(string command, List<T> sample);
+        protected abstract List<T> Search(string command, List<T> sample);
         protected abstract void Select();
         public void OutputPage()
         {
