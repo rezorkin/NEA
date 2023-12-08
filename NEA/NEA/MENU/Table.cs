@@ -4,49 +4,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NEA.Domain;
+using NEA.DOMAIN;
 
 namespace NEA.MENU
 {
-    internal abstract class Table<T>
+    internal abstract class Table
     {
-        private List<T> items;
         private List<Page> pages;
         private int currentPageIndex;
-        private readonly int pageLength;
-
+        private readonly int pageSize;
+        protected abstract string[] attributes { get; }
         public Table(int pageLength)
         {
-            this.items = getItems();
-            currentPageIndex = 0;
-            this.pageLength = pageLength;
-            pages = CutRowSet();
-
+            this.pageSize = pageLength;
+            pages = new List<Page>();
         }
-        protected abstract List<T> getItems();
-        protected abstract List<string> getAttributes();
-        public abstract void ViewAllCommands();
         public abstract void MakeChoice();
-        public void SearchItems(string command)
+        public abstract void FilterRows();
+        public abstract void SortRows();
+        public abstract void Select();
+        protected void UpdatePages(List<string> newRows)
         {
-            items = Search(command, items);
-            pages = CutRowSet();    
+            pages = new List<Page>();
+            CutRowsToPages(newRows);
         }
-        public void SortItems(string command)
-        {
-            items = Sort(command, items);
-            pages = CutRowSet();
-        }
-        protected abstract List<T> Sort(string command, List<T> sample);
-        protected abstract List<T> Search(string command, List<T> sample);
-        protected abstract void Select();
-        public void OutputPage()
-        {
+        public virtual void OutputPage()
+        { 
             pages[currentPageIndex].DisplayPage();
+            Console.WriteLine();
             Console.Write($"Current page: {currentPageIndex+1}                                       Pages:");
-            for(int i = 1; i <= pages.Count; i++) 
+            for (int i = 1; i <= pages.Count; i++)
             {
-                if(i == currentPageIndex + 1)
+                if (i == currentPageIndex + 1)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                 }
@@ -79,24 +68,22 @@ namespace NEA.MENU
                 currentPageIndex--;
             }
         }
-        private List<Page> CutRowSet() 
+        private void CutRowsToPages(List<string> rows) 
         {
-            var result = new List<Page>();
             int g = 0;
-            string[] cutedSet = new string[pageLength];
-            for(int i = 0; i < items.Count; i++)
+            string[] cutedSet = new string[pageSize];
+            for(int i = 0; i < rows.Count; i++)
             {
-                if(g == pageLength) 
+                if(g == pageSize) 
                 {
-                    result.Add(new Page(getAttributes(), cutedSet));
+                    pages.Add(new Page(attributes, cutedSet));
                     g = 0;
-                    cutedSet = new string[pageLength];
+                    cutedSet = new string[pageSize];
                 }
-                cutedSet[g] = items[i].ToString();
+                cutedSet[g] = rows[i].ToString();
                 g++;
             }
-            result.Add(new Page(getAttributes(), cutedSet));
-            return result;
+            pages.Add(new Page(attributes, cutedSet));
         }
     }
 }

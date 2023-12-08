@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NEA.Domain
+namespace NEA.DOMAIN
 {
     internal class SalesAnalyser
     {
@@ -17,7 +17,6 @@ namespace NEA.Domain
         List<PurchaseOrder> purchaseOrders;
         List<StockInspection> inspections;
         List<SaleDate> salesHistory;
-
         public SalesAnalyser(Medicine medicine) 
         {
             var stock = new Stock();
@@ -25,10 +24,10 @@ namespace NEA.Domain
             inspections = stock.GetStockInspectionHistory(medicine);
             salesHistory = CalculateSalesHistory();
         }
-        public double getMedian()
+        public double CalculateMedian()
         {
             int[] salesValues = getSalesValues();
-            salesValues = SortInAscendingOrder(salesValues);
+            salesValues = AttributeSorter.MergeSort(salesValues, Order.ASC);
             if (salesValues.Length % 2 == 0)
             {
                 int leftMedianIndex = salesValues.Length / 2 - 1;
@@ -45,9 +44,9 @@ namespace NEA.Domain
         }
         public double getMeanTo1dp()
         {
-            return Math.Round(getMean(),1);
+            return Math.Round(CalculateMean(),1);
         }
-        public Dictionary<int,int> getModes() 
+        public Dictionary<int,int> CalculateModes() 
         {
             int[] salesValues = getSalesValues();
             Dictionary<int,int> salesOccurrences = new Dictionary<int,int>();
@@ -85,13 +84,13 @@ namespace NEA.Domain
             }
 
         }
-        public double getStandrardDeviation()
+        public double CalculateStandartDeviation()
         {
-            return Math.Sqrt(getVariance());
+            return Math.Sqrt(CalculateVariance());
         }
-        private double getVariance()
+        private double CalculateVariance()
         {
-            double mean = getMean();
+            double mean = CalculateMean();
             double sumOfSquareDistances = 0;
             int[] salesValues = getSalesValues();
             foreach (int saleValue in salesValues)
@@ -102,7 +101,7 @@ namespace NEA.Domain
             double variance = sumOfSquareDistances / salesValues.Length;
             return variance;
         }
-        private double getMean()
+        private double CalculateMean()
         {
             int[] salesValues = getSalesValues();
             int totalSum = 0;
@@ -144,25 +143,6 @@ namespace NEA.Domain
                 saleValues[i] = salesHistory[i].amount;
             }
             return saleValues;
-        }
-        private int[] SortInAscendingOrder(int[] salesValues)
-        {
-            int i = 0;
-            int next = 1;
-            while (next < salesValues.Length)
-            {
-                int nextNum = salesValues[next];
-                int currNum = salesValues[i];
-                if (nextNum < currNum)
-                {
-                    salesValues[i] = nextNum;
-                    salesValues[next] = currNum;
-                    return SortInAscendingOrder(salesValues);
-                }
-                i++;
-                next++;
-            }
-            return salesValues;
         }
 
     }

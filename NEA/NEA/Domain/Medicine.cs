@@ -1,4 +1,4 @@
-﻿using NEA.Domain;
+﻿using NEA.DOMAIN;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NEA.Domain
+namespace NEA.DOMAIN
 {
     internal class Medicine
     {

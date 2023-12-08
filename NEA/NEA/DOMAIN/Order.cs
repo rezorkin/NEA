@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NEA.MENU
+namespace NEA.DOMAIN
 {
     internal enum Order
     {
-        descending,
-        ascending
+        DESC,
+        ASC
     }
 }

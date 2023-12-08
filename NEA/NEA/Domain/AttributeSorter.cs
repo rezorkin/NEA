@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NEA.MENU;
 
-namespace NEA.Domain
+namespace NEA.DOMAIN
 {
     internal static class AttributeSorter
     {
@@ -130,7 +130,7 @@ namespace NEA.Domain
                     string leftSubstance = leftPart[leftIndex].GetActiveSubstance().ToUpper();
                     string rightSubstance = rightPart[rightIndex].GetActiveSubstance().ToUpper();
                     int stringComparison = string.CompareOrdinal(leftSubstance, rightSubstance);
-                    if (order == Order.descending)
+                    if (order == Order.DESC)
                     {
                         if (stringComparison >= 0)
                         {
@@ -181,7 +181,7 @@ namespace NEA.Domain
                     string leftName = leftPart[leftIndex].GetCompanyName().ToLower();
                     string rightName = rightPart[rightIndex].GetCompanyName().ToLower();
                     int stringComparison = string.Compare(leftName, rightName);
-                    if (order == Order.descending)
+                    if (order == Order.DESC)
                     {
                         if (stringComparison >= 0)
                         {
@@ -232,7 +232,7 @@ namespace NEA.Domain
                     string leftName = leftPart[leftIndex].GetName().ToLower();
                     string rightName = rightPart[rightIndex].GetName().ToLower();
                     int stringComparison = string.Compare(leftName, rightName);
-                    if (order == Order.descending)
+                    if (order == Order.DESC)
                     {
                         if (stringComparison >= 0)
                         {
@@ -280,7 +280,7 @@ namespace NEA.Domain
             {
                 if (leftIndex < leftPart.Count && rightIndex < rightPart.Count)
                 {
-                    if (order == Order.descending)
+                    if (order == Order.DESC)
                     {
                         if (leftPart[leftIndex].GetID() >= rightPart[rightIndex].GetID())
                         {
@@ -329,7 +329,7 @@ namespace NEA.Domain
             {
                 if (leftIndex < leftPart.Length && rightIndex < rightPart.Length)
                 {
-                    if (order == Order.descending)
+                    if (order == Order.DESC)
                     {
                         if (leftPart[leftIndex] >= rightPart[rightIndex])
                         {

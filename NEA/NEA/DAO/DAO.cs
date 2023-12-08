@@ -1,4 +1,4 @@
-﻿using NEA.Domain;
+﻿using NEA.DOMAIN;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -24,32 +24,26 @@ namespace NEA.DAO
             path = fileName;
             connectionString = "Data Source= " + path;
         }
-        protected abstract T SetValuesFromTableToObjectFields(NameValueCollection row);
-        protected virtual List<T> FindByAttributeValue(string tableName, string attributeName, string attributeValue)
+        public string GetConnectionString()
         {
-            List<T> result = new List<T>();
-            List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName, attributeName, attributeValue);
-            foreach (NameValueCollection row in undecodedResultSet)
-            {
-                result.Add(SetValuesFromTableToObjectFields(row));
-            }
-            return result;
+            return connectionString;
         }
-        protected virtual List<T> GetAll(string tableName)
+        protected abstract T SetValuesFromTableToObjectFields(NameValueCollection row);
+        protected List<T> FindByAttributeValue(string tableName, string attributeName, string attributeValue)
         {
             try
             {
                 List<T> result = new List<T>();
-                List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName);
+                List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName, attributeName, attributeValue);
                 foreach (NameValueCollection row in undecodedResultSet)
                 {
                     result.Add(SetValuesFromTableToObjectFields(row));
                 }
                 return result;
             }
-            catch (Exception) 
+            catch(SQLiteException) 
             {
-                throw new DAOException("Table was not found");
+                throw new DAOException("Nothing was found by folowing value" + attributeName);
             }
         }
         private List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value)
@@ -61,32 +55,7 @@ namespace NEA.DAO
                 connection.Open();
                 using (SQLiteCommand command = new SQLiteCommand(connection))
                 {
-                    command.CommandText = $"SELECT * FROM {table} WHERE {attributeName} =@value";
-                    command.Parameters.AddWithValue("@value", value);
-                    using (SQLiteDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            NameValueCollection currentRowValues = reader.GetValues();
-                            result.Add(currentRowValues);
-                        }
-                    }
-                }
-                connection.Close();
-            }
-
-            return result;
-        }
-        private List<NameValueCollection> GetMatchedRows(string table)
-        {
-            List<NameValueCollection> result = new List<NameValueCollection>();
-
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString + "Version=3;New=False;Compress=True;Read Only=true"))
-            {
-                connection.Open();
-                using (SQLiteCommand command = new SQLiteCommand(connection))
-                {
-                    command.CommandText = $"SELECT * FROM {table}";
+                    command.CommandText = $"SELECT *\r\nFROM {table}\r\nWHERE {attributeName} like \"{value} %\" or {attributeName} like \"% {value} %\" or {attributeName} like \"% {value}\"";
                     using (SQLiteDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

@@ -3,46 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NEA.Domain;
+using NEA.DOMAIN;
 
 namespace NEA.MENU
 {
-    internal class AnalysisTable : Table<Medicine>
+    internal class AnalysisTable : Table
     {
-        SalesAnalyser SalesAnalyser;
         List<Medicine> sample;
-        public AnalysisTable(int pageLength, List<Medicine> sample) : base(pageLength) 
+        L
+        public AnalysisTable(int pageLength, List<Medicine> sample) : base(pageLength)
         {
             this.sample = sample;
         }
+        protected override string[] attributes => throw new NotImplementedException();
+        public override void FilterRows()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void MakeChoice()
         {
             throw new NotImplementedException();
         }
 
-        public override void ViewAllCommands()
+        public override void SortRows()
+        {
+            throw new NotImplementedException();
+        }
+        public override void Select()
         {
             throw new NotImplementedException();
         }
 
-        protected override List<string> getAttributes()
-        {
-            throw new NotImplementedException();
-        }
 
-        protected override List<Medicine> getItems()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void Select()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override List<Medicine> Sort(string command, List<Medicine> sample)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

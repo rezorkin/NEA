@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NEA.Domain;
+using NEA.DOMAIN;
 
 namespace NEA.MENU
 {
@@ -19,9 +19,9 @@ namespace NEA.MENU
         }
         private static void OpenAssortmentOfMedicine()
         {
-            MedicineTable table = new MedicineTable(2);
+            MedicineTable table = new MedicineTable(4);
             var furtherAction = MenuAction.Default;
-            while (furtherAction != MenuAction.GoToAnalysisTable) 
+            while (furtherAction != MenuAction.GoToTheMainMenu) 
             {
                 Console.Clear();
                 table.OutputPage();
@@ -31,39 +31,67 @@ namespace NEA.MENU
                 {
                     table.GoToAnotherPage(furtherAction);
                 }
-                else if(furtherAction == MenuAction.ViewAllCommands)
+                else if(furtherAction == MenuAction.Select)
                 {
-                    ViewAllCommandsChoice(table);
+                    try
+                    {
+                        table.Select();
+                    }
+                    catch (MenuException ex) 
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine(ex.Message);
+                        Console.ReadKey();
+                    }
                 }
-                else if(furtherAction == MenuAction.SortCommand)
+                else if(furtherAction == MenuAction.Sort)
                 {
-                    
                     
                     Console.WriteLine();
-                    Console.WriteLine("Enter sort command:");
-                    
                     try
                     {   
-                      SortChoice(table);
+                      table.SortRows();
                     }
                     catch (MenuException)
                     {
-                   
-                      Console.WriteLine("Entered command is invalid, try again");
+                      Console.WriteLine();
+                      Console.WriteLine("Pressed key is invalid, try again");
                       Console.ReadKey();
                          
                     }
-                    
-                        
                 }
-                else if(furtherAction == MenuAction.SearchCommand)
+                else if(furtherAction == MenuAction.Filter)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("Enter search command:");
+                    try
+                    {
+                        table.FilterRows();
+                    }
+                    catch (MenuException e)
+                    {
+
+                        Console.WriteLine(e.Message + "Try again");
+                        Console.ReadKey();
+
+                    }
+                }
+                else if(furtherAction == MenuAction.ResetFiltersAndSortings)
+                {
+                    table.ResetFiltersAndSortings();
+                }
+                else if(furtherAction == MenuAction.GoToAnalysisTable)
+                {
+                    List<Medicine> sample = table.GetSample();
+                    if(sample.Count > 0)
+                    {
+                        OpenAnalysisTable(sample);
+                    }
                 }
             }
-            
-
+        }
+        private static void OpenAnalysisTable(List<Medicine> sample)
+        {
+            AnalysisTable table = new AnalysisTable(10, sample);
         }
         private static MenuAction RecieveFurtherAction()
         {
@@ -76,55 +104,32 @@ namespace NEA.MENU
             {
                 return MenuAction.GoToPreviousPage;
             }
-            else if (key == ConsoleKey.V)
-            {
-                return MenuAction.ViewAllCommands;
-            }
             else if (key == ConsoleKey.A)
             {
                 return MenuAction.GoToAnalysisTable;
             }
             else if (key == ConsoleKey.S)
             {
-                return MenuAction.SortCommand;
+                return MenuAction.Sort;
             }
-            else if (key == ConsoleKey.M)
+            else if (key == ConsoleKey.F)
             {
-                return MenuAction.SearchCommand;
-            } 
+                return MenuAction.Filter;
+            }
+            else if(key == ConsoleKey.X)
+            {
+                return MenuAction.ResetFiltersAndSortings;
+            }
+            else if(key == ConsoleKey.P)
+            {
+                return MenuAction.Select;
+            }
+            else if(key == ConsoleKey.A)
+            {
+                return MenuAction.GoToAnalysisTable;
+            }
             else
                 return MenuAction.Default;
-        }
-        private static void SortChoice(MedicineTable table)
-        {
-            string command = Console.ReadLine();
-            table.SortItems(command);
-        }
-        private static void ViewAllCommandsChoice(MedicineTable table)
-        {
-            var key = ConsoleKey.V;
-            table.ViewAllCommands();
-            bool IsAlreadySortOnScreen = false;
-            bool IsAlreadySearchOnScreen = false;
-            while (key == ConsoleKey.V || key == ConsoleKey.S || key == ConsoleKey.M)
-            {
-                key = Console.ReadKey(true).Key;
-                if (key == ConsoleKey.S && IsAlreadySortOnScreen != true)
-                {
-                    table.SortCommandExplanation();
-                    IsAlreadySortOnScreen = true;
-                }
-                else if (key == ConsoleKey.M && IsAlreadySearchOnScreen != true)
-                {
-                    table.SearchCommandExplanation();
-                    IsAlreadySearchOnScreen = true;
-                }
-            }
-        }
-        private static void OpenAnalysisTable(List<Medicine> sample)
-        {
-            AnalysisTable table = new AnalysisTable(2,sample);
-
         }
     }
 }

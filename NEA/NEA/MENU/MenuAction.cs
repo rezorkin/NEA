@@ -9,11 +9,15 @@ namespace NEA.MENU
     internal enum MenuAction
     {
         Default,
+        Select,
         GoToNextPage,
         GoToPreviousPage,
         GoToAnalysisTable,
         ViewAllCommands,
-        SortCommand,
-        SearchCommand
+        Sort,
+        Filter,
+        ResetFiltersAndSortings,
+        GoToTheMainMenu,
+        GoToTheAssortmentTable
     }
 }

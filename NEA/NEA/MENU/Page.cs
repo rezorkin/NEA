@@ -8,7 +8,7 @@ namespace NEA.MENU
 {
     internal class Page
     {
-        List<string> attributes;
+        string[] attributes;
         string[] rows;
         string spacesToDivider = "                            ";
         public Page(string[] rows)
@@ -16,7 +16,7 @@ namespace NEA.MENU
             this.rows = rows;
 
         }
-        public Page(List<string> attributes, string[] rows) 
+        public Page(string[] attributes, string[] rows) 
         {
             this.attributes = attributes;
             this.rows = rows;
@@ -25,7 +25,7 @@ namespace NEA.MENU
         {
             if (attributes != null) 
             {
-                for(int i  = 0; i < attributes.Count-1; i++) 
+                for(int i  = 0; i < attributes.Length-1; i++) 
                 {
                     Console.Write(" " + attributes[i] + spacesToDivider + " ");
                 }
@@ -47,7 +47,7 @@ namespace NEA.MENU
         private string AddRowDivider(string[] values)
         {
             string result = "";
-            for (int i = 0; i < attributes.Count; i++)
+            for (int i = 0; i < attributes.Length; i++)
             {
                 
                 int lengthOfAttributeString = attributes[i].Length + spacesToDivider.Length;
@@ -57,7 +57,6 @@ namespace NEA.MENU
                 {
                     valueSpacesBeforeDivider += " ";
                 }
-
                 result += " " + values[i] + valueSpacesBeforeDivider + "|";
             }
             return result;

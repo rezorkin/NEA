@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace NEA.Domain
+namespace NEA.DOMAIN
 {
     internal class StockInspection : MedicineRecord
     {
