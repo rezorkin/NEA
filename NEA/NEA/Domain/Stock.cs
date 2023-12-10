@@ -10,13 +10,10 @@ namespace NEA.DOMAIN
     internal class Stock
     {
         MedicineDAO medicineDAO;
-        StockInspectionDAO inspectionDAO;
-        PurchaseOrderDAO purchaseOrderDAO;
+        
         public Stock() 
         {
             medicineDAO = new MedicineDAO();
-            inspectionDAO = new StockInspectionDAO();
-            purchaseOrderDAO = new PurchaseOrderDAO();
         }
         public int GetBiggestID()
         {
@@ -59,13 +56,13 @@ namespace NEA.DOMAIN
         private List<Medicine> SortedSample(SortOption attribute, Order order, List<Medicine> sample)
         {
             if (attribute == SortOption.ID)
-                return AttributeSorter.MergeSortByID(sample, order);
+                return MergeSort.MergeSortByID(sample, order);
             else if (attribute == SortOption.Name)
-                return AttributeSorter.MergeSortByName(sample, order);
+                return MergeSort.MergeSortByName(sample, order);
             else if (attribute == SortOption.CompanyName)
-                return AttributeSorter.MergeSortByCompName(sample, order);
+                return MergeSort.MergeSortByCompName(sample, order);
             else if (attribute == SortOption.ActiveSubstance)
-                return AttributeSorter.MergeSortByActiveSubstance(sample, order);
+                return MergeSort.MergeSortByActiveSubstance(sample, order);
             else
                 throw new DomainException("Invalid sort option");
         }
@@ -121,28 +118,6 @@ namespace NEA.DOMAIN
             catch (DAOException e)
             {
                 throw new DomainException(e.Message);
-            }
-        }
-        public List<PurchaseOrder> GetPurchaseOrderHistory(Medicine medicine)
-        {
-            try
-            {
-                return purchaseOrderDAO.GetRecordHistory(medicine);
-            }
-            catch (DAOException e)
-            {
-                throw new DomainException(e.Message, e);
-            }
-        }
-        public List<StockInspection> GetStockInspectionHistory(Medicine medicine)
-        {
-            try
-            {
-                return inspectionDAO.GetRecordHistory(medicine);
-            }
-            catch (DAOException e)
-            {
-                throw new DomainException(e.Message, e);
             }
         }
 

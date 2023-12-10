@@ -8,18 +8,18 @@ using NEA.DOMAIN;
 
 namespace NEA.DAO
 {
-    internal abstract class MedicineRecordDAO<T> : DAO<T> where T : MedicineRecord
+    internal abstract class MedicineRecordDAO<T> : DAO<T>, IMedicineRecordDAO<T> where T : MedicineRecord
     {
-        protected readonly string tableNameDB;
+        protected readonly string tableName;
         protected abstract string setTableName();
         public MedicineRecordDAO() : base() 
         {
-            tableNameDB = setTableName();
+            tableName = setTableName();
         }
         public T GetByDateID(Medicine selectedMedicine, DateTime Date)
         {
-            List<T> foundByDate = FindByAttributeValue(tableNameDB, "Date", ConvertDateToString(Date));
-            List<T> foundByID = FindByAttributeValue(tableNameDB, "MedicineID", selectedMedicine.GetID().ToString()); 
+            List<T> foundByDate = FindByAttributeValue(tableName, "Date", ConvertDateToString(Date));
+            List<T> foundByID = FindByAttributeValue(tableName, "MedicineID", selectedMedicine.GetID().ToString()); 
             foreach (T record in foundByDate)
             {
                 for (int i = 0; i < foundByID.Count; i++)
@@ -35,7 +35,7 @@ namespace NEA.DAO
 
         public List<T> GetRecordHistory(Medicine selectedMedicine)
         {
-            return FindByAttributeValue(tableNameDB, "MedicineID", selectedMedicine.GetID().ToString());
+            return FindByAttributeValue(tableName, "MedicineID", selectedMedicine.GetID().ToString());
         }
 
         protected abstract override T SetValuesFromTableToObjectFields(NameValueCollection row);     
@@ -54,6 +54,11 @@ namespace NEA.DAO
             dateParts[1] = Date.Month.ToString();
             dateParts[2] = Date.Year.ToString();
             return dateParts[0] + "/" + dateParts[1] + "/" + dateParts[2];
+        }
+
+        public List<T> GetRecordHistory(int medicineID)
+        {
+            return FindByAttributeValue(tableName, "MedicineID", medicineID.ToString());
         }
     }
 }

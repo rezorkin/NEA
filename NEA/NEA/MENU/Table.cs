@@ -13,16 +13,24 @@ namespace NEA.MENU
         private List<Page> pages;
         private int currentPageIndex;
         private readonly int pageSize;
+        private int spacesToDivider;
         protected abstract string[] attributes { get; }
-        public Table(int pageLength)
+        public Table(int pageLength, int spacesToDivider)
         {
             this.pageSize = pageLength;
             pages = new List<Page>();
+            this.spacesToDivider = spacesToDivider;
         }
-        public abstract void MakeChoice();
-        public abstract void FilterRows();
-        public abstract void SortRows();
+        public abstract void PrintOptions();
+        public abstract void FilterRows(string attribute);
+        public abstract void SortRows(string attribute, Order order);
         public abstract void Select();
+        public abstract void ResetToInitialTable();
+
+        public string[] GetAttributes()
+        {
+            return attributes;
+        }
         protected void UpdatePages(List<string> newRows)
         {
             pages = new List<Page>();
@@ -76,14 +84,14 @@ namespace NEA.MENU
             {
                 if(g == pageSize) 
                 {
-                    pages.Add(new Page(attributes, cutedSet));
+                    pages.Add(new Page(attributes, cutedSet, spacesToDivider));
                     g = 0;
                     cutedSet = new string[pageSize];
                 }
                 cutedSet[g] = rows[i].ToString();
                 g++;
             }
-            pages.Add(new Page(attributes, cutedSet));
+            pages.Add(new Page(attributes, cutedSet, spacesToDivider));
         }
     }
 }

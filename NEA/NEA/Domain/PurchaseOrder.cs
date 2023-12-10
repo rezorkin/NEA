@@ -12,7 +12,7 @@ namespace NEA.DOMAIN
             : base(purchasedMedicine, purchasedAmount, purchasedDate){ }
         public override string ToString()
         {
-            return $"Medicine ID: {getMedicine().GetID()}, purchase date: {getRecordDate()}, amount purchased: {getAmount()}";
+            return $"Medicine ID: {getMedicine().GetID()}, purchase date: {GetRecordDate()}, amount purchased: {getAmount()}";
         }
     }
 }

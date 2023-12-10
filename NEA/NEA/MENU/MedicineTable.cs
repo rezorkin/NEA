@@ -18,19 +18,18 @@ namespace NEA.MENU
         private List<Medicine> selectedMedicines;
         private List<Medicine> assortment;
         protected override string[] attributes => new string[] { "ID", "Name", "Company Name", "Active Substance" };
-
-        public MedicineTable(int pageLength):base(pageLength) 
+        public MedicineTable(int pageLength, int spaceToDivider) : base(pageLength, spaceToDivider) 
         {
             stock = new Stock();
             assortment = stock.GetAssortment();
-            UpdatePages(AssortmentToStrings());
+            UpdatePages(AssortmentToString());
             selectedMedicines = new List<Medicine>();
-        } 
+        }
         public List<Medicine> GetSample()
         {
             return selectedMedicines;
         }
-        public override void MakeChoice()
+        public override void PrintOptions()
         {
             Console.WriteLine();
             Console.WriteLine("Press Left or Right arrow to navigate on the pages");
@@ -42,40 +41,36 @@ namespace NEA.MENU
                 Console.WriteLine("Press A to move to the analysis table with selected medicine(s)");
             }
             Console.WriteLine("Press X to reset all filters and sortings");
-            
+            Console.WriteLine("Press V to reset medicine selection");
+
         }
         public override void Select()
         {
             Console.WriteLine();
             Console.WriteLine("Enter Medicine's id to select and add it to your sample.");
             Console.WriteLine("Enter number from 1 to " + stock.GetBiggestID());
-            string input = Console.ReadLine();
-            if(IsValidID(input) == true)
+            string number = Console.ReadLine();
+            try
             {
-                int ID;
-                try
+                int ID = int.Parse(number);
+                if (ID <= stock.GetBiggestID() && ID > 0)
                 {
-                    ID = int.Parse(input);
-                    if (ID <= stock.GetBiggestID())
+                    var selectedMedicine = stock.FindByID(ID);
+                    if (selectedMedicines.Contains(selectedMedicine) == false)
                     {
-                        var selectedMedicine = stock.FindByID(ID);
-                        if(selectedMedicines.Contains(selectedMedicine) == false)
-                        {
-                            selectedMedicines.Add(selectedMedicine);
-                        }
-                    }
-                    else
-                    {
-                        throw new MenuException("Id was out of the range");
+                        selectedMedicines.Add(selectedMedicine);
                     }
                 }
-                catch (OverflowException)
+                else
                 {
                     throw new MenuException("Id was out of the range");
                 }
-                
             }
-            else
+            catch (OverflowException)
+            {
+                throw new MenuException("Id was out of the range");
+            }
+            catch (FormatException)
             {
                 throw new MenuException("Invalid id value");
             }
@@ -96,25 +91,29 @@ namespace NEA.MENU
                 }
             }
         }
-        public override void FilterRows()
+        public override void FilterRows(string attribute)
         {
-            string attributeToFilter = RecieveAttributeFromUser();
+            string attributeToFilter = attribute;
             int biggestID = stock.GetBiggestID();
             if (attributeToFilter == attributes[0])
             {
                 Console.WriteLine();
                 Console.WriteLine($"Enter minimum id value (In range from 1 to {biggestID}):");
                 string ID = Console.ReadLine();
-                if (IsValidID(ID) == true)
+                try 
                 {
-                    int startRange = int.Parse(ID)-1;
+                    int startRange = int.Parse(ID) - 1;
                     int endRange;
-                    if (startRange + 1 == biggestID) 
+                    if (startRange + 1 == 0 || startRange + 1 > biggestID)
+                    {
+                        throw new OverflowException();
+                    }
+                    else if (startRange + 1 == biggestID)
                     {
                         endRange = 0;
                         TryFilterByID(startRange, endRange);
                     }
-                    else if(startRange + 2 == biggestID)
+                    else if (startRange + 2 == biggestID)
                     {
                         endRange = biggestID + 1;
                         TryFilterByID(startRange, endRange);
@@ -123,28 +122,31 @@ namespace NEA.MENU
                     {
                         Console.WriteLine($"Enter maximum id value (In range from {startRange + 2} to {biggestID}):");
                         ID = Console.ReadLine();
-                        if (IsValidID(ID) == true && int.Parse(ID) + 1 > startRange)
+                        if (int.Parse(ID) + 1 > startRange)
                         {
                             endRange = int.Parse(ID) + 1;
-                            TryFilterByID(startRange, endRange); 
+                            TryFilterByID(startRange, endRange);
                         }
                         else
                         {
                             throw new MenuException("You entered invalid maximum id value.");
                         }
                     }
-                   
                 }
-                else
+                catch (OverflowException)
                 {
-                    throw new MenuException("You entered invalid minimum id value.");
+                    throw new MenuException("Entered id was out of the range. ");
+                }
+                catch (FormatException)
+                {
+                    throw new MenuException("Invalid id value. ");
                 }
             }
             else if (attributeToFilter == attributes[1])
             {
                 Console.WriteLine();
                 Console.WriteLine("Enter name of the medicine. You can enter only one part of the name if the name is like 'Misinopril Ultra'.");
-                Console.WriteLine("Entering only 'L' , followed by '+' (L+), you will get all the medicines starting with 'L' , entreing 'Li+' you will get all the medicines starting with 'Li' and so on.");
+                Console.WriteLine("Entering only 'L' , followed by '+' (L+), you will get all the statisticRecords starting with 'L' , entreing 'Li+' you will get all the statisticRecords starting with 'Li' and so on.");
                 string choice = Console.ReadLine();
                 try
                 {
@@ -158,7 +160,7 @@ namespace NEA.MENU
                     {
                         assortment = stock.FindByName(choice, true, true);
                     }
-                    UpdatePages(AssortmentToStrings());
+                    UpdatePages(AssortmentToString());
                 }
                 catch (DomainException e) 
                 {
@@ -169,7 +171,7 @@ namespace NEA.MENU
             {
                 Console.WriteLine();
                 Console.WriteLine("Enter name of the company. You can enter only one part of the name if the name is like 'Viabes Collum'.");
-                Console.WriteLine("Entering only 'L' , followed by '+'(L +), you will get all the medicines starting with 'L' , entreing 'Li+' you will get all the medicines starting with 'Li' and so on.");
+                Console.WriteLine("Entering only 'L' , followed by '+'(L +), you will get all the statisticRecords starting with 'L' , entreing 'Li+' you will get all the statisticRecords starting with 'Li' and so on.");
                 string choice = Console.ReadLine();
                 try
                 {
@@ -183,7 +185,7 @@ namespace NEA.MENU
                     {
                         assortment = stock.FindByName(choice, false, true);
                     }
-                    UpdatePages(AssortmentToStrings());
+                    UpdatePages(AssortmentToString());
                 }
                 catch (DomainException e)
                 {
@@ -193,12 +195,12 @@ namespace NEA.MENU
             else if (attributeToFilter == attributes[3])
             {
                 Console.WriteLine();
-                Console.WriteLine("Enter ATC code. Entering not a full code(7 digits) you will get all the medicines within the subgroup you have just ended with");
+                Console.WriteLine("Enter ATC code. Entering not a full code(7 digits) you will get all the statisticRecords within the subgroup you have just ended with");
                 string choice = Console.ReadLine();
                 try
                 {
                     assortment = stock.FilterByActiveSubstance(choice);
-                    UpdatePages(AssortmentToStrings());
+                    UpdatePages(AssortmentToString());
                 }
                 catch (DomainException e)
                 {
@@ -208,83 +210,46 @@ namespace NEA.MENU
             else
                 throw new MenuException();
         }
-        private bool IsValidID(string id)
+        public void ResetSelection()
         {
-            Regex ex = new Regex("[1-9]\\d*");
-            return ex.IsMatch(id);
+            selectedMedicines = new List<Medicine>();
         }
-        public override void SortRows()
+        public override void SortRows(string attribute, Order order)
         {
-            string attributeToSort = RecieveAttributeFromUser();
             Console.WriteLine();
-            Order order = RecieveSortOrderFromUser();
-            if (attributeToSort == attributes[0])
+            if (attribute == attributes[0])
             {
                 assortment = stock.Sort(SortOption.ID,order,assortment);
-                var tableRows = AssortmentToStrings();
+                var tableRows = AssortmentToString();
                 UpdatePages(tableRows);
             }
-            else if (attributeToSort == attributes[1])
+            else if (attribute == attributes[1])
             {
                 assortment = stock.Sort(SortOption.Name, order, assortment);
-                var tableRows = AssortmentToStrings();
+                var tableRows = AssortmentToString();
                 UpdatePages(tableRows);
             }
-            else if (attributeToSort == attributes[2])
+            else if (attribute == attributes[2])
             {
                 assortment = stock.Sort(SortOption.CompanyName, order, assortment);
-                var tableRows = AssortmentToStrings();
+                var tableRows = AssortmentToString();
                 UpdatePages(tableRows);
             }
-            else if (attributeToSort == attributes[3])
+            else if (attribute == attributes[3])
             {
                 assortment = stock.Sort(SortOption.ActiveSubstance, order, assortment);
-                var tableRows = AssortmentToStrings();
+                var tableRows = AssortmentToString();
                 UpdatePages(tableRows);
             }
             else
                 throw new MenuException();
         }
-        public void ResetFiltersAndSortings()
+        public override void ResetToInitialTable()
         {
             assortment = stock.GetAssortment();
-            UpdatePages(AssortmentToStrings());
+            UpdatePages(AssortmentToString());
         }
-        private string RecieveAttributeFromUser()
-        {
-            Console.WriteLine();
-            Console.WriteLine("Choose attribute by pressing:");
-            for (int i = 0; i < attributes.Length; i++)
-            {
-                Console.Write($"'{i + 1}' for {attributes[i]} ");
-            }
-            var pressedKey = Console.ReadKey(true).Key;
-            ConsoleKey[] acceptedKeys = { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4 };
-            for(int i = 0;i < acceptedKeys.Length;i++)
-            {
-                if(pressedKey == acceptedKeys[i])
-                {
-                    return attributes[i];
-                }
-            }
-            throw new MenuException();
-        }
-        private Order RecieveSortOrderFromUser()
-        {
-            Console.WriteLine("Press 'A' for ascending order and 'D' for descending");
-            var pressedKey = Console.ReadKey(true).Key;
-            if (pressedKey == ConsoleKey.A) 
-            {
-                return Order.ASC;
-            }
-            else if (pressedKey == ConsoleKey.D)
-            {
-                return Order.DESC;
-            }
-            else
-            throw new MenuException();
-        }
-        private List<string> AssortmentToStrings()
+        protected List<string> AssortmentToString()
         {
             var result = new List<string>();
             foreach (var medicine in assortment)
@@ -298,7 +263,7 @@ namespace NEA.MENU
             try
             {
                 assortment = stock.FilterByID(startRange, endRange);
-                UpdatePages(AssortmentToStrings());
+                UpdatePages(AssortmentToString());
             }
             catch (DomainException e)
             {

@@ -4,36 +4,27 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace NEA.DOMAIN
 {
     internal class SalesAnalyser
     {
-        private struct SaleDate
+        private List<SaleDate> salesHistory;
+        public SalesAnalyser(List<SaleDate> salesHistory) 
         {
-            public int amount;
-            public DateTime Date;
-        }
-        List<PurchaseOrder> purchaseOrders;
-        List<StockInspection> inspections;
-        List<SaleDate> salesHistory;
-        public SalesAnalyser(Medicine medicine) 
-        {
-            var stock = new Stock();
-            purchaseOrders = stock.GetPurchaseOrderHistory(medicine);
-            inspections = stock.GetStockInspectionHistory(medicine);
-            salesHistory = CalculateSalesHistory();
+            this.salesHistory = salesHistory; 
         }
         public double CalculateMedian()
         {
-            int[] salesValues = getSalesValues();
-            salesValues = AttributeSorter.MergeSort(salesValues, Order.ASC);
+            int[] salesValues = GetSales();
+            salesValues = MergeSort.MergeSortArray(salesValues, Order.ASC);
             if (salesValues.Length % 2 == 0)
             {
                 int leftMedianIndex = salesValues.Length / 2 - 1;
-                int rightMedianINdex = salesValues.Length / 2;
-                double median = (salesValues[leftMedianIndex] + salesValues[rightMedianINdex]) / 2;
-                return Math.Round(median, 3);
+                int rightMedianIndex = salesValues.Length / 2;
+                double median = (salesValues[leftMedianIndex] + salesValues[rightMedianIndex]) / 2;
+                return Math.Round(median, 1);
                  
             }
             else
@@ -48,7 +39,7 @@ namespace NEA.DOMAIN
         }
         public Dictionary<int,int> CalculateModes() 
         {
-            int[] salesValues = getSalesValues();
+            int[] salesValues = GetSales();
             Dictionary<int,int> salesOccurrences = new Dictionary<int,int>();
             for(int g = 0; g < salesValues.Length; g++)
             {
@@ -67,7 +58,7 @@ namespace NEA.DOMAIN
             }
             if(salesOccurrences.Count == 0)
             {
-                throw new DomainException("There are no values occurrenced more then once");
+                return new Dictionary<int, int>();
             }
             else
             {
@@ -86,13 +77,14 @@ namespace NEA.DOMAIN
         }
         public double CalculateStandartDeviation()
         {
-            return Math.Sqrt(CalculateVariance());
+            double deviation = Math.Sqrt(CalculateVariance());
+            return Math.Round(deviation, 1);
         }
         private double CalculateVariance()
         {
             double mean = CalculateMean();
             double sumOfSquareDistances = 0;
-            int[] salesValues = getSalesValues();
+            int[] salesValues = GetSales();
             foreach (int saleValue in salesValues)
             {
                 double squareDistance = Math.Pow((saleValue - mean), 2);
@@ -103,7 +95,7 @@ namespace NEA.DOMAIN
         }
         private double CalculateMean()
         {
-            int[] salesValues = getSalesValues();
+            int[] salesValues = GetSales();
             int totalSum = 0;
             foreach (int salesValue in salesValues)
             {
@@ -111,38 +103,14 @@ namespace NEA.DOMAIN
             }
             return totalSum / salesValues.Length;
         }
-        private List<SaleDate> CalculateSalesHistory()
+        private int[] GetSales()
         {
-            var result = new List<SaleDate>();
-            foreach(StockInspection inspection in inspections) 
-            {
-                var sale = new SaleDate();
-                sale.Date = inspection.getRecordDate();
-                bool IsFirstPurchaseOrderInThisMonth = true;
-                for(int i = 0; i < purchaseOrders.Count; i++)
-                {
-                    if(inspection.getRecordDate() == purchaseOrders[i].getRecordDate() && IsFirstPurchaseOrderInThisMonth == true)
-                    {
-                        sale.amount = purchaseOrders[i].getAmount() - inspection.getAmount();
-                        IsFirstPurchaseOrderInThisMonth = false;
-                    }
-                    else if(inspection.getRecordDate() == purchaseOrders[i].getRecordDate() && IsFirstPurchaseOrderInThisMonth != true)
-                    {
-                        sale.amount += purchaseOrders[i].getAmount();
-                    }
-                }
-                result.Add(sale);
-            }
-            return result;
-        }
-        private int[] getSalesValues()
-        {
-            int[] saleValues = new int[salesHistory.Count];
+            int[] Sales = new int[salesHistory.Count];
             for (int i = 0; i < salesHistory.Count; i++)
             {
-                saleValues[i] = salesHistory[i].amount;
+                Sales[i] = salesHistory[i].amount;
             }
-            return saleValues;
+            return Sales;
         }
 
     }

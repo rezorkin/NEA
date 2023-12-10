@@ -51,12 +51,15 @@
     <Compile Include="DAO\DAO.cs" />
     <Compile Include="DAO\DAOException.cs" />
     <Compile Include="DAO\IMedicineDAO.cs" />
-    <Compile Include="DAO\IStockInspectionDAO.cs" />
+    <Compile Include="DAO\IMedicineRecordDAO.cs" />
     <Compile Include="DAO\MedicineDAO.cs" />
     <Compile Include="DAO\MedicineRecordDAO.cs" />
     <Compile Include="DAO\PurchaseOrderDAO.cs" />
     <Compile Include="DAO\StockInspectionDAO.cs" />
-    <Compile Include="DOMAIN\AttributeSorter.cs" />
+    <Compile Include="DOMAIN\AccountingAuditor.cs" />
+    <Compile Include="DOMAIN\MedicineStatistics.cs" />
+    <Compile Include="DOMAIN\MergeSort.cs" />
+    <Compile Include="DOMAIN\SaleDate.cs" />
     <Compile Include="DOMAIN\SalesAnalyser.cs" />
     <Compile Include="DOMAIN\SortOption.cs" />
     <Compile Include="DOMAIN\Stock.cs" />

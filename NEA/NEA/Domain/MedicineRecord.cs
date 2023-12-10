@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,24 +11,23 @@ namespace NEA.DOMAIN
     {
         private Medicine medicineInspected;
         private int amount;
-        private DateTime inspectionDate;
+        private DateTime recordDate;
         public MedicineRecord(Medicine medicineInspected, int amount, DateTime recordDate)
         {
             this.medicineInspected = medicineInspected;
             this.amount = amount;
-            this.inspectionDate = recordDate;
+            this.recordDate = recordDate;
         }
         public Medicine getMedicine() { return medicineInspected; }
         public int getAmount() { return amount; }
-        public DateTime getRecordDate() { return inspectionDate; }
+        public DateTime GetRecordDate() { return recordDate; }
         public override bool Equals(object obj)
         {
             return obj is MedicineRecord record &&
                    medicineInspected == record.medicineInspected &&
-                   amount == record.amount &&
-                   inspectionDate.Day == record.inspectionDate.Day &&
-                   inspectionDate.Month == record.inspectionDate.Month &&
-                   inspectionDate.Year == record.inspectionDate.Year;
+                   recordDate.Day == record.recordDate.Day &&
+                   recordDate.Month == record.recordDate.Month &&
+                   recordDate.Year == record.recordDate.Year;
         }
         public static bool operator ==(MedicineRecord left, MedicineRecord right)
         {
@@ -37,14 +37,32 @@ namespace NEA.DOMAIN
         {
             return !left.Equals(right);
         }
+        public static bool operator >(MedicineRecord left, MedicineRecord right)
+        {
+            int i =  left.recordDate.CompareTo(right.recordDate);
+            if(i > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        public static bool operator <(MedicineRecord left, MedicineRecord right)
+        {
+            int i = left.recordDate.CompareTo(right.recordDate);
+            if (i < 0)
+            {
+                return true;
+            }
+            return false;
+        }
         public override string ToString()
         {
-            return $"Medicine ID: {medicineInspected.GetID()}, record date: {inspectionDate.Day}/{inspectionDate.Month}/{inspectionDate.Year}, amount: {amount}";
+            return $"Medicine ID: {medicineInspected.GetID()}, record date: {recordDate.Day}/{recordDate.Month}/{recordDate.Year}, amount: {amount}";
         }
 
         public override int GetHashCode()
         {
-            return medicineInspected.GetHashCode() ^ amount.GetHashCode() ^ inspectionDate.GetHashCode();
+            return medicineInspected.GetHashCode() ^ amount.GetHashCode() ^ recordDate.GetHashCode();
         }
     }
 }

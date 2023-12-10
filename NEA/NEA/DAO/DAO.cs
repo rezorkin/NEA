@@ -24,7 +24,7 @@ namespace NEA.DAO
             path = fileName;
             connectionString = "Data Source= " + path;
         }
-        public string GetConnectionString()
+        protected string GetConnectionString()
         {
             return connectionString;
         }
@@ -39,11 +39,15 @@ namespace NEA.DAO
                 {
                     result.Add(SetValuesFromTableToObjectFields(row));
                 }
+                if(result.Count == 0)
+                {
+                    throw new DAOException("Nothing was found by folowing value" + attributeName);
+                }
                 return result;
             }
             catch(SQLiteException) 
             {
-                throw new DAOException("Nothing was found by folowing value" + attributeName);
+                throw new DAOException("Invalid id value");
             }
         }
         private List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value)
@@ -55,7 +59,7 @@ namespace NEA.DAO
                 connection.Open();
                 using (SQLiteCommand command = new SQLiteCommand(connection))
                 {
-                    command.CommandText = $"SELECT *\r\nFROM {table}\r\nWHERE {attributeName} like \"{value} %\" or {attributeName} like \"% {value} %\" or {attributeName} like \"% {value}\"";
+                    command.CommandText = $"SELECT *\r\nFROM {table}\r\nWHERE {attributeName} like \"{value} %\" or {attributeName} like \"% {value} %\" or {attributeName} like \"% {value}\" or {attributeName} like \"{value}\"";
                     using (SQLiteDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

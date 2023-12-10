@@ -18,6 +18,7 @@ namespace NEA.MENU
         Filter,
         ResetFiltersAndSortings,
         GoToTheMainMenu,
-        GoToTheAssortmentTable
+        GoToTheAssortmentTable,
+        ResetSelection,
     }
 }

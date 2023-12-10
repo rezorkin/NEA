@@ -19,14 +19,14 @@ namespace NEA.MENU
         }
         private static void OpenAssortmentOfMedicine()
         {
-            MedicineTable table = new MedicineTable(4);
+            MedicineTable table = new MedicineTable(4, 28);
             var furtherAction = MenuAction.Default;
             while (furtherAction != MenuAction.GoToTheMainMenu) 
             {
                 Console.Clear();
                 table.OutputPage();
-                table.MakeChoice();
-                furtherAction = RecieveFurtherAction();
+                table.PrintOptions();
+                furtherAction = ReceiveFurtherAction();
                 if(furtherAction == MenuAction.GoToNextPage || furtherAction == MenuAction.GoToPreviousPage)
                 {
                     table.GoToAnotherPage(furtherAction);
@@ -49,8 +49,12 @@ namespace NEA.MENU
                     
                     Console.WriteLine();
                     try
-                    {   
-                      table.SortRows();
+                    {
+                        ConsoleKey[] acceptedKeys = { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4 };
+                        string[] attributes = table.GetAttributes();
+                        string chosenAttribute = ReceiveAttributeFromUser(attributes, acceptedKeys);
+                        Order order = ReceiveSortOrderFromUser();
+                        table.SortRows(chosenAttribute, order);
                     }
                     catch (MenuException)
                     {
@@ -65,7 +69,10 @@ namespace NEA.MENU
                     Console.WriteLine();
                     try
                     {
-                        table.FilterRows();
+                        ConsoleKey[] acceptedKeys = { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4 };
+                        string[] attributes = table.GetAttributes();
+                        string chosenAttribute = ReceiveAttributeFromUser(attributes, acceptedKeys);
+                        table.FilterRows(chosenAttribute);
                     }
                     catch (MenuException e)
                     {
@@ -77,7 +84,11 @@ namespace NEA.MENU
                 }
                 else if(furtherAction == MenuAction.ResetFiltersAndSortings)
                 {
-                    table.ResetFiltersAndSortings();
+                    table.ResetToInitialTable();
+                }
+                else if(furtherAction == MenuAction.ResetSelection)
+                {
+                    table.ResetSelection();
                 }
                 else if(furtherAction == MenuAction.GoToAnalysisTable)
                 {
@@ -91,9 +102,76 @@ namespace NEA.MENU
         }
         private static void OpenAnalysisTable(List<Medicine> sample)
         {
-            AnalysisTable table = new AnalysisTable(10, sample);
+            AnalysisTable table = new AnalysisTable(10, 9, sample);
+            var furtherAction = MenuAction.Default;
+            while (furtherAction != MenuAction.GoToTheAssortmentTable)
+            {
+                Console.Clear();
+                table.OutputPage();
+                table.PrintOptions();
+                furtherAction = ReceiveFurtherAction();
+                if (furtherAction == MenuAction.GoToNextPage || furtherAction == MenuAction.GoToPreviousPage)
+                {
+                    table.GoToAnotherPage(furtherAction);
+                }
+                else if (furtherAction == MenuAction.Select)
+                {
+                    try
+                    {
+                        table.Select();
+                    }
+                    catch (MenuException ex)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine(ex.Message);
+                        Console.ReadKey();
+                    }
+                }
+                else if (furtherAction == MenuAction.Sort)
+                {
+
+                    Console.WriteLine();
+                    try
+                    {
+                        ConsoleKey[] acceptedKeys = { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6 };
+                        string[] attributes = table.GetAttributes();
+                        string chosenAttribute = ReceiveAttributeFromUser(attributes, acceptedKeys);
+                        Order order = ReceiveSortOrderFromUser();
+                        table.SortRows(chosenAttribute, order);
+                    }
+                    catch (MenuException)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Pressed key is invalid, try again");
+                        Console.ReadKey();
+
+                    }
+                }
+                else if (furtherAction == MenuAction.Filter)
+                {
+                    Console.WriteLine();
+                    try
+                    {
+                        ConsoleKey[] acceptedKeys = { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4 };
+                        string[] attributes = table.GetAttributes();
+                        string chosenAttribute = ReceiveAttributeFromUser(attributes, acceptedKeys);
+                        table.FilterRows(chosenAttribute);
+                    }
+                    catch (MenuException e)
+                    {
+
+                        Console.WriteLine(e.Message + "Try again");
+                        Console.ReadKey();
+
+                    }
+                }
+                else if (furtherAction == MenuAction.ResetFiltersAndSortings)
+                {
+                    table.ResetToInitialTable();
+                }
+            }
         }
-        private static MenuAction RecieveFurtherAction()
+        private static MenuAction ReceiveFurtherAction()
         {
             ConsoleKey key = Console.ReadKey(true).Key;
             if (key == ConsoleKey.RightArrow)
@@ -124,12 +202,49 @@ namespace NEA.MENU
             {
                 return MenuAction.Select;
             }
-            else if(key == ConsoleKey.A)
+            else if(key == ConsoleKey.Backspace)
             {
-                return MenuAction.GoToAnalysisTable;
+                return MenuAction.GoToTheAssortmentTable;
+            }
+            else if(key == ConsoleKey.V)
+            {
+                return MenuAction.ResetSelection;
             }
             else
                 return MenuAction.Default;
+        }
+        private static string ReceiveAttributeFromUser(string[] attributes, ConsoleKey[] acceptedKeys)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Choose attribute by pressing:");
+            for (int i = 0; i < attributes.Length; i++)
+            {
+                Console.Write($"'{i + 1}' for {attributes[i]} ");
+            }
+            var pressedKey = Console.ReadKey(true).Key;
+            for (int i = 0; i < acceptedKeys.Length; i++)
+            {
+                if (pressedKey == acceptedKeys[i])
+                {
+                    return attributes[i];
+                }
+            }
+            throw new MenuException();
+        }
+        private static Order ReceiveSortOrderFromUser()
+        {
+            Console.WriteLine("Press 'A' for ascending order and 'D' for descending");
+            var pressedKey = Console.ReadKey(true).Key;
+            if (pressedKey == ConsoleKey.A)
+            {
+                return Order.ASC;
+            }
+            else if (pressedKey == ConsoleKey.D)
+            {
+                return Order.DESC;
+            }
+            else
+                throw new MenuException();
         }
     }
 }

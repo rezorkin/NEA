@@ -10,16 +10,16 @@ namespace NEA.MENU
     {
         string[] attributes;
         string[] rows;
-        string spacesToDivider = "                            ";
-        public Page(string[] rows)
-        {
-            this.rows = rows;
-
-        }
-        public Page(string[] attributes, string[] rows) 
+        string spacesToDivider;
+        public Page(string[] attributes, string[] rows,int amountOfSpacesToDivider) 
         {
             this.attributes = attributes;
+            spacesToDivider = "";
             this.rows = rows;
+            for (int i = 0; i < amountOfSpacesToDivider; i++)
+            {
+                spacesToDivider += " ";
+            }
         }
         public void DisplayPage()
         {
@@ -50,14 +50,23 @@ namespace NEA.MENU
             for (int i = 0; i < attributes.Length; i++)
             {
                 
-                int lengthOfAttributeString = attributes[i].Length + spacesToDivider.Length;
-                int amountOfValueSpaces = lengthOfAttributeString - values[i].Length;
-                string valueSpacesBeforeDivider = "";
-                for(int g = 0; g < amountOfValueSpaces; g++)
+                int lengthOfAttributeFieldSpace = attributes[i].Length + spacesToDivider.Length;
+                int amountOfValueSpaces = lengthOfAttributeFieldSpace - values[i].Length;
+                if (amountOfValueSpaces >= 0)
                 {
-                    valueSpacesBeforeDivider += " ";
+                    string valueSpacesBeforeDivider = "";
+                    for (int g = 0; g < amountOfValueSpaces; g++)
+                    {
+                        valueSpacesBeforeDivider += " ";
+                    }
+                    result += " " + values[i] + valueSpacesBeforeDivider + "|";
                 }
-                result += " " + values[i] + valueSpacesBeforeDivider + "|";
+                else
+                {
+                    int lengthOfAbbrevation = values[i].Length + (amountOfValueSpaces - 3);
+                    string valueAbbrevation = values[i].Substring(0, lengthOfAbbrevation);
+                    result += " " + valueAbbrevation + "..."  + "|";
+                }
             }
             return result;
         }
