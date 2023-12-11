@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace NEA.DOMAIN
 {
-    internal class StockInspection : MedicineRecord
+    internal class StockInspection : Record
     {
         public StockInspection(Medicine medicineInspected, int amountLeft, DateTime inspectionDate) : base(medicineInspected, amountLeft, inspectionDate)
         {

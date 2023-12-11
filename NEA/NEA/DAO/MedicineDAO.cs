@@ -74,7 +74,7 @@ namespace NEA.DAO
             {
                 List<Medicine> result = new List<Medicine>();
                 List<NameValueCollection> undecodedResultSet = new List<NameValueCollection>();
-                using (SQLiteConnection connection = new SQLiteConnection(GetConnectionString() + "Version=3;New=False;Compress=True;Read Only=true"))
+                using (SQLiteConnection connection = new SQLiteConnection(DAOConnecter.GetConnectionString()))
                 {
                     connection.Open();
                     using (SQLiteCommand command = new SQLiteCommand(connection))

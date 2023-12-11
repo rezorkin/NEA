@@ -10,22 +10,125 @@ namespace NEA.MENU
 {
     static internal class Menu
     {
+
         public static void Start()
         {
-
-            OpenAssortmentOfMedicine();
-            Console.ReadKey();
-
-        }
-        private static void OpenAssortmentOfMedicine()
-        {
-            MedicineTable table = new MedicineTable(4, 28);
+            MainMenuTable table = new MainMenuTable(ConsoleColor.White);
             var furtherAction = MenuAction.Default;
-            while (furtherAction != MenuAction.GoToTheMainMenu) 
+            while(furtherAction != MenuAction.Exit)
             {
                 Console.Clear();
                 table.OutputPage();
-                table.PrintOptions();
+                furtherAction = ReceiveInitialAction();
+                if(furtherAction == MenuAction.GoToAssortmentTable)
+                {
+                    OpenAssortmentOfMedicine(table.numberOfItemsPerPage, table.defaultFontColour, table.roundingLength);
+                }
+                else if(furtherAction == MenuAction.GoToSettings)
+                {
+                    table = OpenSettings(table);
+                }
+                else if(furtherAction == MenuAction.GoToDataBaseSettings)
+                {
+                    table = OpenDBSettings(table);
+                }
+
+            }
+            Console.ReadKey();
+
+        }
+        private static MainMenuTable OpenDBSettings(MainMenuTable menu)
+        {
+            DatabaseSettingsTable table = new DatabaseSettingsTable(menu, menu.defaultFontColour);
+            ConsoleKey key = new ConsoleKey();
+            while (key != ConsoleKey.D3)
+            {
+                Console.Clear();
+                table.OutputPage();
+                key = Console.ReadKey(true).Key;
+                if (key == ConsoleKey.D1)
+                {
+                    try
+                    {
+                        table.ConnectToPracticeDB();
+                    }
+                    catch (MenuException e)
+                    {
+                        Console.WriteLine(e.Message + ". Try again");
+                        Console.ReadKey();
+                    }
+                }
+                else if (key == ConsoleKey.D2)
+                {
+                    try
+                    {
+                        table.ConnectCreateLocalDB();
+                    }
+                    catch (MenuException e)
+                    {
+                        Console.WriteLine(e.Message + ". Try again");
+                        Console.ReadKey();
+                    }
+                }
+            }
+            return table.GetSettedMenu;
+        }
+        private static MainMenuTable OpenSettings(MainMenuTable menu)
+        {
+            ProgramSettingsTable table = new ProgramSettingsTable(menu, menu.defaultFontColour);
+            ConsoleKey key = new ConsoleKey();
+            while (key != ConsoleKey.D4)
+            {
+                Console.Clear();
+                table.OutputPage();
+                key = Console.ReadKey(true).Key;
+                if(key == ConsoleKey.D1)
+                {
+                    try
+                    {
+                        table.ChangeRoundLength();
+                    }
+                    catch(MenuException e) 
+                    {
+                        Console.WriteLine(e.Message+ ". Try again");
+                        Console.ReadKey();
+                    }
+                }
+                else if(key == ConsoleKey.D2)
+                {
+                    try
+                    {
+                        table.ChangeItemsPerPage();
+                    }
+                    catch (MenuException e)
+                    {
+                        Console.WriteLine(e.Message + ". Try again");
+                        Console.ReadKey();
+                    }
+                }
+                else if (key == ConsoleKey.D3)
+                {
+                    try
+                    {
+                        table.ChangeTheme();
+                    }
+                    catch (MenuException e)
+                    {
+                        Console.WriteLine(e.Message + ". Try again");
+                        Console.ReadKey();
+                    }
+                }
+            }
+            return table.GetSettedMenu;
+        }
+        private static void OpenAssortmentOfMedicine(int pageLength, ConsoleColor defaultFontColour, int roundingLength)
+        {
+            AssortmentTable table = new AssortmentTable(pageLength, 28, defaultFontColour);
+            var furtherAction = MenuAction.Default;
+            while (furtherAction != MenuAction.GoToMainMenu) 
+            {
+                Console.Clear();
+                table.OutputPage();
                 furtherAction = ReceiveFurtherAction();
                 if(furtherAction == MenuAction.GoToNextPage || furtherAction == MenuAction.GoToPreviousPage)
                 {
@@ -95,20 +198,19 @@ namespace NEA.MENU
                     List<Medicine> sample = table.GetSample();
                     if(sample.Count > 0)
                     {
-                        OpenAnalysisTable(sample);
+                        OpenAnalysisTable(sample, pageLength, defaultFontColour, roundingLength);
                     }
                 }
             }
         }
-        private static void OpenAnalysisTable(List<Medicine> sample)
+        private static void OpenAnalysisTable(List<Medicine> sample, int pageLength, ConsoleColor defaultConsoleColour, int roundingLength)
         {
-            AnalysisTable table = new AnalysisTable(10, 9, sample);
+            AnalysisTable table = new AnalysisTable(pageLength, 9, defaultConsoleColour,sample, roundingLength);
             var furtherAction = MenuAction.Default;
-            while (furtherAction != MenuAction.GoToTheAssortmentTable)
+            while (furtherAction != MenuAction.GoToAssortmentTable)
             {
                 Console.Clear();
                 table.OutputPage();
-                table.PrintOptions();
                 furtherAction = ReceiveFurtherAction();
                 if (furtherAction == MenuAction.GoToNextPage || furtherAction == MenuAction.GoToPreviousPage)
                 {
@@ -134,6 +236,7 @@ namespace NEA.MENU
                     try
                     {
                         ConsoleKey[] acceptedKeys = { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4, ConsoleKey.D5, ConsoleKey.D6 };
+                        Console.WriteLine();
                         string[] attributes = table.GetAttributes();
                         string chosenAttribute = ReceiveAttributeFromUser(attributes, acceptedKeys);
                         Order order = ReceiveSortOrderFromUser();
@@ -152,15 +255,12 @@ namespace NEA.MENU
                     Console.WriteLine();
                     try
                     {
-                        ConsoleKey[] acceptedKeys = { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4 };
-                        string[] attributes = table.GetAttributes();
-                        string chosenAttribute = ReceiveAttributeFromUser(attributes, acceptedKeys);
-                        table.FilterRows(chosenAttribute);
+                        table.ApplyDateBoundaries();
                     }
                     catch (MenuException e)
                     {
 
-                        Console.WriteLine(e.Message + "Try again");
+                        Console.WriteLine(e.Message);
                         Console.ReadKey();
 
                     }
@@ -169,6 +269,30 @@ namespace NEA.MENU
                 {
                     table.ResetToInitialTable();
                 }
+            }
+        }
+        private static MenuAction ReceiveInitialAction()
+        {
+            ConsoleKey key = Console.ReadKey(true).Key;
+            if (key == ConsoleKey.D1)
+            {
+                return MenuAction.GoToAssortmentTable;
+            }
+            else if (key == ConsoleKey.D2)
+            {
+                return MenuAction.GoToDataBaseSettings;
+            }
+            else if (key == ConsoleKey.D3)
+            {
+                return MenuAction.GoToSettings;
+            }
+            else if (key == ConsoleKey.D4)
+            {
+                return MenuAction.Exit;
+            }
+            else 
+            {
+                return MenuAction.Default;
             }
         }
         private static MenuAction ReceiveFurtherAction()
@@ -204,11 +328,15 @@ namespace NEA.MENU
             }
             else if(key == ConsoleKey.Backspace)
             {
-                return MenuAction.GoToTheAssortmentTable;
+                return MenuAction.GoToAssortmentTable;
             }
             else if(key == ConsoleKey.V)
             {
                 return MenuAction.ResetSelection;
+            }
+            else if(key == ConsoleKey.E)
+            {
+                return MenuAction.GoToMainMenu;
             }
             else
                 return MenuAction.Default;
@@ -229,7 +357,7 @@ namespace NEA.MENU
                     return attributes[i];
                 }
             }
-            throw new MenuException();
+            throw new MenuException("Wrong key was pressed");
         }
         private static Order ReceiveSortOrderFromUser()
         {
@@ -244,7 +372,7 @@ namespace NEA.MENU
                 return Order.DESC;
             }
             else
-                throw new MenuException();
+                throw new MenuException("Wrong key was pressed");
         }
     }
 }

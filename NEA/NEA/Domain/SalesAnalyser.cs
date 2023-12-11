@@ -10,10 +10,10 @@ namespace NEA.DOMAIN
 {
     internal class SalesAnalyser
     {
-        private List<SaleDate> salesHistory;
-        public SalesAnalyser(List<SaleDate> salesHistory) 
+        private List<SaleRecord> salesHistory;
+        public SalesAnalyser(List<SaleRecord> salesHistory) 
         {
-            this.salesHistory = salesHistory; 
+            this.salesHistory = salesHistory;
         }
         public double CalculateMedian()
         {
@@ -24,7 +24,7 @@ namespace NEA.DOMAIN
                 int leftMedianIndex = salesValues.Length / 2 - 1;
                 int rightMedianIndex = salesValues.Length / 2;
                 double median = (salesValues[leftMedianIndex] + salesValues[rightMedianIndex]) / 2;
-                return Math.Round(median, 1);
+                return median;
                  
             }
             else
@@ -33,9 +33,15 @@ namespace NEA.DOMAIN
                 return (salesValues[medianIndex]);
             }
         }
-        public double getMeanTo1dp()
+        public double CalculateMean()
         {
-            return Math.Round(CalculateMean(),1);
+            int[] salesValues = GetSales();
+            int totalSum = 0;
+            foreach (int salesValue in salesValues)
+            {
+                totalSum += salesValue;
+            }
+            return totalSum / salesValues.Length; ;
         }
         public Dictionary<int,int> CalculateModes() 
         {
@@ -77,10 +83,15 @@ namespace NEA.DOMAIN
         }
         public double CalculateStandartDeviation()
         {
-            double deviation = Math.Sqrt(CalculateVariance());
-            return Math.Round(deviation, 1);
+            double deviation = Math.Sqrt(CalculateVariance(false));
+            return deviation;
         }
-        private double CalculateVariance()
+        public double CalculateSampleDeviation()
+        {
+            double deviation = Math.Sqrt(CalculateVariance(true));
+            return deviation;
+        }
+        private double CalculateVariance(bool isSampleVariance)
         {
             double mean = CalculateMean();
             double sumOfSquareDistances = 0;
@@ -90,25 +101,24 @@ namespace NEA.DOMAIN
                 double squareDistance = Math.Pow((saleValue - mean), 2);
                 sumOfSquareDistances += squareDistance;
             }
-            double variance = sumOfSquareDistances / salesValues.Length;
-            return variance;
-        }
-        private double CalculateMean()
-        {
-            int[] salesValues = GetSales();
-            int totalSum = 0;
-            foreach (int salesValue in salesValues)
+            if(isSampleVariance == false)
             {
-                totalSum += salesValue;
+                double variance = sumOfSquareDistances / salesValues.Length;
+                return variance;
             }
-            return totalSum / salesValues.Length;
+            else
+            {
+                double variance = sumOfSquareDistances / (salesValues.Length - 1);
+                return variance;
+            }
+            
         }
         private int[] GetSales()
         {
             int[] Sales = new int[salesHistory.Count];
             for (int i = 0; i < salesHistory.Count; i++)
             {
-                Sales[i] = salesHistory[i].amount;
+                Sales[i] = salesHistory[i].getAmount();
             }
             return Sales;
         }

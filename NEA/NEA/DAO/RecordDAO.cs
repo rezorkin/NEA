@@ -8,11 +8,11 @@ using NEA.DOMAIN;
 
 namespace NEA.DAO
 {
-    internal abstract class MedicineRecordDAO<T> : DAO<T>, IMedicineRecordDAO<T> where T : MedicineRecord
+    internal abstract class RecordDAO<T> : DAO<T>, IRecordDAO<T> where T : Record
     {
         protected readonly string tableName;
         protected abstract string setTableName();
-        public MedicineRecordDAO() : base() 
+        public RecordDAO() : base() 
         {
             tableName = setTableName();
         }
@@ -36,6 +36,10 @@ namespace NEA.DAO
         public List<T> GetRecordHistory(Medicine selectedMedicine)
         {
             return FindByAttributeValue(tableName, "MedicineID", selectedMedicine.GetID().ToString());
+        }
+        public List<T> GetRecordHistory(Medicine selectedMedicine, Order order)
+        {
+            return FindByAttributeValue(tableName, "MedicineID", selectedMedicine.GetID().ToString(), "Date", order);
         }
 
         protected abstract override T SetValuesFromTableToObjectFields(NameValueCollection row);     

@@ -26,9 +26,9 @@ namespace NEA.DOMAIN
                 List<Medicine> allMedicines = medicineDAO.GetAll();
                 return allMedicines;
             }
-            catch (DAOException e)
+            catch (DAOException)
             {
-                throw new DomainException(e.Message);
+                return new List<Medicine>();
             }
         }
         public List<Medicine> Sort(SortOption attribute, Order order, List<Medicine> sample)

@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 
 namespace NEA.DAO
 {
-    internal class PurchaseOrderDAO : MedicineRecordDAO<PurchaseOrder>
+    internal class PurchaseOrderDAO : RecordDAO<PurchaseOrder>
     {
         public PurchaseOrderDAO() : base()
         { }

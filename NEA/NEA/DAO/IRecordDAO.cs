@@ -8,7 +8,7 @@ using NEA.DOMAIN;
 
 namespace NEA.DAO
 {
-    internal interface IMedicineRecordDAO<T> where T : MedicineRecord
+    internal interface IRecordDAO<T> where T : Record
     {
        List<T> GetRecordHistory(Medicine selectedMedicine);
        List<T> GetRecordHistory(int medicineID);

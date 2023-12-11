@@ -405,8 +405,8 @@ namespace NEA.DOMAIN
             {
                 if (leftIndex < leftPart.Count && rightIndex < rightPart.Count)
                 {
-                    string leftName = leftPart[leftIndex].name;
-                    string rightName = rightPart[rightIndex].name;
+                    string leftName = leftPart[leftIndex].GetName();
+                    string rightName = rightPart[rightIndex].GetName();
                     int stringComparison = string.Compare(leftName, rightName);
                     if (order == Order.DESC)
                     {
@@ -456,8 +456,8 @@ namespace NEA.DOMAIN
             {
                 if (leftIndex < leftPart.Count && rightIndex < rightPart.Count)
                 {
-                    double leftMean = leftPart[leftIndex].mean;
-                    double rightMean = rightPart[rightIndex].mean;
+                    double leftMean = leftPart[leftIndex].GetMean();
+                    double rightMean = rightPart[rightIndex].GetMean();
                     if (order == Order.DESC)
                     {
                         if (leftMean >= rightMean)
@@ -511,8 +511,8 @@ namespace NEA.DOMAIN
             {
                 if (leftIndex < leftPart.Count && rightIndex < rightPart.Count)
                 {
-                    double leftMedian = leftPart[leftIndex].median;
-                    double rightMedian = rightPart[rightIndex].median;
+                    double leftMedian = leftPart[leftIndex].GetMedian();
+                    double rightMedian = rightPart[rightIndex].GetMedian();
                     if (order == Order.DESC)
                     {
                         if (leftMedian >= rightMedian)
@@ -566,8 +566,8 @@ namespace NEA.DOMAIN
             {
                 if (leftIndex < leftPart.Count && rightIndex < rightPart.Count)
                 {
-                    double leftDeviation = leftPart[leftIndex].standrardDeviation;
-                    double rightDeviation = rightPart[rightIndex].standrardDeviation;
+                    double leftDeviation = leftPart[leftIndex].GetStandrardDeviation();
+                    double rightDeviation = rightPart[rightIndex].GetStandrardDeviation();
                     if (order == Order.DESC)
                     {
                         if (leftDeviation >= rightDeviation)
@@ -621,8 +621,8 @@ namespace NEA.DOMAIN
             {
                 if (leftIndex < leftPart.Count && rightIndex < rightPart.Count)
                 {
-                    Dictionary<int,int> leftModes = leftPart[leftIndex].modes;
-                    Dictionary<int,int> rightModes = rightPart[rightIndex].modes;
+                    Dictionary<int,int> leftModes = leftPart[leftIndex].GetModes();
+                    Dictionary<int,int> rightModes = rightPart[rightIndex].GetModes();
                     int leftMaxMode, rightMaxMode;
                     if (leftModes.Count == 0)
                     {
@@ -743,7 +743,7 @@ namespace NEA.DOMAIN
                 {
                     if (order == Order.DESC)
                     {
-                        if (leftPart[leftIndex].id >= rightPart[rightIndex].id)
+                        if (leftPart[leftIndex].GetID() >= rightPart[rightIndex].GetID())
                         {
                             result.Add(leftPart[leftIndex]);
                             leftIndex++;
@@ -756,7 +756,7 @@ namespace NEA.DOMAIN
                     }
                     else
                     {
-                        if (leftPart[leftIndex].id <= rightPart[rightIndex].id)
+                        if (leftPart[leftIndex].GetID() <= rightPart[rightIndex].GetID())
                         {
                             result.Add(leftPart[leftIndex]);
                             leftIndex++;

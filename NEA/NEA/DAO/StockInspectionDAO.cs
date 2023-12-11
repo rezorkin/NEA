@@ -9,7 +9,7 @@ using NEA.DOMAIN;
 
 namespace NEA.DAO
 {
-    internal class StockInspectionDAO : MedicineRecordDAO<StockInspection>
+    internal class StockInspectionDAO : RecordDAO<StockInspection>
     {
         public StockInspectionDAO() : base()
         {}

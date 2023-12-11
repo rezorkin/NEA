@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NEA.DOMAIN
 {
-    internal class PurchaseOrder : MedicineRecord
+    internal class PurchaseOrder : Record
     {
         public PurchaseOrder(Medicine purchasedMedicine, int purchasedAmount, DateTime purchasedDate) 
             : base(purchasedMedicine, purchasedAmount, purchasedDate){ }
