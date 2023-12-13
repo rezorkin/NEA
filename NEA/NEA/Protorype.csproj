@@ -76,7 +76,7 @@
     <Compile Include="MENU\Menu.cs" />
     <Compile Include="MENU\MenuAction.cs" />
     <Compile Include="MENU\MenuException.cs" />
-    <Compile Include="DOMAIN\Order.cs" />
+    <Compile Include="DOMAIN\OrderBy.cs" />
     <Compile Include="MENU\Page.cs" />
     <Compile Include="MENU\AnalysisTable.cs" />
     <Compile Include="MENU\MedicineTable.cs" />

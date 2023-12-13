@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NEA.DOMAIN;
 using System.Collections.Specialized;
+using System.Data.SQLite;
 
 namespace NEA.DAO
 {
@@ -17,14 +18,15 @@ namespace NEA.DAO
         {
             return "PurchaseOrders";
         }
-        protected override PurchaseOrder SetValuesFromTableToObjectFields(NameValueCollection row)
+        protected override PurchaseOrder MapDBRowToItemFields(NameValueCollection row)
         {
             DateTime dateOfInspection = ConvertStringToDate(row["Date"]);
             int amountOfMedicine = int.Parse(row["Amount"]);
             int inspectedMedicineID = int.Parse(row["MedicineID"]);
+            int orderNumber = int.Parse(row["OrderNumber"]);
             Medicine inspectedMedicine = new MedicineDAO().FindByID(inspectedMedicineID);
 
-            return new PurchaseOrder(inspectedMedicine, amountOfMedicine, dateOfInspection);
+            return new PurchaseOrder(orderNumber,inspectedMedicine, amountOfMedicine, dateOfInspection);
         }
     }
 }

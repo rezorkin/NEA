@@ -217,7 +217,7 @@ namespace NEA.MENU
         {
             selectedMedicines = new List<Medicine>();
         }
-        public override void SortRows(string attribute, Order order)
+        public override void SortRows(string attribute, OrderBy order)
         {
             Console.WriteLine();
             if (attribute == attributes[0])

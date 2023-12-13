@@ -15,7 +15,7 @@ namespace NEA.DOMAIN
         }
         public override string ToString()
         {
-            return $"Medicine ID: {getMedicine().GetID()}, last inspection date: {GetRecordDate()}, amount in the stock: {getAmount()}";
+            return $"Medicine ID: {GetMedicine().GetID()}, last inspection date: {GetRecordDate()}, amount in the stock: {GetAmount()}";
         }
     }
 }

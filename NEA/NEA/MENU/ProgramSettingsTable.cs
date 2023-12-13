@@ -49,7 +49,7 @@ namespace NEA.MENU
             {
                 throw new MenuException("Inappropriate key");
             }
-            menuTable =  new MainMenuTable(menuTable.isConnectedToPracticeDatabase, menuTable.numberOfItemsPerPage, roundingLength, menuTable.defaultFontColour);
+            menuTable =  new MainMenuTable(menuTable.numberOfItemsPerPage, roundingLength, menuTable.defaultFontColour);
         }
         public void ChangeTheme()
         {
@@ -60,13 +60,13 @@ namespace NEA.MENU
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.White;
-                menuTable = new MainMenuTable(menuTable.isConnectedToPracticeDatabase, menuTable.numberOfItemsPerPage, menuTable.roundingLength, ConsoleColor.White);
+                menuTable = new MainMenuTable(menuTable.numberOfItemsPerPage, menuTable.roundingLength, ConsoleColor.White);
             }
             else if (key == ConsoleKey.D2)
             {
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Black;
-                menuTable = new MainMenuTable(menuTable.isConnectedToPracticeDatabase, menuTable.numberOfItemsPerPage, menuTable.roundingLength, ConsoleColor.Black);
+                menuTable = new MainMenuTable(menuTable.numberOfItemsPerPage, menuTable.roundingLength, ConsoleColor.Black);
             }
             else
             {
@@ -95,7 +95,7 @@ namespace NEA.MENU
             {
                 throw new MenuException("Inappropriate key");
             }
-            menuTable = new MainMenuTable(menuTable.isConnectedToPracticeDatabase, pageLength, menuTable.roundingLength, menuTable.defaultFontColour);
+            menuTable = new MainMenuTable(pageLength, menuTable.roundingLength, menuTable.defaultFontColour);
         }
     }
 }

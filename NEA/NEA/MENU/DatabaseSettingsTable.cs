@@ -23,11 +23,21 @@ namespace NEA.MENU
             Console.WriteLine("Press 1 to connect to the practice database");
             Console.WriteLine("Press 2 to connect to the local database");
             Console.WriteLine("Press 3 to get back to the main menu");
+            Console.WriteLine();
+            string database;
+            if (finder.IsConnectedToPracticeDB() == true)
+            {
+                database = "practice database";
+            }
+            else
+            {
+                database = "local database";
+            }
+            Console.WriteLine("Currently connected to: " + database);
         }
         public void ConnectToPracticeDB()
         {
             finder.RunPracticeDB();
-            menuTable = new MainMenuTable(finder.IsConnectedToPracticeDB(), menuTable.numberOfItemsPerPage, menuTable.numberOfItemsPerPage, menuTable.defaultFontColour);
             Console.WriteLine();
             Console.WriteLine("Successfully connected to practice database. Press any key to move on");
             Console.ReadKey();
@@ -38,7 +48,6 @@ namespace NEA.MENU
             try 
             {
                 finder.RunLocalDB();
-                menuTable = new MainMenuTable(finder.IsConnectedToPracticeDB(), menuTable.numberOfItemsPerPage, menuTable.numberOfItemsPerPage, menuTable.defaultFontColour);
                 Console.WriteLine("Successfully connected to local database. Press any key to move on");
                 Console.ReadKey();
             }
@@ -49,7 +58,6 @@ namespace NEA.MENU
                 if(key == ConsoleKey.C) 
                 {
                     finder.CreateLocalDB();
-                    menuTable = new MainMenuTable(finder.IsConnectedToPracticeDB(), menuTable.numberOfItemsPerPage, menuTable.numberOfItemsPerPage, menuTable.defaultFontColour);
                     Console.WriteLine("Successfully created local database. Press any key to move on");
                     Console.ReadKey();
                 }

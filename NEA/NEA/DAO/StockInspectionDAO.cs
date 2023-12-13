@@ -17,7 +17,7 @@ namespace NEA.DAO
         {
             return "WarehouseInspections";
         }
-        protected override StockInspection SetValuesFromTableToObjectFields(NameValueCollection row)
+        protected override StockInspection MapDBRowToItemFields(NameValueCollection row)
         {
             DateTime dateOfInspection = ConvertStringToDate(row["Date"]);
             int amountOfMedicine = int.Parse(row["Amount"]);

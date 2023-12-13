@@ -22,7 +22,7 @@ namespace NEA.MENU
             this.spacesToDivider = spacesToDivider;
         }
         protected abstract override void PrintOptions();
-        public abstract void SortRows(string attribute, Order order);
+        public abstract void SortRows(string attribute, OrderBy order);
         public abstract void Select();
         public abstract void ResetToInitialTable();
 
@@ -37,6 +37,10 @@ namespace NEA.MENU
         }
         public override void OutputPage()
         { 
+            if(currentPageIndex >= pages.Count) 
+            {
+                currentPageIndex = 0;
+            }
             pages[currentPageIndex].DisplayPage();
             Console.WriteLine();
             Console.Write($"Current page: {currentPageIndex+1}                                       Pages:");

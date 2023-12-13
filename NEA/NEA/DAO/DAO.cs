@@ -1,4 +1,5 @@
 ﻿using NEA.DOMAIN;
+using NEA.MENU;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -13,12 +14,8 @@ namespace NEA.DAO
 {
     internal abstract class DAO<T> 
     {
- 
-        public DAO()
-        {
-        }
- 
-        protected abstract T SetValuesFromTableToObjectFields(NameValueCollection row);
+        protected abstract T MapDBRowToItemFields(NameValueCollection row);
+
         protected List<T> FindByAttributeValue(string tableName, string attributeName, string attributeValue)
         {
             try
@@ -27,7 +24,7 @@ namespace NEA.DAO
                 List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName, attributeName, attributeValue);
                 foreach (NameValueCollection row in undecodedResultSet)
                 {
-                    result.Add(SetValuesFromTableToObjectFields(row));
+                    result.Add(MapDBRowToItemFields(row));
                 }
                 if(result.Count == 0)
                 {
@@ -40,7 +37,7 @@ namespace NEA.DAO
                 throw new DAOException("Invalid id value");
             }
         }
-        protected List<T> FindByAttributeValue(string tableName, string attributeName, string attributeValue, string orderByAttribute, Order order)
+        protected List<T> FindByAttributeValue(string tableName, string attributeName, string attributeValue, string orderByAttribute, OrderBy order)
         {
             try
             {
@@ -48,7 +45,7 @@ namespace NEA.DAO
                 List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName, attributeName, attributeValue, orderByAttribute, order);
                 foreach (NameValueCollection row in undecodedResultSet)
                 {
-                    result.Add(SetValuesFromTableToObjectFields(row));
+                    result.Add(MapDBRowToItemFields(row));
                 }
                 if (result.Count == 0)
                 {
@@ -85,7 +82,7 @@ namespace NEA.DAO
 
             return result;
         }
-        private List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value, string orderByAttribute, Order order)
+        private List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value, string orderByAttribute, OrderBy order)
         {
             List<NameValueCollection> result = new List<NameValueCollection>();
 

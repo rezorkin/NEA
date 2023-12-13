@@ -17,7 +17,7 @@ namespace NEA.DOMAIN
         }
         public int GetBiggestID()
         {
-            return medicineDAO.GetSortedByID(Order.ASC).Last().GetID();
+            return medicineDAO.GetSortedByID(OrderBy.ASC).Last().GetID();
         }
         public List<Medicine> GetAssortment() 
         {
@@ -31,7 +31,7 @@ namespace NEA.DOMAIN
                 return new List<Medicine>();
             }
         }
-        public List<Medicine> Sort(SortOption attribute, Order order, List<Medicine> sample)
+        public List<Medicine> Sort(SortOption attribute, OrderBy order, List<Medicine> sample)
         {
             if (sample.Count < GetAssortment().Count)
             {
@@ -40,7 +40,7 @@ namespace NEA.DOMAIN
             else
                 return SortedAssortment(attribute, order);
         }
-        private List<Medicine> SortedAssortment(SortOption attribute, Order order) 
+        private List<Medicine> SortedAssortment(SortOption attribute, OrderBy order) 
         {
             if (attribute == SortOption.ID)
                 return medicineDAO.GetSortedByID(order);
@@ -53,7 +53,7 @@ namespace NEA.DOMAIN
             else
                 throw new DomainException("Invalid sort option");
         }
-        private List<Medicine> SortedSample(SortOption attribute, Order order, List<Medicine> sample)
+        private List<Medicine> SortedSample(SortOption attribute, OrderBy order, List<Medicine> sample)
         {
             if (attribute == SortOption.ID)
                 return MergeSort.MergeSortByID(sample, order);

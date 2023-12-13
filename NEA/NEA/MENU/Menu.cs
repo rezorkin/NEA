@@ -156,7 +156,7 @@ namespace NEA.MENU
                         ConsoleKey[] acceptedKeys = { ConsoleKey.D1, ConsoleKey.D2, ConsoleKey.D3, ConsoleKey.D4 };
                         string[] attributes = table.GetAttributes();
                         string chosenAttribute = ReceiveAttributeFromUser(attributes, acceptedKeys);
-                        Order order = ReceiveSortOrderFromUser();
+                        OrderBy order = ReceiveSortOrderFromUser();
                         table.SortRows(chosenAttribute, order);
                     }
                     catch (MenuException)
@@ -239,7 +239,7 @@ namespace NEA.MENU
                         Console.WriteLine();
                         string[] attributes = table.GetAttributes();
                         string chosenAttribute = ReceiveAttributeFromUser(attributes, acceptedKeys);
-                        Order order = ReceiveSortOrderFromUser();
+                        OrderBy order = ReceiveSortOrderFromUser();
                         table.SortRows(chosenAttribute, order);
                     }
                     catch (MenuException)
@@ -359,17 +359,17 @@ namespace NEA.MENU
             }
             throw new MenuException("Wrong key was pressed");
         }
-        private static Order ReceiveSortOrderFromUser()
+        private static OrderBy ReceiveSortOrderFromUser()
         {
             Console.WriteLine("Press 'A' for ascending order and 'D' for descending");
             var pressedKey = Console.ReadKey(true).Key;
             if (pressedKey == ConsoleKey.A)
             {
-                return Order.ASC;
+                return OrderBy.ASC;
             }
             else if (pressedKey == ConsoleKey.D)
             {
-                return Order.DESC;
+                return OrderBy.DESC;
             }
             else
                 throw new MenuException("Wrong key was pressed");

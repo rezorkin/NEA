@@ -61,7 +61,7 @@ namespace NEA.DAO
            return ExecuteSQlQuerry(command);
         }
 
-        private List<Medicine> GetAll(string attribute, Order order)
+        private List<Medicine> GetAll(string attribute, OrderBy order)
         {
             string command = $"SELECT ProductID, ProductName, CompanyName, ActiveSubstance\r\n" +
                             $"FROM {tableName}\r\n" +
@@ -93,7 +93,7 @@ namespace NEA.DAO
                 }
                 foreach (NameValueCollection row in undecodedResultSet)
                 {
-                    result.Add(SetValuesFromTableToObjectFields(row));
+                    result.Add(MapDBRowToItemFields(row));
                 }
                 return result;
             }
@@ -103,7 +103,7 @@ namespace NEA.DAO
             }
         }
 
-        protected override Medicine SetValuesFromTableToObjectFields(NameValueCollection row)
+        protected override Medicine MapDBRowToItemFields(NameValueCollection row)
         {
             int medicineID = int.Parse(row["ProductID"]);
             string medicineName = row["ProductName"];
@@ -112,22 +112,22 @@ namespace NEA.DAO
             return new Medicine(medicineID, medicineName, medicineCompanyName, medicineActiveSubstance);
         }
 
-        public List<Medicine> GetSortedByID(Order order)
+        public List<Medicine> GetSortedByID(OrderBy order)
         {
             return GetAll("ProductID", order);
         }
 
-        public List<Medicine> GetSortedByName(Order order)
+        public List<Medicine> GetSortedByName(OrderBy order)
         {
             return GetAll("ProductName", order);
         }
 
-        public List<Medicine> GetSortedByCompanyName(Order order)
+        public List<Medicine> GetSortedByCompanyName(OrderBy order)
         {
             return GetAll("CompanyName", order);
         }
 
-        public List<Medicine> GetSortedByActiveSubstance(Order order)
+        public List<Medicine> GetSortedByActiveSubstance(OrderBy order)
         {
             return GetAll("ActiveSubstance", order);
         }
@@ -163,6 +163,28 @@ namespace NEA.DAO
                 throw new DAOException(" Wrong boundaries");
             }
             
+        }
+        public bool AddNewMedicine(Medicine m)
+        {
+           try
+           {
+                using (SQLiteConnection conn = new SQLiteConnection(DAOConnecter.GetConnectionString()))
+                {
+                    conn.Open();
+                    using(SQLiteCommand cmd = conn.CreateCommand()) 
+                    {
+                        cmd.CommandText = $"INSERT INTO AssortmentOfTheMedicalSupplies\r\nVALUES({m.GetID()},\"{m.GetName()}\"," +
+                            $"\"{m.GetCompanyName()}\",\"{m.GetActiveSubstance()}\")";
+                        cmd.Dispose();
+                    }
+                    conn.Close();
+                }
+                return true;
+           }
+           catch(SQLiteException)
+           {
+                return false;
+           }
         }
     }
 }

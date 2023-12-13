@@ -11,15 +11,16 @@ namespace NEA.DAO
     internal interface IMedicineDAO
     {
         List<Medicine> GetAll();
-        List<Medicine> GetSortedByID(Order order);
-        List<Medicine> GetSortedByName(Order order);
-        List<Medicine> GetSortedByCompanyName(Order order);
-        List<Medicine> GetSortedByActiveSubstance(Order order);
+        List<Medicine> GetSortedByID(OrderBy order);
+        List<Medicine> GetSortedByName(OrderBy order);
+        List<Medicine> GetSortedByCompanyName(OrderBy order);
+        List<Medicine> GetSortedByActiveSubstance(OrderBy order);
         List<Medicine> FindAllByName(string name, bool IsCompleteName);
         List<Medicine> FindAllByCompanyName(string companyName, bool IsCompleteName);
         List<Medicine> FindAllByActiveSubstance(string activeSubstance);
         Medicine FindByID(int id);
         List<Medicine> FindInIDRange(int startRange, int endRange);
+       bool AddNewMedicine(Medicine m);
 
     }
 }

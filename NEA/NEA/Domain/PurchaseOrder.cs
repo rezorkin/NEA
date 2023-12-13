@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NEA.DAO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,33 @@ namespace NEA.DOMAIN
 {
     internal class PurchaseOrder : Record
     {
-        public PurchaseOrder(Medicine purchasedMedicine, int purchasedAmount, DateTime purchasedDate) 
-            : base(purchasedMedicine, purchasedAmount, purchasedDate){ }
+        private int orderNumber;
+        public PurchaseOrder(int orderNumber, Medicine purchasedMedicine, int purchasedAmount, DateTime purchasedDate) 
+            : base(purchasedMedicine, purchasedAmount, purchasedDate)
+        {
+            this.orderNumber = orderNumber;
+        }
+        public override bool Equals(object obj)
+        {
+            return obj is PurchaseOrder order &&
+                   orderNumber == order.GetOrderNumber();
+        }
+                   
+        public static bool operator ==(PurchaseOrder left, PurchaseOrder right)
+        {
+            return left.Equals(right);
+        }
+        public static bool operator !=(PurchaseOrder left, PurchaseOrder right)
+        {
+            return !left.Equals(right);
+        }
+        public int GetOrderNumber()
+        {
+            return orderNumber;
+        }
         public override string ToString()
         {
-            return $"Medicine ID: {getMedicine().GetID()}, purchase date: {GetRecordDate()}, amount purchased: {getAmount()}";
+            return $"Medicine ID: {GetMedicine().GetID()}, purchase date: {GetRecordDate()}, amount purchased: {GetAmount()}";
         }
     }
 }

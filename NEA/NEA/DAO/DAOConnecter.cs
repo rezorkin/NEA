@@ -11,6 +11,7 @@ namespace NEA.DAO
     {
         private static string path = "PracticeDB.db;";
         private static string connectionString = "Data Source= " + path + "Version=3;New=False;Compress=True;Read Only=true";
+       
         public static void ConnectToPracticeDB()
         {
             path = "PracticeDB.db;";

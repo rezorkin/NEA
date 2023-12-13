@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,12 +38,12 @@ namespace NEA.DAO
         {
             return FindByAttributeValue(tableName, "MedicineID", selectedMedicine.GetID().ToString());
         }
-        public List<T> GetRecordHistory(Medicine selectedMedicine, Order order)
+        public List<T> GetRecordHistory(Medicine selectedMedicine, OrderBy order)
         {
             return FindByAttributeValue(tableName, "MedicineID", selectedMedicine.GetID().ToString(), "Date", order);
         }
 
-        protected abstract override T SetValuesFromTableToObjectFields(NameValueCollection row);     
+        protected abstract override T MapDBRowToItemFields(NameValueCollection row);     
         protected DateTime ConvertStringToDate(string date)
         {
             string[] dateParts = date.Split('/');

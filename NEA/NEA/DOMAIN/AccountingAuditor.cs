@@ -45,8 +45,8 @@ namespace NEA.DOMAIN
         {
             try
             {
-                var purchases = purchaseOrderDAO.GetRecordHistory(medicine, Order.ASC);
-                var inspections = inspectionDAO.GetRecordHistory(medicine, Order.ASC);
+                var purchases = purchaseOrderDAO.GetRecordHistory(medicine, OrderBy.ASC);
+                var inspections = inspectionDAO.GetRecordHistory(medicine, OrderBy.ASC);
                 return CalculateSalesHistory(purchases, inspections);
             }
             catch(DAOException e) 
@@ -217,15 +217,15 @@ namespace NEA.DOMAIN
                 {
                     if (inspection == purchaseOrders[i] && IsFirstPurchaseOrderInThisMonth == true)
                     {
-                        saleAmount = purchaseOrders[i].getAmount() - inspection.getAmount();
+                        saleAmount = purchaseOrders[i].GetAmount() - inspection.GetAmount();
                         IsFirstPurchaseOrderInThisMonth = false;
                     }
                     else if (inspection.GetRecordDate() == purchaseOrders[i].GetRecordDate() && IsFirstPurchaseOrderInThisMonth != true)
                     {
-                        saleAmount += purchaseOrders[i].getAmount();
+                        saleAmount += purchaseOrders[i].GetAmount();
                     }
                 }
-                var sale = new SaleRecord(inspection.getMedicine(), saleAmount, saleDate);
+                var sale = new SaleRecord(inspection.GetMedicine(), saleAmount, saleDate);
                 result.Add(sale);
             }
             return result;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NEA.DOMAIN
 {
-    internal enum Order
+    internal enum OrderBy
     {
         DESC,
         ASC

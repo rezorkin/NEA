@@ -116,7 +116,7 @@ namespace NEA.MENU
             Console.WriteLine("Press X to reset all time boundaries and sortings");
         }
 
-        public override void SortRows(string attribute, Order order)
+        public override void SortRows(string attribute, OrderBy order)
         {
             Console.WriteLine();
             if (attribute == attributes[0])

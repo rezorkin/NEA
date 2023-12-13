@@ -24,8 +24,22 @@ namespace NEA.DOMAIN
             amount = -1;
             this.recordDate = recordDate;
         }
-        public Medicine getMedicine() { return medicineInspected; }
-        public int getAmount() { return amount; }
+        public Medicine GetMedicine() 
+        {
+           if(medicineInspected != null)
+           {
+                return medicineInspected;
+           }
+           throw new DomainException("It is a basic record to compare dates, not storing any values except date");
+        }
+        public int GetAmount() 
+        {
+            if(amount == -1)
+            {
+                throw new DomainException("It is a basic record to compare dates, not storing any values except date");
+            }
+            return amount; 
+        }
         public DateTime GetRecordDate() 
         {
             return recordDate; 

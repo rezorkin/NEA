@@ -9,7 +9,7 @@ namespace NEA.DOMAIN
 {
     internal static class MergeSort
     {
-        public static int[] MergeSortArray(int[] values, Order order)
+        public static int[] MergeSortArray(int[] values, OrderBy order)
         {
             if (values.Length <= 1)
             {
@@ -32,7 +32,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortArray(rightPart, order);
             return MergeCompare(leftPart, rightPart, order);
         }
-        public static List<Medicine> MergeSortByActiveSubstance(List<Medicine> medicines, Order order)
+        public static List<Medicine> MergeSortByActiveSubstance(List<Medicine> medicines, OrderBy order)
         {
             if (medicines.Count <= 1)
             {
@@ -53,7 +53,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortByActiveSubstance(rightPart, order);
             return MergeCompareByActiveSubstance(leftPart, rightPart, order);
         }
-        public static List<Medicine> MergeSortByName(List<Medicine> medicines, Order order)
+        public static List<Medicine> MergeSortByName(List<Medicine> medicines, OrderBy order)
         {
             if (medicines.Count <= 1)
             {
@@ -74,7 +74,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortByName(rightPart, order);
             return MergeCompareByName(leftPart, rightPart, order);
         }
-        public static List<MedicineStatistics> MergeSortByName(List<MedicineStatistics> records, Order order)
+        public static List<MedicineStatistics> MergeSortByName(List<MedicineStatistics> records, OrderBy order)
         {
             if (records.Count <= 1)
             {
@@ -95,7 +95,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortByName(rightPart, order);
             return MergeCompareByName(leftPart, rightPart, order);
         }
-        public static List<Medicine> MergeSortByCompName(List<Medicine> medicines, Order order)
+        public static List<Medicine> MergeSortByCompName(List<Medicine> medicines, OrderBy order)
         {
             if (medicines.Count <= 1)
             {
@@ -116,7 +116,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortByCompName(rightPart, order);
             return MergeCompareByCompName(leftPart, rightPart, order);
         }
-        public static List<Medicine> MergeSortByID(List<Medicine> medicines, Order order)
+        public static List<Medicine> MergeSortByID(List<Medicine> medicines, OrderBy order)
         {
             
             if (medicines.Count <= 1)
@@ -138,7 +138,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortByID(rightPart, order);
             return MergeCompareByID(leftPart, rightPart, order);
         }
-        public static List<MedicineStatistics> MergeSortByID(List<MedicineStatistics> records, Order order)
+        public static List<MedicineStatistics> MergeSortByID(List<MedicineStatistics> records, OrderBy order)
         {
             if (records.Count <= 1)
             {
@@ -159,7 +159,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortByID(rightPart, order);
             return MergeCompareByID(leftPart, rightPart, order);
         }
-        public static List<MedicineStatistics> MergeSortByMean(List<MedicineStatistics> records, Order order)
+        public static List<MedicineStatistics> MergeSortByMean(List<MedicineStatistics> records, OrderBy order)
         {
             if (records.Count <= 1)
             {
@@ -180,7 +180,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortByMean(rightPart, order);
             return MergeCompareByMean(leftPart, rightPart, order);
         }
-        public static List<MedicineStatistics> MergeSortByMedian(List<MedicineStatistics> records, Order order)
+        public static List<MedicineStatistics> MergeSortByMedian(List<MedicineStatistics> records, OrderBy order)
         {
             if (records.Count <= 1)
             {
@@ -201,7 +201,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortByMedian(rightPart, order);
             return MergeCompareByMedian(leftPart, rightPart, order);
         }
-        public static List<MedicineStatistics> MergeSortByModes(List<MedicineStatistics> records, Order order)
+        public static List<MedicineStatistics> MergeSortByModes(List<MedicineStatistics> records, OrderBy order)
         {
             if (records.Count <= 1)
             {
@@ -222,7 +222,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortByModes(rightPart, order);
             return MergeCompareByModes(leftPart, rightPart, order);
         }
-        public static List<MedicineStatistics> MergeSortByDeviation(List<MedicineStatistics> records, Order order)
+        public static List<MedicineStatistics> MergeSortByDeviation(List<MedicineStatistics> records, OrderBy order)
         {
             if (records.Count <= 1)
             {
@@ -243,7 +243,7 @@ namespace NEA.DOMAIN
             rightPart = MergeSortByDeviation(rightPart, order);
             return MergeCompareByDeviation(leftPart, rightPart, order);
         }
-        private static List<Medicine> MergeCompareByActiveSubstance(List<Medicine> leftPart, List<Medicine> rightPart, Order order)
+        private static List<Medicine> MergeCompareByActiveSubstance(List<Medicine> leftPart, List<Medicine> rightPart, OrderBy order)
         {
             var result = new List<Medicine>();
             int leftIndex = 0, rightIndex = 0;
@@ -254,7 +254,7 @@ namespace NEA.DOMAIN
                     string leftSubstance = leftPart[leftIndex].GetActiveSubstance().ToUpper();
                     string rightSubstance = rightPart[rightIndex].GetActiveSubstance().ToUpper();
                     int stringComparison = string.CompareOrdinal(leftSubstance, rightSubstance);
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (stringComparison >= 0)
                         {
@@ -295,7 +295,7 @@ namespace NEA.DOMAIN
             return result;
         }
      
-        private static List<Medicine> MergeCompareByCompName(List<Medicine> leftPart, List<Medicine> rightPart, Order order)
+        private static List<Medicine> MergeCompareByCompName(List<Medicine> leftPart, List<Medicine> rightPart, OrderBy order)
         {
             var result = new List<Medicine>();
             int leftIndex = 0, rightIndex = 0;
@@ -306,7 +306,7 @@ namespace NEA.DOMAIN
                     string leftName = leftPart[leftIndex].GetCompanyName().ToLower();
                     string rightName = rightPart[rightIndex].GetCompanyName().ToLower();
                     int stringComparison = string.Compare(leftName, rightName);
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (stringComparison >= 0)
                         {
@@ -346,7 +346,7 @@ namespace NEA.DOMAIN
             }
             return result;
         }
-        private static List<Medicine> MergeCompareByName(List<Medicine> leftPart, List<Medicine> rightPart, Order order)
+        private static List<Medicine> MergeCompareByName(List<Medicine> leftPart, List<Medicine> rightPart, OrderBy order)
         {
             var result = new List<Medicine>();
             int leftIndex = 0, rightIndex = 0;
@@ -357,7 +357,7 @@ namespace NEA.DOMAIN
                     string leftName = leftPart[leftIndex].GetName().ToLower();
                     string rightName = rightPart[rightIndex].GetName().ToLower();
                     int stringComparison = string.Compare(leftName, rightName);
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (stringComparison >= 0)
                         {
@@ -397,7 +397,7 @@ namespace NEA.DOMAIN
             }
             return result;
         }
-        private static List<MedicineStatistics> MergeCompareByName(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, Order order)
+        private static List<MedicineStatistics> MergeCompareByName(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, OrderBy order)
         {
             var result = new List<MedicineStatistics>();
             int leftIndex = 0, rightIndex = 0;
@@ -408,7 +408,7 @@ namespace NEA.DOMAIN
                     string leftName = leftPart[leftIndex].GetName();
                     string rightName = rightPart[rightIndex].GetName();
                     int stringComparison = string.Compare(leftName, rightName);
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (stringComparison >= 0)
                         {
@@ -448,7 +448,7 @@ namespace NEA.DOMAIN
             }
             return result;
         }
-        private static List<MedicineStatistics> MergeCompareByMean(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, Order order)
+        private static List<MedicineStatistics> MergeCompareByMean(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, OrderBy order)
         {
             var result = new List<MedicineStatistics>();
             int leftIndex = 0, rightIndex = 0;
@@ -458,7 +458,7 @@ namespace NEA.DOMAIN
                 {
                     double leftMean = leftPart[leftIndex].GetMean();
                     double rightMean = rightPart[rightIndex].GetMean();
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (leftMean >= rightMean)
                         {
@@ -503,7 +503,7 @@ namespace NEA.DOMAIN
             }
             return result;
         }
-        private static List<MedicineStatistics> MergeCompareByMedian(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, Order order)
+        private static List<MedicineStatistics> MergeCompareByMedian(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, OrderBy order)
         {
             var result = new List<MedicineStatistics>();
             int leftIndex = 0, rightIndex = 0;
@@ -513,7 +513,7 @@ namespace NEA.DOMAIN
                 {
                     double leftMedian = leftPart[leftIndex].GetMedian();
                     double rightMedian = rightPart[rightIndex].GetMedian();
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (leftMedian >= rightMedian)
                         {
@@ -558,7 +558,7 @@ namespace NEA.DOMAIN
             }
             return result;
         }
-        private static List<MedicineStatistics> MergeCompareByDeviation(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, Order order)
+        private static List<MedicineStatistics> MergeCompareByDeviation(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, OrderBy order)
         {
             var result = new List<MedicineStatistics>();
             int leftIndex = 0, rightIndex = 0;
@@ -568,7 +568,7 @@ namespace NEA.DOMAIN
                 {
                     double leftDeviation = leftPart[leftIndex].GetStandrardDeviation();
                     double rightDeviation = rightPart[rightIndex].GetStandrardDeviation();
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (leftDeviation >= rightDeviation)
                         {
@@ -613,7 +613,7 @@ namespace NEA.DOMAIN
             }
             return result;
         }
-        private static List<MedicineStatistics> MergeCompareByModes(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, Order order)
+        private static List<MedicineStatistics> MergeCompareByModes(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, OrderBy order)
         {
             var result = new List<MedicineStatistics>();
             int leftIndex = 0, rightIndex = 0;
@@ -640,7 +640,7 @@ namespace NEA.DOMAIN
                     {
                         rightMaxMode = leftModes.Max().Key;
                     }
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (leftMaxMode >= rightMaxMode)
                         {
@@ -685,7 +685,7 @@ namespace NEA.DOMAIN
             }
             return result;
         }
-        private static List<Medicine> MergeCompareByID(List<Medicine> leftPart, List<Medicine> rightPart, Order order)
+        private static List<Medicine> MergeCompareByID(List<Medicine> leftPart, List<Medicine> rightPart, OrderBy order)
         {
             var result = new List<Medicine>();
             int leftIndex = 0, rightIndex = 0;
@@ -693,7 +693,7 @@ namespace NEA.DOMAIN
             {
                 if (leftIndex < leftPart.Count && rightIndex < rightPart.Count)
                 {
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (leftPart[leftIndex].GetID() >= rightPart[rightIndex].GetID())
                         {
@@ -733,7 +733,7 @@ namespace NEA.DOMAIN
             }
             return result;
         }
-        private static List<MedicineStatistics> MergeCompareByID(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, Order order)
+        private static List<MedicineStatistics> MergeCompareByID(List<MedicineStatistics> leftPart, List<MedicineStatistics> rightPart, OrderBy order)
         {
             var result = new List<MedicineStatistics>();
             int leftIndex = 0, rightIndex = 0;
@@ -741,7 +741,7 @@ namespace NEA.DOMAIN
             {
                 if (leftIndex < leftPart.Count && rightIndex < rightPart.Count)
                 {
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (leftPart[leftIndex].GetID() >= rightPart[rightIndex].GetID())
                         {
@@ -781,7 +781,7 @@ namespace NEA.DOMAIN
             }
             return result;
         }
-        private static int[] MergeCompare(int[] leftPart, int[] rightPart, Order order)
+        private static int[] MergeCompare(int[] leftPart, int[] rightPart, OrderBy order)
         {
             int[] result = new int[rightPart.Length + leftPart.Length];
             int leftIndex = 0, rightIndex = 0, resultIndex = 0;
@@ -789,7 +789,7 @@ namespace NEA.DOMAIN
             {
                 if (leftIndex < leftPart.Length && rightIndex < rightPart.Length)
                 {
-                    if (order == Order.DESC)
+                    if (order == OrderBy.DESC)
                     {
                         if (leftPart[leftIndex] >= rightPart[rightIndex])
                         {
