@@ -20,3 +20,14 @@ C:\Users\arspo\OneDrive\Documents\Programming\NEA\NEA\NEA\obj\Debug\Protorype.cs
 \\RHEA\HOME\2022\22AP5813\Documents\GitHub\NEA\NEA\NEA\bin\Debug\System.Data.SQLite.dll
 \\RHEA\HOME\2022\22AP5813\Documents\GitHub\NEA\NEA\NEA\bin\Debug\System.Data.SQLite.xml
 \\RHEA\HOME\2022\22AP5813\Documents\GitHub\NEA\NEA\NEA\obj\Debug\Protorype.csproj.CopyComplete
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\bin\Debug\NEA.exe.config
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\bin\Debug\NEA.exe
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\bin\Debug\NEA.pdb
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\bin\Debug\System.Data.SQLite.dll
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\bin\Debug\System.Data.SQLite.xml
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\obj\Debug\Protorype.csproj.AssemblyReference.cache
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\obj\Debug\Protorype.csproj.SuggestedBindingRedirects.cache
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\obj\Debug\Protorype.csproj.CoreCompileInputs.cache
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\obj\Debug\Protorype.csproj.CopyComplete
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\obj\Debug\NEA.exe
+\\RHEA\HOME\2022\22AP5813\Documents\GitHub\1\NEA\NEA\obj\Debug\NEA.pdb

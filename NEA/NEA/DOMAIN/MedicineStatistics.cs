@@ -60,6 +60,7 @@ namespace NEA.DOMAIN
             {
                 foreach (int key in modes.Keys)
                 {
+                    if(key != 0)
                     modesToString += key + " ";
                 }
             }

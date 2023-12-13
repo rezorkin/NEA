@@ -72,7 +72,7 @@ namespace NEA.DAO
         }
         private static string GetPurchaseOrderTableCreateStatement()
         {
-            return "CREATE TABLE \"PurchaseOrders\" (\r\n\t\"Date\"\tTEXT,\r\n\t\"MedicineID\"\tINTEGER,\r\n\t\"Amount\"\tINTEGER,\r\n\tFOREIGN KEY(\"MedicineID\") REFERENCES \"AssortmentOfTheMedicalSupplies\"(\"ProductID\"),\r\n\tPRIMARY KEY(\"Date\",\"MedicineID\")\r\n)";
+            return "CREATE TABLE \"PurchaseOrders\" (\r\n\t\"Date\"\tTEXT,\r\n\t\"MedicineID\"\tINTEGER,\r\n\t\"Amount\"\tINTEGER,\r\n\t\"OrderNumber\"\tINTEGER,\r\n\tFOREIGN KEY(\"MedicineID\") REFERENCES \"AssortmentOfTheMedicalSupplies\"(\"ProductID\"),\r\n\tPRIMARY KEY(\"OrderNumber\")\r\n)";
         }
         private static string GetAssortmentTableCreateStatement()
         {

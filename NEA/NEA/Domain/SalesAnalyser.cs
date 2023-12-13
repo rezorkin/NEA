@@ -57,7 +57,7 @@ namespace NEA.DOMAIN
                         numberOfOccurrences++;
                     }
                 }
-                if(numberOfOccurrences != 1)
+                if(numberOfOccurrences != 1 && salesOccurrences.ContainsKey(salesValues[g]) == false)
                 {
                     salesOccurrences.Add(salesValues[g], numberOfOccurrences);
                 }
