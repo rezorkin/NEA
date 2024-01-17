@@ -15,7 +15,7 @@ namespace NEA.MENU
             numberOfItemsPerPage = 5;
             roundingLength = 1;
         }
-        public MainMenuTable(int numberOfItemsPerPage, int numberOfDecimalPointsToRound, ConsoleColor defaaultFontColour): base(defaaultFontColour)
+        public MainMenuTable(int numberOfItemsPerPage, int numberOfDecimalPointsToRound, ConsoleColor defaultFontColour): base(defaultFontColour)
         {
             this.numberOfItemsPerPage = numberOfItemsPerPage;
             this.roundingLength = numberOfDecimalPointsToRound;

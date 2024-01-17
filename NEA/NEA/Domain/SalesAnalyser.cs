@@ -17,8 +17,9 @@ namespace NEA.DOMAIN
         }
         public double CalculateMedian()
         {
-            int[] salesValues = GetSales();
-            salesValues = MergeSort.MergeSortArray(salesValues, OrderBy.ASC);
+            var sales = GetSales().ToList();
+            sales.Sort();
+            int[] salesValues = sales.ToArray();
             if (salesValues.Length % 2 == 0)
             {
                 int leftMedianIndex = salesValues.Length / 2 - 1;

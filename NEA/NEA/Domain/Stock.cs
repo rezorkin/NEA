@@ -7,7 +7,7 @@ using NEA.DAO;
 
 namespace NEA.DOMAIN
 {
-    internal class Stock
+    internal class Stock : ISortable<Medicine>
     {
         MedicineDAO medicineDAO;
         
@@ -31,16 +31,16 @@ namespace NEA.DOMAIN
                 return new List<Medicine>();
             }
         }
-        public List<Medicine> Sort(SortOption attribute, OrderBy order, List<Medicine> sample)
+        public List<Medicine> Sort(SortOption attribute, OrderBy order, List<Medicine> assortment)
         {
-            if (sample.Count < GetAssortment().Count)
+            bool IsAssortmentfiltered = assortment.Count < GetAssortment().Count;
+            if (IsAssortmentfiltered == true)
             {
-                return SortedSample(attribute, order, sample);
+                return GetSortedSample(attribute, order, assortment);
             }
-            else
-                return SortedAssortment(attribute, order);
+            return GetAssortment(attribute, order);
         }
-        private List<Medicine> SortedAssortment(SortOption attribute, OrderBy order) 
+        private List<Medicine> GetAssortment(SortOption attribute, OrderBy order) 
         {
             if (attribute == SortOption.ID)
                 return medicineDAO.GetSortedByID(order);
@@ -53,16 +53,16 @@ namespace NEA.DOMAIN
             else
                 throw new DomainException("Invalid sort option");
         }
-        private List<Medicine> SortedSample(SortOption attribute, OrderBy order, List<Medicine> sample)
+        private List<Medicine> GetSortedSample(SortOption attribute, OrderBy order, List<Medicine> sample)
         {
             if (attribute == SortOption.ID)
-                return MergeSort.MergeSortByID(sample, order);
+                return Sort(sample, medicine => medicine.GetID(), order);
             else if (attribute == SortOption.Name)
-                return MergeSort.MergeSortByName(sample, order);
+                return Sort(sample, medicine => medicine.GetName(), order);
             else if (attribute == SortOption.CompanyName)
-                return MergeSort.MergeSortByCompName(sample, order);
+                return Sort(sample, medicine => medicine.GetCompanyName(), order);
             else if (attribute == SortOption.ActiveSubstance)
-                return MergeSort.MergeSortByActiveSubstance(sample, order);
+                return Sort(sample, medicine => medicine.GetActiveSubstance(), order);
             else
                 throw new DomainException("Invalid sort option");
         }
@@ -119,6 +119,15 @@ namespace NEA.DOMAIN
             {
                 throw new DomainException(e.Message);
             }
+        }
+       
+        public List<Medicine> Sort<TKey>(List<Medicine> medicines, Func<Medicine, TKey> sorter, OrderBy order)
+        {
+            if(order == OrderBy.ASC)
+            {
+                return medicines.OrderBy(sorter).ToList();
+            }
+            return medicines.OrderByDescending(sorter).ToList();
         }
 
     }

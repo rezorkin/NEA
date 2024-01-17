@@ -22,13 +22,6 @@ namespace NEA.DOMAIN
             this.ID = ID;
             this.activeSubstance = activeSubstance;
         }
-        public Medicine(int ID, string name)
-        {
-            this.name = name;
-            this.companyName = "";
-            this.ID = ID;
-            this.activeSubstance = "";
-        }
         public string GetName() { return name; }
         public string GetCompanyName() { return companyName; }
         public int GetID() { return ID; }

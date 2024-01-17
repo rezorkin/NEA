@@ -6,28 +6,23 @@ using System.Threading.Tasks;
 
 namespace NEA.DOMAIN
 {
-    internal class MedicineStatistics : Medicine
+    internal class Statistics 
     {
         private double mean;
         private double median;
         private Dictionary<int, int> modes;
         private double standrardDeviation;
         private readonly int roundingLength;
+        private Medicine medicine;
 
-        public MedicineStatistics(int ID, string name, string companyName, string activeSubstance) : base(ID, name, companyName, activeSubstance)
-        {
-            mean = -1;
-            median = -1;
-            modes = new Dictionary<int, int>();
-            standrardDeviation = -1;
-        }
-        public MedicineStatistics(int ID, string name, double mean, double median, Dictionary<int, int> modes, double standrardDeviation, int roundingLength) : base(ID,name)
+        public Statistics(double mean, double median, Dictionary<int, int> modes, double standrardDeviation, int roundingLength, Medicine medicine)
         {
             this.mean = mean;
             this.median = median;
             this.modes = modes;
             this.standrardDeviation = standrardDeviation;
             this.roundingLength = roundingLength;
+            this.medicine = medicine;
         }
         public double GetMean()
         {
@@ -44,6 +39,14 @@ namespace NEA.DOMAIN
         public Dictionary<int, int> GetModes()
         {
             return modes;
+        }
+        public string GetMedicineName()
+        {
+            return medicine.GetName();
+        }
+        public int GetMedicineID()
+        {
+            return medicine.GetID();
         }
         private double RoundValue(double value)
         {
@@ -72,7 +75,7 @@ namespace NEA.DOMAIN
                     valuesToString[i] = "-";
                 }
             }
-            return $"{GetID()},{GetName()},{valuesToString[0]},{valuesToString[1]},{modesToString},{valuesToString[2]}";
+            return $"{GetMedicineID()},{GetMedicineName()},{valuesToString[0]},{valuesToString[1]},{modesToString},{valuesToString[2]}";
         }
         
     }

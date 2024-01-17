@@ -12,5 +12,9 @@ namespace NEA.DOMAIN
         Name,
         CompanyName,
         ActiveSubstance,
+        Mean,
+        Median,
+        Deviation,
+        Modes
     }
 }

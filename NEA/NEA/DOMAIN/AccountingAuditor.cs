@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NEA.DOMAIN
 {
-    internal class AccountingAuditor
+    internal class AccountingAuditor : ISortable<Statistics>
     {
         StockInspectionDAO inspectionDAO;
         PurchaseOrderDAO purchaseOrderDAO;
@@ -67,41 +67,37 @@ namespace NEA.DOMAIN
                 throw new DomainException(e.Message);
             }
         }
-        public List<MedicineStatistics> GetStatisticRecords(List<Medicine> sample)
+        public List<Statistics> GetStatisticRecords(List<Medicine> sample)
         {
-            var result = new List<MedicineStatistics>();
+            var result = new List<Statistics>();
             foreach (Medicine medicine in sample)
             {
                 try
                 {
                     var saleshistory = GetSalesHistory(medicine);
                     analyser = new SalesAnalyser(saleshistory);
-                    int id = medicine.GetID();
-                    string name = medicine.GetName();
                     double mean = analyser.CalculateMean();
                     double median = analyser.CalculateMedian();
                     var modes = analyser.CalculateModes();
                     double standrardDeviation = analyser.CalculateStandartDeviation();
-                    var analysedMedicine = new MedicineStatistics(id, name, mean, median, modes, standrardDeviation,roundingLength);
+                    var analysedMedicine = new Statistics(mean, median, modes, standrardDeviation, roundingLength, medicine);
                     result.Add(analysedMedicine);
                 }
                 catch (DomainException)
                 {
-                    int id = medicine.GetID();
-                    string name = medicine.GetName();
                     double mean = -1;
                     double median = -1;
                     var modes = new Dictionary<int, int>();
                     double standrardDeviation = -1;
-                    var analysedMedicine = new MedicineStatistics(id, name, mean, median, modes, standrardDeviation, roundingLength);
+                    var analysedMedicine = new Statistics(mean, median, modes, standrardDeviation, roundingLength, medicine);
                     result.Add(analysedMedicine);
                 }
             }
             return result;
         }
-        public List<MedicineStatistics> GetStatisticRecords(List<Medicine> sample, SaleRecord startDate, SaleRecord endDate)
+        public List<Statistics> GetStatisticRecords(List<Medicine> sample, SaleRecord startDate, SaleRecord endDate)
         {
-            var result = new List<MedicineStatistics>();
+            var result = new List<Statistics>();
             foreach (Medicine medicine in sample)
             {
                 try
@@ -121,24 +117,20 @@ namespace NEA.DOMAIN
                         throw new DomainException();
                     }
                     analyser = new SalesAnalyser(boundedSalesHistory);
-                    int id = medicine.GetID();
-                    string name = medicine.GetName();
                     double mean = analyser.CalculateMean();
                     double median = analyser.CalculateMedian();
                     var modes = analyser.CalculateModes();
                     double standrardDeviation = analyser.CalculateSampleDeviation();
-                    var analysedMedicine = new MedicineStatistics(id, name, mean, median, modes, standrardDeviation, roundingLength);
+                    var analysedMedicine = new Statistics(mean, median, modes, standrardDeviation, roundingLength, medicine);
                     result.Add(analysedMedicine);
                 }
                 catch (DomainException)
                 {
-                    int id = medicine.GetID();
-                    string name = medicine.GetName();
                     double mean = -1;
                     double median = -1;
                     var modes = new Dictionary<int, int>();
                     double standrardDeviation = -1;
-                    var analysedMedicine = new MedicineStatistics(id, name, mean, median, modes, standrardDeviation, roundingLength);
+                    var analysedMedicine = new Statistics(mean, median, modes, standrardDeviation, roundingLength, medicine);
                     result.Add(analysedMedicine);
                 }
             }
@@ -229,6 +221,34 @@ namespace NEA.DOMAIN
                 result.Add(sale);
             }
             return result;
+        }
+
+        public List<Statistics> Sort(SortOption attribute, OrderBy order, List<Statistics> stats)
+        {
+            if (attribute == SortOption.ID)
+                return Sort(stats, stat => stat.GetMedicineID(), order);
+            else if (attribute == SortOption.Mean)
+                return Sort(stats, medicine => medicine.GetMean(), order);
+            else if (attribute == SortOption.Median)
+                return Sort(stats, medicine => medicine.GetMedian(), order);
+            else if (attribute == SortOption.Deviation)
+                return Sort(stats, medicine => medicine.GetStandrardDeviation(), order);
+            else if (attribute == SortOption.Modes)
+                return Sort(stats,medicine => medicine.GetModes(), order);
+            else if (attribute == SortOption.Name)
+                return Sort(stats, stat => stat.GetMedicineID(), order);
+            throw new DomainException("Invalid sort option");
+        }
+
+        public List<Statistics> Sort<TKey>(List<Statistics> medicines, Func<Statistics, TKey> sorter, OrderBy order)
+        {
+            
+            if (order == OrderBy.ASC)
+            {
+                medicines = medicines.OrderBy(sorter).ToList();
+            }
+            medicines = medicines.OrderByDescending(sorter).ToList();
+            return medicines;
         }
     }
     

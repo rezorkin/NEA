@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NEA.DOMAIN
 {
-    internal class Record
+    internal abstract class Record
     {
         private Medicine medicineInspected;
         private int amount;

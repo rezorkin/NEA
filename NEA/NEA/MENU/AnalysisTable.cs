@@ -13,7 +13,7 @@ namespace NEA.MENU
     internal class AnalysisTable : MedicineTable
     {
         private AccountingAuditor auditor;
-        private List<MedicineStatistics> statisticRecords;
+        private List<Statistics> statisticRecords;
         private readonly List<Medicine> sample;
         private readonly int roundingLength;
         public AnalysisTable(int pageLength, int spacesToDivider, ConsoleColor defaultFontColour, List<Medicine> sample, int roundingLength) : base(pageLength, spacesToDivider, defaultFontColour)
@@ -118,45 +118,38 @@ namespace NEA.MENU
 
         public override void SortRows(string attribute, OrderBy order)
         {
-            Console.WriteLine();
-            if (attribute == attributes[0])
-            {
-                statisticRecords = MergeSort.MergeSortByID(statisticRecords, order);
-                var tableRows = RecordsToStrings();
-                UpdatePages(tableRows);
-            }
-            else if (attribute == attributes[1])
-            {
-                statisticRecords = MergeSort.MergeSortByName(statisticRecords, order);
-                var tableRows = RecordsToStrings();
-                UpdatePages(tableRows);
-            }
-            else if (attribute == attributes[2])
-            {
-                statisticRecords = MergeSort.MergeSortByMean(statisticRecords, order);
-                var tableRows = RecordsToStrings();
-                UpdatePages(tableRows);
-            }
-            else if (attribute == attributes[3])
-            {
-                statisticRecords = MergeSort.MergeSortByMedian(statisticRecords, order);
-                var tableRows = RecordsToStrings();
-                UpdatePages(tableRows);
-            }
-            else if(attribute == attributes[4])
-            {
-                statisticRecords = MergeSort.MergeSortByModes(statisticRecords, order);
-                var tableRows = RecordsToStrings();
-                UpdatePages(tableRows);
-            }
-            else if(attribute == attributes[5])
-            {
-                statisticRecords = MergeSort.MergeSortByDeviation(statisticRecords, order);
-                var tableRows = RecordsToStrings();
-                UpdatePages(tableRows);
-            }
-            else
+             Console.WriteLine();
+            SortOption option = new SortOption();
+             if (attribute == attributes[0])
+             {
+                option = SortOption.ID;
+             }
+             else if (attribute == attributes[1])
+             {
+                option = SortOption.Name;
+             }
+             else if (attribute == attributes[2])
+             {
+                option = SortOption.Mean;
+             }
+             else if (attribute == attributes[3])
+             {
+                option = SortOption.Median;
+             }
+             else if(attribute == attributes[4])
+             {
+                option = SortOption.Modes;
+             }
+             else if(attribute == attributes[5])
+             {
+                option = SortOption.Deviation;
+             }
+             else
+             { 
                 throw new MenuException();
+             }
+             statisticRecords = auditor.Sort(option, order, statisticRecords);
+             UpdatePages(RecordsToStrings());
         }
         public override void OutputPage()
         {
@@ -171,7 +164,7 @@ namespace NEA.MENU
             bool doesMatchesAnySampleID = false;
             foreach (var record in statisticRecords)
             {
-                if (input == record.GetID().ToString())
+                if (input == record.GetMedicineID().ToString())
                 {
                     doesMatchesAnySampleID = true;
                     int ID = int.Parse(input);
@@ -194,7 +187,7 @@ namespace NEA.MENU
         protected List<string> RecordsToStrings()
         {
             var result = new List<string>();    
-            foreach(MedicineStatistics medicine in statisticRecords)
+            foreach(Statistics medicine in statisticRecords)
             {
                 result.Add(medicine.ToString());
             }

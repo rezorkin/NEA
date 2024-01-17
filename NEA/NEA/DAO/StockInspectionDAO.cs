@@ -15,7 +15,7 @@ namespace NEA.DAO
         {}
         protected override string setTableName()
         {
-            return "WarehouseInspections";
+            return "StockInspections";
         }
         protected override StockInspection MapDBRowToItemFields(NameValueCollection row)
         {

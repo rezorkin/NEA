@@ -18,12 +18,12 @@ namespace NEA.MENU
         private List<Medicine> selectedMedicines;
         private List<Medicine> assortment;
 
-        protected override string[] attributes => new string[] { "ID", "Name", "Company Name", "Active Substance" };
+        protected override string[] attributes => new string[] { "ID", "Name", "Company Name", "Active Substance(ATC) Code" };
         public AssortmentTable(int pageLength, int spaceToDivider, ConsoleColor defaultFontColour) : base(pageLength, spaceToDivider, defaultFontColour) 
         {
             stock = new Stock();
             assortment = stock.GetAssortment();
-            UpdatePages(AssortmentToString());
+            UpdatePages(AssortmentToStrings());
             selectedMedicines = new List<Medicine>();
         }
         public List<Medicine> GetSample()
@@ -114,12 +114,12 @@ namespace NEA.MENU
                     else if (startRange + 1 == biggestID)
                     {
                         endRange = 0;
-                        TryFilterByID(startRange, endRange);
+                        FilterByID(startRange, endRange);
                     }
                     else if (startRange + 2 == biggestID)
                     {
                         endRange = biggestID + 1;
-                        TryFilterByID(startRange, endRange);
+                        FilterByID(startRange, endRange);
                     }
                     else
                     {
@@ -128,7 +128,7 @@ namespace NEA.MENU
                         if (int.Parse(ID) + 1 > startRange)
                         {
                             endRange = int.Parse(ID) + 1;
-                            TryFilterByID(startRange, endRange);
+                            FilterByID(startRange, endRange);
                         }
                         else
                         {
@@ -163,7 +163,7 @@ namespace NEA.MENU
                     {
                         assortment = stock.FindByName(choice, true, true);
                     }
-                    UpdatePages(AssortmentToString());
+                    UpdatePages(AssortmentToStrings());
                 }
                 catch (DomainException e) 
                 {
@@ -188,7 +188,7 @@ namespace NEA.MENU
                     {
                         assortment = stock.FindByName(choice, false, true);
                     }
-                    UpdatePages(AssortmentToString());
+                    UpdatePages(AssortmentToStrings());
                 }
                 catch (DomainException e)
                 {
@@ -203,7 +203,7 @@ namespace NEA.MENU
                 try
                 {
                     assortment = stock.FilterByActiveSubstance(choice);
-                    UpdatePages(AssortmentToString());
+                    UpdatePages(AssortmentToStrings());
                 }
                 catch (DomainException e)
                 {
@@ -222,37 +222,33 @@ namespace NEA.MENU
             Console.WriteLine();
             if (attribute == attributes[0])
             {
-                assortment = stock.Sort(SortOption.ID,order,assortment);
-                var tableRows = AssortmentToString();
-                UpdatePages(tableRows);
+                assortment = stock.Sort(SortOption.ID, order, assortment);
             }
             else if (attribute == attributes[1])
             {
                 assortment = stock.Sort(SortOption.Name, order, assortment);
-                var tableRows = AssortmentToString();
-                UpdatePages(tableRows);
             }
             else if (attribute == attributes[2])
             {
                 assortment = stock.Sort(SortOption.CompanyName, order, assortment);
-                var tableRows = AssortmentToString();
-                UpdatePages(tableRows);
-            }
+                            }
             else if (attribute == attributes[3])
             {
                 assortment = stock.Sort(SortOption.ActiveSubstance, order, assortment);
-                var tableRows = AssortmentToString();
-                UpdatePages(tableRows);
             }
             else
+            {
                 throw new MenuException();
+            } 
+            var tableRows = AssortmentToStrings();
+            UpdatePages(tableRows);
         }
         public override void ResetToInitialTable()
         {
             assortment = stock.GetAssortment();
-            UpdatePages(AssortmentToString());
+            UpdatePages(AssortmentToStrings());
         }
-        protected List<string> AssortmentToString()
+        protected List<string> AssortmentToStrings()
         {
             var result = new List<string>();
             foreach (var medicine in assortment)
@@ -261,12 +257,12 @@ namespace NEA.MENU
             }
             return result;
         }
-        private void TryFilterByID(int startRange, int endRange)
+        private void FilterByID(int startRange, int endRange)
         {
             try
             {
                 assortment = stock.FilterByID(startRange, endRange);
-                UpdatePages(AssortmentToString());
+                UpdatePages(AssortmentToStrings());
             }
             catch (DomainException e)
             {
