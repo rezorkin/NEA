@@ -11,9 +11,24 @@ namespace NEA.DOMAIN
     internal class SalesAnalyser
     {
         private List<SaleRecord> salesHistory;
-        public SalesAnalyser(List<SaleRecord> salesHistory) 
+        private int roundingLength;
+        public SalesAnalyser(List<SaleRecord> salesHistory, int roundingLength) 
         {
             this.salesHistory = salesHistory;
+            this.roundingLength = roundingLength;
+        }
+        public SalesStatistic GetStatistics() 
+        {
+            if(salesHistory.Count > 0) 
+            {
+                double mean = CalculateMean();
+                double median = CalculateMedian();
+                var saleExtremums = GetSaleExtremums();
+                double standrardDeviation = CalculateStandartDeviation();
+                return new SalesStatistic(mean, median, saleExtremums, standrardDeviation, salesHistory[0].GetMedicine());
+            }
+            return new SalesStatistic(-1, -1, (-1,-1), -1, salesHistory[0].GetMedicine());
+
         }
         public double CalculateMedian()
         {
@@ -42,57 +57,27 @@ namespace NEA.DOMAIN
             {
                 totalSum += salesValue;
             }
-            return totalSum / salesValues.Length; ;
+            return RoundValue(totalSum / salesValues.Length);
         }
-        public Dictionary<int,int> CalculateModes() 
+        public (int minimum, int maximum) GetSaleExtremums()
         {
-            int[] salesValues = GetSales();
-            Dictionary<int,int> salesOccurrences = new Dictionary<int,int>();
-            for(int g = 0; g < salesValues.Length; g++)
-            {
-                int numberOfOccurrences = 0;
-                for(int i = 0; i < salesValues.Length; i++)
-                {
-                    if (salesValues[g] == salesValues[i])
-                    {
-                        numberOfOccurrences++;
-                    }
-                }
-                if(numberOfOccurrences != 1 && salesOccurrences.ContainsKey(salesValues[g]) == false)
-                {
-                    salesOccurrences.Add(salesValues[g], numberOfOccurrences);
-                }
-            }
-            if(salesOccurrences.Count == 0)
-            {
-                return new Dictionary<int, int>();
-            }
-            else
-            {
-                Dictionary<int,int> modes = new Dictionary<int,int>();
-                KeyValuePair<int,int> max = salesOccurrences.Max();
-                foreach(KeyValuePair<int,int> saleOccurrence in salesOccurrences)
-                {
-                    if (saleOccurrence.Value == max.Value)
-                    {
-                        modes.Add(saleOccurrence.Key, saleOccurrence.Value);
-                    }
-                }
-                return modes;
-            }
-
+            var sales = GetSales().ToList();
+            sales.Sort();
+            int minimum = sales[0];
+            int maximum = sales.Last();
+            return (minimum, maximum);
         }
         public double CalculateStandartDeviation()
         {
-            double deviation = Math.Sqrt(CalculateVariance(false));
-            return deviation;
+            double deviation = Math.Sqrt(CalculateVariance());
+            return RoundValue(deviation);
         }
         public double CalculateSampleDeviation()
         {
-            double deviation = Math.Sqrt(CalculateVariance(true));
-            return deviation;
+            double deviation = Math.Sqrt(CalculateSampleVariance());
+            return RoundValue(deviation);
         }
-        private double CalculateVariance(bool isSampleVariance)
+        private double CalculateVariance()
         {
             double mean = CalculateMean();
             double sumOfSquareDistances = 0;
@@ -102,17 +87,21 @@ namespace NEA.DOMAIN
                 double squareDistance = Math.Pow((saleValue - mean), 2);
                 sumOfSquareDistances += squareDistance;
             }
-            if(isSampleVariance == false)
+            double variance = sumOfSquareDistances / salesValues.Length;
+            return variance;
+        }
+        private double CalculateSampleVariance()
+        {
+            double mean = CalculateMean();
+            double sumOfSquareDistances = 0;
+            int[] salesValues = GetSales();
+            foreach (int saleValue in salesValues)
             {
-                double variance = sumOfSquareDistances / salesValues.Length;
-                return variance;
+                double squareDistance = Math.Pow((saleValue - mean), 2);
+                sumOfSquareDistances += squareDistance;
             }
-            else
-            {
-                double variance = sumOfSquareDistances / (salesValues.Length - 1);
-                return variance;
-            }
-            
+            double variance = sumOfSquareDistances / (salesValues.Length - 1);
+            return variance;
         }
         private int[] GetSales()
         {
@@ -123,6 +112,11 @@ namespace NEA.DOMAIN
             }
             return Sales;
         }
+        private double RoundValue(double value)
+        {
+            return Math.Round(value, roundingLength);
+        }
+
 
     }
 }

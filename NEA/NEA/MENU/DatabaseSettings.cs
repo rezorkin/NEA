@@ -7,18 +7,14 @@ using System.Threading.Tasks;
 
 namespace NEA.MENU
 {
-    internal class DatabaseSettingsTable : SettingsTable
+    internal class DatabaseSettings : IPrintable
     {
-        DatabaseFinder finder;
-        public DatabaseSettingsTable(MainMenuTable menu, ConsoleColor defaultFontColour) : base(menu, defaultFontColour) 
+        DatabaseFinder finder = new DatabaseFinder();
+        public DatabaseSettings()  
         {
             finder = new DatabaseFinder();
         }
-        public override void OutputPage()
-        {
-            PrintOptions();
-        }
-        protected override void PrintOptions()
+        public void PrintOptions()
         {
             Console.WriteLine("Press 1 to connect to the practice database");
             Console.WriteLine("Press 2 to connect to the local database");

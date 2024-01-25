@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Security.Cryptography;
@@ -12,14 +13,15 @@ using NEA.DOMAIN;
 
 namespace NEA.MENU
 {
-    internal class AssortmentTable : MedicineTable
+    internal class AssortmentTable : Table
     {
         private Stock stock;
         private List<Medicine> selectedMedicines;
         private List<Medicine> assortment;
+        protected override int spacesToDivider => 24;
 
         protected override string[] attributes => new string[] { "ID", "Name", "Company Name", "Active Substance(ATC) Code" };
-        public AssortmentTable(int pageLength, int spaceToDivider, ConsoleColor defaultFontColour) : base(pageLength, spaceToDivider, defaultFontColour) 
+        public AssortmentTable(int pageLength, ConsoleColor defaultFontColour) : base(pageLength, defaultFontColour) 
         {
             stock = new Stock();
             assortment = stock.GetAssortment();
@@ -30,7 +32,7 @@ namespace NEA.MENU
         {
             return selectedMedicines;
         }
-        protected override void PrintOptions()
+        public override void PrintOptions()
         {
             Console.WriteLine();
             Console.WriteLine("Press Left or Right arrow to navigate on the pages");
@@ -77,9 +79,9 @@ namespace NEA.MENU
                 throw new MenuException("Invalid id value");
             }
         }
-        public override void OutputPage()
+        public override void OutputTable()
         {
-            base.OutputPage();
+            base.OutputTable();
             Console.WriteLine();
             if(selectedMedicines.Count > 0) 
             {
@@ -220,26 +222,28 @@ namespace NEA.MENU
         public override void SortRows(string attribute, OrderBy order)
         {
             Console.WriteLine();
+
             if (attribute == attributes[0])
             {
-                assortment = stock.Sort(SortOption.ID, order, assortment);
+                assortment = stock.Sort(assortment, medicine => medicine.GetID(), order);
             }
             else if (attribute == attributes[1])
             {
-                assortment = stock.Sort(SortOption.Name, order, assortment);
+                assortment = stock.Sort(assortment, medicine => medicine.GetName(), order);
             }
             else if (attribute == attributes[2])
             {
-                assortment = stock.Sort(SortOption.CompanyName, order, assortment);
-                            }
+                assortment = stock.Sort(assortment, medicine => medicine.GetCompanyName(), order);
+            }
             else if (attribute == attributes[3])
             {
-                assortment = stock.Sort(SortOption.ActiveSubstance, order, assortment);
+                assortment = stock.Sort(assortment, medicine => medicine.GetActiveSubstance(), order);
             }
             else
             {
                 throw new MenuException();
-            } 
+            }
+            
             var tableRows = AssortmentToStrings();
             UpdatePages(tableRows);
         }

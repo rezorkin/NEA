@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NEA.DOMAIN;
-using NEA.DAO;
-using NEA.MENU;
 
-namespace PharmacySalesAnalysis
+namespace NEA.MENU
 {
-    internal class Program
+    internal interface IPrintable
     {
-        
+        void PrintOptions();
     }
 }

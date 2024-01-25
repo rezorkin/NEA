@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NEA.DOMAIN
 {
-    internal class AccountingAuditor : ISortable<Statistics>
+    internal class AccountingAuditor : ISortable<SalesStatistic>
     {
         StockInspectionDAO inspectionDAO;
         PurchaseOrderDAO purchaseOrderDAO;
@@ -19,47 +20,36 @@ namespace NEA.DOMAIN
             purchaseOrderDAO = new PurchaseOrderDAO();
             this.roundingLength = roundingLength;
         }
-        public List<PurchaseOrder> GetPurchaseOrderHistory(Medicine medicine)
+        public List<PurchaseOrder> GetPurchaseOrderHistory(int medicineID, OrderBy order)
         {
             try
             {
-                return purchaseOrderDAO.GetRecordHistory(medicine);
+                List<PurchaseOrder> records = purchaseOrderDAO.GetRecordHistory(medicineID);
+                return MergeSort<PurchaseOrder>.MergeSortByDate(records, order);
             }
             catch (DAOException e)
             {
                 throw new DomainException(e.Message, e);
             }
         }
-        public List<StockInspection> GetStockInspectionHistory(Medicine medicine)
+        public List<StockInspection> GetStockInspectionHistory(int medicineID, OrderBy order)
         {
             try
             {
-                return inspectionDAO.GetRecordHistory(medicine);
+                return MergeSort<StockInspection>.MergeSortByDate(inspectionDAO.GetRecordHistory(medicineID), order);
             }
             catch (DAOException e)
             {
                 throw new DomainException(e.Message, e);
             }
         }
-        public List<SaleRecord> GetSalesHistory(Medicine medicine)
+
+        public List<SaleRecord> GetSalesHistory(int medicineID , OrderBy order)
         {
             try
             {
-                var purchases = purchaseOrderDAO.GetRecordHistory(medicine, OrderBy.ASC);
-                var inspections = inspectionDAO.GetRecordHistory(medicine, OrderBy.ASC);
-                return CalculateSalesHistory(purchases, inspections);
-            }
-            catch(DAOException e) 
-            {
-                throw new DomainException(e.Message);
-            }
-        }
-        public List<SaleRecord> GetSalesHistory(int medicineId)
-        {
-            try
-            {
-                var purchases = purchaseOrderDAO.GetRecordHistory(medicineId);
-                var inspections = inspectionDAO.GetRecordHistory(medicineId);
+                var purchases = GetPurchaseOrderHistory(medicineID, order);
+                var inspections = GetStockInspectionHistory(medicineID, order);
                 return CalculateSalesHistory(purchases, inspections);
             }
             catch (DAOException e)
@@ -67,42 +57,45 @@ namespace NEA.DOMAIN
                 throw new DomainException(e.Message);
             }
         }
-        public List<Statistics> GetStatisticRecords(List<Medicine> sample)
+        public List<SaleRecord> GetSalesHistory(int medicineID)
         {
-            var result = new List<Statistics>();
+            try
+            {
+                var purchases = GetPurchaseOrderHistory(medicineID, OrderBy.DESC);
+                var inspections = GetStockInspectionHistory(medicineID, OrderBy.DESC);
+                return CalculateSalesHistory(purchases, inspections);
+            }
+            catch (DAOException e)
+            {
+                throw new DomainException(e.Message);
+            }
+        }
+        public List<SalesStatistic> GetStatisticRecords(List<Medicine> sample)
+        {
+            var result = new List<SalesStatistic>();
             foreach (Medicine medicine in sample)
             {
                 try
                 {
-                    var saleshistory = GetSalesHistory(medicine);
-                    analyser = new SalesAnalyser(saleshistory);
-                    double mean = analyser.CalculateMean();
-                    double median = analyser.CalculateMedian();
-                    var modes = analyser.CalculateModes();
-                    double standrardDeviation = analyser.CalculateStandartDeviation();
-                    var analysedMedicine = new Statistics(mean, median, modes, standrardDeviation, roundingLength, medicine);
-                    result.Add(analysedMedicine);
+                    var saleshistory = GetSalesHistory(medicine.GetID());
+                    analyser = new SalesAnalyser(saleshistory, roundingLength);
+                    result.Add(analyser.GetStatistics());
                 }
                 catch (DomainException)
                 {
-                    double mean = -1;
-                    double median = -1;
-                    var modes = new Dictionary<int, int>();
-                    double standrardDeviation = -1;
-                    var analysedMedicine = new Statistics(mean, median, modes, standrardDeviation, roundingLength, medicine);
-                    result.Add(analysedMedicine);
+                    result.Add(new SalesStatistic(-1, -1, (-1, -1), -1, medicine));
                 }
             }
             return result;
         }
-        public List<Statistics> GetStatisticRecords(List<Medicine> sample, SaleRecord startDate, SaleRecord endDate)
+        public List<SalesStatistic> UpdateStatisticRecords(List<SalesStatistic> statistics, SaleRecord startDate, SaleRecord endDate)
         {
-            var result = new List<Statistics>();
-            foreach (Medicine medicine in sample)
+            var result = new List<SalesStatistic>();
+            foreach (SalesStatistic record in statistics)
             {
                 try
                 {
-                    List<SaleRecord> salesHistory = GetSalesHistory(medicine);
+                    List<SaleRecord> salesHistory = GetSalesHistory(record.GetMedicineID());
                     List<SaleRecord> boundedSalesHistory = new List<SaleRecord>();
                     for(int i = 0; i < salesHistory.Count; i++)
                     {
@@ -116,87 +109,63 @@ namespace NEA.DOMAIN
                     {
                         throw new DomainException();
                     }
-                    analyser = new SalesAnalyser(boundedSalesHistory);
-                    double mean = analyser.CalculateMean();
-                    double median = analyser.CalculateMedian();
-                    var modes = analyser.CalculateModes();
-                    double standrardDeviation = analyser.CalculateSampleDeviation();
-                    var analysedMedicine = new Statistics(mean, median, modes, standrardDeviation, roundingLength, medicine);
-                    result.Add(analysedMedicine);
+                    analyser = new SalesAnalyser(boundedSalesHistory, roundingLength);
+                    result.Add(analyser.GetStatistics());
                 }
                 catch (DomainException)
                 {
-                    double mean = -1;
-                    double median = -1;
-                    var modes = new Dictionary<int, int>();
-                    double standrardDeviation = -1;
-                    var analysedMedicine = new Statistics(mean, median, modes, standrardDeviation, roundingLength, medicine);
-                    result.Add(analysedMedicine);
+                    result.Add(new SalesStatistic(-1, -1, (-1,-1), -1, record.GetMedicine()));
                 }
             }
             return result;
         }
-        public SaleRecord GetEarlisetSaleRecordFromTheSample(List<Medicine> sample)
+        public List<SalesStatistic> UpdateStatisticRecords(List<SalesStatistic> statistics)
         {
-            return GetSaleRecordFromTheSample(sample, true);
-        }
-        public SaleRecord GetLatestSaleRecordFromTheSample(List<Medicine> sample)
-        {
-            return GetSaleRecordFromTheSample(sample, false);
-        }
-        private SaleRecord GetSaleRecordFromTheSample(List<Medicine> sample, bool IsEarliest) 
-        {
-            
-            SaleRecord result;
-            if (sample.Count == 0)
-            {
-                throw new DomainException("The sample does not include medicines with existing sales history");
-            }
-            try
-            {
-                if (IsEarliest == true)
-                {
-                    result = GetSalesHistory(sample[0])[0];
-                }
-                else
-                {
-                    result = GetSalesHistory(sample[0]).Last();
-                }
-            }
-            catch (DomainException)
-            {
-                return GetSaleRecordFromTheSample(sample.Skip(1).ToList(), IsEarliest);
-            }
-            foreach (var medicine in sample)
+            var result = new List<SalesStatistic>();
+            foreach (SalesStatistic statistic in statistics)
             {
                 try
                 {
-                    List<SaleRecord> medicineSalesHistory = GetSalesHistory(medicine);
-                    if (medicineSalesHistory.Count != 0)
-                    {
-                        if (IsEarliest == true)
-                        {
-                            if (medicineSalesHistory[0] < result)
-                            {
-                                result = medicineSalesHistory[0];
-                            }
-                        }
-                        else
-                        {
-                            if (medicineSalesHistory.Last() > result)
-                            {
-                                result = medicineSalesHistory[0];
-                            }
-                        }
-
-                    }
+                    var saleshistory = GetSalesHistory(statistic.GetMedicineID());
+                    analyser = new SalesAnalyser(saleshistory, roundingLength);
+                    result.Add(analyser.GetStatistics());
                 }
-                catch (DomainException) { }
+                catch (DomainException)
+                {
+                    result.Add(new SalesStatistic(-1, -1, (-1, -1), -1, statistic.GetMedicine()));
+                }
             }
             return result;
-
-
         }
+        public SaleRecord GetFirstSalesRecordFromTheSample(List<SalesStatistic> statistics, OrderBy order)
+        {
+            if(statistics.Count == 0)
+            {
+                throw new DomainException("The sample does not include medicines with existing sales history");
+            }
+            if (GetSalesHistory(statistics[0].GetMedicineID(), order).Count == 0)
+            {
+                return GetFirstSalesRecordFromTheSample(statistics.Skip(1).ToList(), order);
+            }
+            else
+            {
+               var result = GetSalesHistory(statistics[0].GetMedicineID(), order)[0];
+                foreach (var medicine in statistics)
+                {
+                    List<SaleRecord> medicineSalesHistory = GetSalesHistory(medicine.GetMedicineID(), order);
+                    if (medicineSalesHistory.Count != 0)
+                    {
+                        result = MergeSort<SaleRecord>.Compare(result, medicineSalesHistory[0], order);
+                    }
+
+                }
+                return result;
+            }
+            
+
+
+        } 
+            
         private List<SaleRecord> CalculateSalesHistory(List<PurchaseOrder> purchaseOrders, List<StockInspection> inspections)
         {
             var result = new List<SaleRecord>();
@@ -223,33 +192,94 @@ namespace NEA.DOMAIN
             return result;
         }
 
-        public List<Statistics> Sort(SortOption attribute, OrderBy order, List<Statistics> stats)
+        public List<SalesStatistic> Sort<TKey>(List<SalesStatistic> stats, Func<SalesStatistic, TKey> sorter, OrderBy order)
         {
-            if (attribute == SortOption.ID)
-                return Sort(stats, stat => stat.GetMedicineID(), order);
-            else if (attribute == SortOption.Mean)
-                return Sort(stats, medicine => medicine.GetMean(), order);
-            else if (attribute == SortOption.Median)
-                return Sort(stats, medicine => medicine.GetMedian(), order);
-            else if (attribute == SortOption.Deviation)
-                return Sort(stats, medicine => medicine.GetStandrardDeviation(), order);
-            else if (attribute == SortOption.Modes)
-                return Sort(stats,medicine => medicine.GetModes(), order);
-            else if (attribute == SortOption.Name)
-                return Sort(stats, stat => stat.GetMedicineID(), order);
-            throw new DomainException("Invalid sort option");
-        }
-
-        public List<Statistics> Sort<TKey>(List<Statistics> medicines, Func<Statistics, TKey> sorter, OrderBy order)
-        {
-            
             if (order == OrderBy.ASC)
             {
-                medicines = medicines.OrderBy(sorter).ToList();
+                return stats.OrderBy(sorter).ToList();
             }
-            medicines = medicines.OrderByDescending(sorter).ToList();
-            return medicines;
+            return stats.OrderByDescending(sorter).ToList();
         }
+        
+        private static class MergeSort<T> where T : Record
+        {
+            public static List<T> MergeSortByDate(List<T> records, OrderBy order)
+            {
+                if (records.Count < 2)
+                {
+                    return records;
+                }
+                int mid = records.Count / 2;
+                var leftPart = new List<T>();
+                var rightPart = new List<T>();
+                for(int i = 0; i < records.Count; i++)
+                {
+                    if(i <  mid)
+                    {
+                        leftPart.Add(records[i]);
+                    }
+                    else
+                        rightPart.Add(records[i]);
+                }
+                leftPart = MergeSortByDate(leftPart, order);
+
+                
+                rightPart = MergeSortByDate(rightPart, order);
+
+                return Merge(leftPart, rightPart, order);
+            }
+
+            public static List<T> Merge(List<T> left, List<T> right, OrderBy order)
+            {
+                List<T> result = new List<T>();
+                int l = 0;
+                int r = 0;
+                while (l < left.Count && r < right.Count)
+                {
+                    result.Add(Compare(left[l], right[r], order));
+                    if (result.Last() == left[l])
+                        l++;
+                    else
+                        r++;
+                }
+                while (l < left.Count)
+                {
+                    result.Add(left[l]);
+                    l++;
+                }
+                while (r < right.Count)
+                {
+                    result.Add(right[r]);
+                    r++;
+                }
+                return result;
+            }
+            public static T Compare(T left, T right, OrderBy order)
+            {
+                if (order == OrderBy.ASC)
+                {
+                    if (left < right)
+                    {
+                        return left;
+                    }
+                    else
+                    {
+                        return right;
+                    }
+                }
+                else
+                {
+                    if (left < right)
+                    {
+                        return right;
+                    }
+                    else
+                        return left;
+                }
+
+            }
+        }
+
     }
-    
+
 }

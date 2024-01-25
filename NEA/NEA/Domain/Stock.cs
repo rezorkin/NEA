@@ -17,7 +17,7 @@ namespace NEA.DOMAIN
         }
         public int GetBiggestID()
         {
-            return medicineDAO.GetSortedByID(OrderBy.ASC).Last().GetID();
+            return medicineDAO.GetAll(OrderBy.ASC).Last().GetID();
         }
         public List<Medicine> GetAssortment() 
         {
@@ -30,41 +30,6 @@ namespace NEA.DOMAIN
             {
                 return new List<Medicine>();
             }
-        }
-        public List<Medicine> Sort(SortOption attribute, OrderBy order, List<Medicine> assortment)
-        {
-            bool IsAssortmentfiltered = assortment.Count < GetAssortment().Count;
-            if (IsAssortmentfiltered == true)
-            {
-                return GetSortedSample(attribute, order, assortment);
-            }
-            return GetAssortment(attribute, order);
-        }
-        private List<Medicine> GetAssortment(SortOption attribute, OrderBy order) 
-        {
-            if (attribute == SortOption.ID)
-                return medicineDAO.GetSortedByID(order);
-            else if (attribute == SortOption.Name)
-                return medicineDAO.GetSortedByName(order);
-            else if (attribute == SortOption.CompanyName)
-                return medicineDAO.GetSortedByCompanyName(order);
-            else if (attribute == SortOption.ActiveSubstance)
-                return medicineDAO.GetSortedByActiveSubstance(order);
-            else
-                throw new DomainException("Invalid sort option");
-        }
-        private List<Medicine> GetSortedSample(SortOption attribute, OrderBy order, List<Medicine> sample)
-        {
-            if (attribute == SortOption.ID)
-                return Sort(sample, medicine => medicine.GetID(), order);
-            else if (attribute == SortOption.Name)
-                return Sort(sample, medicine => medicine.GetName(), order);
-            else if (attribute == SortOption.CompanyName)
-                return Sort(sample, medicine => medicine.GetCompanyName(), order);
-            else if (attribute == SortOption.ActiveSubstance)
-                return Sort(sample, medicine => medicine.GetActiveSubstance(), order);
-            else
-                throw new DomainException("Invalid sort option");
         }
         public List<Medicine> FindByName(string name, bool IsProductName, bool IsCompleteName)
         {
@@ -120,7 +85,6 @@ namespace NEA.DOMAIN
                 throw new DomainException(e.Message);
             }
         }
-       
         public List<Medicine> Sort<TKey>(List<Medicine> medicines, Func<Medicine, TKey> sorter, OrderBy order)
         {
             if(order == OrderBy.ASC)

@@ -6,17 +6,15 @@ using System.Threading.Tasks;
 
 namespace NEA.MENU
 {
-    internal class ProgramSettingsTable : SettingsTable
+    internal class ProgramSettings : IPrintable
     {
-        public ProgramSettingsTable(MainMenuTable table, ConsoleColor defaultFontColour) : base(table, defaultFontColour) 
-        {
-        }
-        public override void OutputPage()
-        {
-            PrintOptions();
-        }
+        public MainMenu menu { get; }
 
-        protected override void PrintOptions()
+        public ProgramSettings(MainMenu table)       
+        {
+            menu = table;
+        }
+        public void PrintOptions()
         {
             Console.WriteLine("Press 1 to change variables' round length");
             Console.WriteLine("Press 2 to change the number of medicines showed per page");
@@ -49,7 +47,7 @@ namespace NEA.MENU
             {
                 throw new MenuException("Inappropriate key");
             }
-            menuTable =  new MainMenuTable(menuTable.numberOfItemsPerPage, roundingLength, menuTable.defaultFontColour);
+            menu.roundingLength = roundingLength;
         }
         public void ChangeTheme()
         {
@@ -60,13 +58,13 @@ namespace NEA.MENU
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.White;
-                menuTable = new MainMenuTable(menuTable.numberOfItemsPerPage, menuTable.roundingLength, ConsoleColor.White);
+                menu.defaultFontColour = ConsoleColor.White;
             }
             else if (key == ConsoleKey.D2)
             {
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Black;
-                menuTable = new MainMenuTable(menuTable.numberOfItemsPerPage, menuTable.roundingLength, ConsoleColor.Black);
+                menu.defaultFontColour = ConsoleColor.Black;
             }
             else
             {
@@ -95,7 +93,7 @@ namespace NEA.MENU
             {
                 throw new MenuException("Inappropriate key");
             }
-            menuTable = new MainMenuTable(pageLength, menuTable.roundingLength, menuTable.defaultFontColour);
+            menu.pageLength = pageLength;
         }
     }
 }

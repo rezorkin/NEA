@@ -8,8 +8,6 @@ namespace NEA.DOMAIN
 {
     internal interface ISortable<T>
     {
-        List<T> Sort(SortOption attribute, OrderBy order, List<T> medicines);
-        List<T> Sort<TKey>(List<T> medicines, Func<T, TKey> sorter, OrderBy order);
-       
+      List<T> Sort<TKey>(List<T> medicines, Func<T, TKey> sorter, OrderBy order);
     }
 }

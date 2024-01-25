@@ -56,17 +56,7 @@ namespace NEA.DAO
 
         public List<Medicine> GetAll()
         {
-           string command = $"SELECT ProductID, ProductName, CompanyName, ActiveSubstance\r\n" +
-                            $"FROM {tableName};";
-           return ExecuteSQlQuerry(command);
-        }
-
-        private List<Medicine> GetAll(string attribute, OrderBy order)
-        {
-            string command = $"SELECT ProductID, ProductName, CompanyName, ActiveSubstance\r\n" +
-                            $"FROM {tableName}\r\n" +
-                            $"ORDER BY\r\n{attribute} {order};";
-            return ExecuteSQlQuerry(command);
+            return GetAll(OrderBy.ASC);
         }
         private List<Medicine> ExecuteSQlQuerry(string commandStatement)
         {
@@ -112,26 +102,19 @@ namespace NEA.DAO
             return new Medicine(medicineID, medicineName, medicineCompanyName, medicineActiveSubstance);
         }
 
-        public List<Medicine> GetSortedByID(OrderBy order)
+        public List<Medicine> GetAll(OrderBy order)
         {
-            return GetAll("ProductID", order);
+            string orderCommand = $"ORDER BY ProductID ";
+            if (order == OrderBy.DESC)
+            {
+                orderCommand += "DESC";
+            }
+            else
+                orderCommand += "ASC";
+            string command = $"SELECT ProductID, ProductName, CompanyName, ActiveSubstance\r\n" +
+                            $"FROM {tableName} {orderCommand}"; 
+            return ExecuteSQlQuerry(command);
         }
-
-        public List<Medicine> GetSortedByName(OrderBy order)
-        {
-            return GetAll("ProductName", order);
-        }
-
-        public List<Medicine> GetSortedByCompanyName(OrderBy order)
-        {
-            return GetAll("CompanyName", order);
-        }
-
-        public List<Medicine> GetSortedByActiveSubstance(OrderBy order)
-        {
-            return GetAll("ActiveSubstance", order);
-        }
-
         public List<Medicine> FindInIDRange(int startRange, int endRange)
         {
             string rangeStatement;

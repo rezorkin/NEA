@@ -10,21 +10,18 @@ using NEA.DOMAIN;
 
 namespace NEA.MENU
 {
-    internal class AnalysisTable : MedicineTable
+    internal class AnalysisTable : Table
     {
         private AccountingAuditor auditor;
-        private List<Statistics> statisticRecords;
-        private readonly List<Medicine> sample;
-        private readonly int roundingLength;
-        public AnalysisTable(int pageLength, int spacesToDivider, ConsoleColor defaultFontColour, List<Medicine> sample, int roundingLength) : base(pageLength, spacesToDivider, defaultFontColour)
+        private List<SalesStatistic> statistics;
+        protected override int spacesToDivider => 9;
+        public AnalysisTable(int pageLength, ConsoleColor defaultFontColour, List<Medicine> sample, int roundingLength) : base(pageLength, defaultFontColour)
         {
-            this.sample = sample;
             auditor = new AccountingAuditor(roundingLength);
-            statisticRecords = auditor.GetStatisticRecords(sample);
+            statistics = auditor.GetStatisticRecords(sample);
             UpdatePages(RecordsToStrings());
-            this.roundingLength = roundingLength;
         }
-        protected override string[] attributes => new string[] {"ID", "Name", "Mean", "Median", "Mode", "Standard deviation" };
+        protected override string[] attributes => new string[] {"ID", "Name", "Mean", "Median", "Minimum", "Maximum", "Standard deviation" };
         public void ApplyDateBoundaries()
         {
             Console.WriteLine();
@@ -33,8 +30,8 @@ namespace NEA.MENU
                 int year, month;
                 DateTime userDate, dateAfter1Month;
                 SaleRecord startDate, endDate;
-                var earliestSaleRecord = auditor.GetEarlisetSaleRecordFromTheSample(sample);
-                var latestSaleRecord = auditor.GetLatestSaleRecordFromTheSample(sample);
+                var earliestSaleRecord = auditor.GetFirstSalesRecordFromTheSample(statistics, OrderBy.ASC);
+                var latestSaleRecord = auditor.GetFirstSalesRecordFromTheSample(statistics, OrderBy.DESC);
 
                 Console.WriteLine();
                 Console.WriteLine($"Enter start date (In range from {earliestSaleRecord.GetRecordDate().Month}" +
@@ -42,27 +39,21 @@ namespace NEA.MENU
                     $"to {latestSaleRecord.GetRecordDate().Month}/{latestSaleRecord.GetRecordDate().Year}):");
                 Console.WriteLine("Enter year:");
                 year = int.Parse(Console.ReadLine());
-                Console.WriteLine("Enter month(from 1 to 12):");
+                Console.WriteLine("Enter month:");
                 month = int.Parse(Console.ReadLine());
                 userDate = new DateTime(year, month, 1);
                 startDate = new SaleRecord(userDate);
                 Console.WriteLine("Start date: " + userDate.Month + "/" + userDate.Year);
                 dateAfter1Month = startDate.GetRecordDate().AddMonths(1);
-                SaleRecord recordAfter1Month = new SaleRecord(dateAfter1Month);
                 if (startDate < earliestSaleRecord || startDate > latestSaleRecord)
                 {
                     throw new OverflowException();
                 }
-                else if(recordAfter1Month == latestSaleRecord)
-                {
-                    endDate = new SaleRecord(dateAfter1Month);
-                    statisticRecords = auditor.GetStatisticRecords(sample, startDate, endDate);
-                    UpdatePages(RecordsToStrings());
-                    throw new MenuException("Date boundaries were applied successfully");
-                }
                 else if(startDate == latestSaleRecord)
                 {
-                    throw new MenuException("Date boundaries have to be in a range of at least 2 monthes");
+                    statistics = auditor.UpdateStatisticRecords(statistics, startDate, startDate);
+                    UpdatePages(RecordsToStrings());
+                    Console.WriteLine("Date boundaries were applied successfully");
                 }
                 else
                 {
@@ -71,7 +62,7 @@ namespace NEA.MENU
                         $"to {latestSaleRecord.GetRecordDate().Month}/{latestSaleRecord.GetRecordDate().Year}):");
                     Console.WriteLine("Enter year:");
                     year = int.Parse(Console.ReadLine());
-                    Console.WriteLine("Enter month(from 1 to 12):");
+                    Console.WriteLine("Enter month:");
                     month = int.Parse(Console.ReadLine());
                     userDate = new DateTime(year, month, 1);
                     endDate = new SaleRecord(userDate);
@@ -79,7 +70,7 @@ namespace NEA.MENU
                     Console.ReadKey();
                     if (startDate < endDate && (endDate < latestSaleRecord || endDate == latestSaleRecord))
                     {
-                        statisticRecords = auditor.GetStatisticRecords(sample, startDate, endDate);
+                        statistics = auditor.UpdateStatisticRecords(statistics, startDate, endDate);
                         UpdatePages(RecordsToStrings());
                     }
                     else
@@ -105,7 +96,7 @@ namespace NEA.MENU
                 throw new MenuException("Invalid date. ");
             }
         }
-        protected override void PrintOptions()
+        public override void PrintOptions()
         {
             Console.WriteLine();
             Console.WriteLine("Press Left or Right arrow to navigate on the pages");
@@ -119,41 +110,43 @@ namespace NEA.MENU
         public override void SortRows(string attribute, OrderBy order)
         {
              Console.WriteLine();
-            SortOption option = new SortOption();
              if (attribute == attributes[0])
              {
-                option = SortOption.ID;
+                statistics = auditor.Sort(statistics, stat => stat.GetMedicineID(), order);
              }
              else if (attribute == attributes[1])
              {
-                option = SortOption.Name;
+                statistics = auditor.Sort(statistics, stat => stat.GetMedicineName(), order);
              }
              else if (attribute == attributes[2])
              {
-                option = SortOption.Mean;
+                statistics = auditor.Sort(statistics, stat => stat.GetMean(), order);
              }
              else if (attribute == attributes[3])
              {
-                option = SortOption.Median;
+                statistics = auditor.Sort(statistics, stat => stat.GetMedian(), order);
              }
              else if(attribute == attributes[4])
              {
-                option = SortOption.Modes;
+                statistics = auditor.Sort(statistics, stat => stat.GetSalesExtremums().Item1, order);
              }
-             else if(attribute == attributes[5])
+            else if (attribute == attributes[5])
+            {
+                statistics = auditor.Sort(statistics, stat => stat.GetSalesExtremums().Item2, order);
+            }
+            else if(attribute == attributes[6])
              {
-                option = SortOption.Deviation;
+                statistics = auditor.Sort(statistics, stat => stat.GetDeviation(), order);
              }
              else
              { 
                 throw new MenuException();
              }
-             statisticRecords = auditor.Sort(option, order, statisticRecords);
              UpdatePages(RecordsToStrings());
         }
-        public override void OutputPage()
+        public override void OutputTable()
         {
-            base.OutputPage();
+            base.OutputTable();
             PrintOptions();
         }
         public override void Select()
@@ -161,24 +154,23 @@ namespace NEA.MENU
             Console.WriteLine();
             Console.WriteLine("Enter Medicine's id:");
             string input = Console.ReadLine();
-            bool doesMatchesAnySampleID = false;
-            foreach (var record in statisticRecords)
+            try
             {
-                if (input == record.GetMedicineID().ToString())
+                int ID = int.Parse(input);
+                var salesHistory = auditor.GetSalesHistory(ID);
+                foreach (var sales in salesHistory)
                 {
-                    doesMatchesAnySampleID = true;
-                    int ID = int.Parse(input);
-                    var salesHistory = auditor.GetSalesHistory(ID);
-                    foreach(var sales in salesHistory) 
-                    {
-                        Console.WriteLine(sales.ToString());
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine("Press any key to move on");
-                    Console.ReadKey();
+                    Console.WriteLine(sales.ToString());
                 }
+                Console.WriteLine();
+                Console.WriteLine("Press any key to move on");
+                Console.ReadKey();
             }
-            if(doesMatchesAnySampleID == false)
+            catch(FormatException)
+            {
+                throw new MenuException("Invalid input type");
+            }
+            catch(DomainException)
             {
                 throw new MenuException("Invalid id value");
             }
@@ -187,7 +179,7 @@ namespace NEA.MENU
         protected List<string> RecordsToStrings()
         {
             var result = new List<string>();    
-            foreach(Statistics medicine in statisticRecords)
+            foreach(SalesStatistic medicine in statistics)
             {
                 result.Add(medicine.ToString());
             }
@@ -196,7 +188,7 @@ namespace NEA.MENU
 
         public override void ResetToInitialTable()
         {
-            statisticRecords = auditor.GetStatisticRecords(sample);
+            statistics = auditor.UpdateStatisticRecords(statistics);
             UpdatePages(RecordsToStrings());
 
         }

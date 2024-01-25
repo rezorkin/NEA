@@ -60,10 +60,9 @@
     <Compile Include="DOMAIN\AccountingAuditor.cs" />
     <Compile Include="DOMAIN\DatabaseFinder.cs" />
     <Compile Include="DOMAIN\ISortable.cs" />
-    <Compile Include="DOMAIN\Statistics.cs" />
+    <Compile Include="DOMAIN\SalesStatistic.cs" />
     <Compile Include="DOMAIN\SaleRecord.cs" />
     <Compile Include="DOMAIN\SalesAnalyser.cs" />
-    <Compile Include="DOMAIN\SortOption.cs" />
     <Compile Include="DOMAIN\Stock.cs" />
     <Compile Include="DOMAIN\DomainException.cs" />
     <Compile Include="DOMAIN\Medicine.cs" />
@@ -71,18 +70,16 @@
     <Compile Include="DOMAIN\PurchaseOrder.cs" />
     <Compile Include="DOMAIN\StockInspection.cs" />
     <Compile Include="MENU\AssortmentTable.cs" />
-    <Compile Include="MENU\DatabaseSettingsTable.cs" />
-    <Compile Include="MENU\MainMenuTable.cs" />
-    <Compile Include="MENU\Menu.cs" />
-    <Compile Include="MENU\MenuAction.cs" />
+    <Compile Include="MENU\DatabaseSettings.cs" />
+    <Compile Include="MENU\MainMenu.cs" />
+    <Compile Include="MENU\Program.cs" />
     <Compile Include="MENU\MenuException.cs" />
     <Compile Include="DOMAIN\OrderBy.cs" />
     <Compile Include="MENU\Page.cs" />
     <Compile Include="MENU\AnalysisTable.cs" />
-    <Compile Include="MENU\MedicineTable.cs" />
-    <Compile Include="MENU\ProgramSettingsTable.cs" />
-    <Compile Include="MENU\SettingsTable.cs" />
     <Compile Include="MENU\Table.cs" />
+    <Compile Include="MENU\ProgramSettings.cs" />
+    <Compile Include="MENU\IPrintable.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

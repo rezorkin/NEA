@@ -26,10 +26,6 @@ namespace NEA.DAO
                 {
                     result.Add(MapDBRowToItemFields(row));
                 }
-                if(result.Count == 0)
-                {
-                    throw new DAOException("Nothing was found by folowing value" + attributeName);
-                }
                 return result;
             }
             catch(SQLiteException) 
@@ -37,27 +33,7 @@ namespace NEA.DAO
                 throw new DAOException("Invalid id value");
             }
         }
-        protected List<T> FindByAttributeValue(string tableName, string attributeName, string attributeValue, string orderByAttribute, OrderBy order)
-        {
-            try
-            {
-                List<T> result = new List<T>();
-                List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName, attributeName, attributeValue, orderByAttribute, order);
-                foreach (NameValueCollection row in undecodedResultSet)
-                {
-                    result.Add(MapDBRowToItemFields(row));
-                }
-                if (result.Count == 0)
-                {
-                    throw new DAOException("Nothing was found by folowing value" + attributeName);
-                }
-                return result;
-            }
-            catch (SQLiteException)
-            {
-                throw new DAOException("Invalid id value");
-            }
-        }
+   
         private List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value)
         {
             List<NameValueCollection> result = new List<NameValueCollection>();
@@ -82,29 +58,6 @@ namespace NEA.DAO
 
             return result;
         }
-        private List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value, string orderByAttribute, OrderBy order)
-        {
-            List<NameValueCollection> result = new List<NameValueCollection>();
-
-            using (SQLiteConnection connection = new SQLiteConnection(DAOConnecter.GetConnectionString()))
-            {
-                connection.Open();
-                using (SQLiteCommand command = new SQLiteCommand(connection))
-                {
-                    command.CommandText = $"SELECT *\r\nFROM {table}\r\nWHERE {attributeName} like \"{value} %\" or {attributeName} like \"% {value} %\" or {attributeName} like \"% {value}\" or {attributeName} like \"{value}\" ORDER BY {orderByAttribute} {order}";
-                    using (SQLiteDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            NameValueCollection currentRowValues = reader.GetValues();
-                            result.Add(currentRowValues);
-                        }
-                    }
-                }
-                connection.Close();
-            }
-
-            return result;
-        }
+ 
     }
 }

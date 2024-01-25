@@ -38,10 +38,6 @@ namespace NEA.DAO
         {
             return FindByAttributeValue(tableName, "MedicineID", selectedMedicine.GetID().ToString());
         }
-        public List<T> GetRecordHistory(Medicine selectedMedicine, OrderBy order)
-        {
-            return FindByAttributeValue(tableName, "MedicineID", selectedMedicine.GetID().ToString(), "Date", order);
-        }
 
         protected abstract override T MapDBRowToItemFields(NameValueCollection row);     
         protected DateTime ConvertStringToDate(string date)
