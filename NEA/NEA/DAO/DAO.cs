@@ -14,14 +14,15 @@ namespace NEA.DAO
 {
     internal abstract class DAO<T> 
     {
+        protected abstract string tableName { get; }
         protected abstract T MapDBRowToItemFields(NameValueCollection row);
 
-        protected List<T> FindByAttributeValue(string tableName, string attributeName, string attributeValue)
+        protected List<T> FindByAttributeValue(string attributeName, string attributeValue)
         {
             try
             {
                 List<T> result = new List<T>();
-                List<NameValueCollection> undecodedResultSet = GetMatchedRows(tableName, attributeName, attributeValue);
+                List<NameValueCollection> undecodedResultSet = GetMatchedRows(attributeName, attributeValue);
                 foreach (NameValueCollection row in undecodedResultSet)
                 {
                     result.Add(MapDBRowToItemFields(row));
@@ -34,7 +35,7 @@ namespace NEA.DAO
             }
         }
    
-        private List<NameValueCollection> GetMatchedRows(string table, string attributeName, string value)
+        private List<NameValueCollection> GetMatchedRows(string attributeName, string value)
         {
             List<NameValueCollection> result = new List<NameValueCollection>();
 
@@ -43,7 +44,7 @@ namespace NEA.DAO
                 connection.Open();
                 using (SQLiteCommand command = new SQLiteCommand(connection))
                 {
-                    command.CommandText = $"SELECT *\r\nFROM {table}\r\nWHERE {attributeName} like \"{value} %\" or {attributeName} like \"% {value} %\" or {attributeName} like \"% {value}\" or {attributeName} like \"{value}\"";
+                    command.CommandText = $"SELECT *\r\nFROM {tableName}\r\nWHERE {attributeName} like \"{value} %\" or {attributeName} like \"% {value} %\" or {attributeName} like \"% {value}\" or {attributeName} like \"{value}\"";
                     using (SQLiteDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

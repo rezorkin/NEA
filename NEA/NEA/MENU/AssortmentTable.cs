@@ -13,19 +13,17 @@ using NEA.DOMAIN;
 
 namespace NEA.MENU
 {
-    internal class AssortmentTable : Table
+    internal class AssortmentTable : Table<Medicine>
     {
-        private Stock stock;
+        private Stock stock = new Stock();
         private List<Medicine> selectedMedicines;
-        private List<Medicine> assortment;
         protected override int spacesToDivider => 24;
-
-        protected override string[] attributes => new string[] { "ID", "Name", "Company Name", "Active Substance(ATC) Code" };
+        protected override Dictionary<ConsoleKey, string> attributesKeys => new Dictionary<ConsoleKey, string>
+        {
+            {ConsoleKey.D1, "ID" }, {ConsoleKey.D2, "Name"}, {ConsoleKey.D3, "Company Name"}, {ConsoleKey.D4, "Active Substance(ATC) Code"}
+        };
         public AssortmentTable(int pageLength, ConsoleColor defaultFontColour) : base(pageLength, defaultFontColour) 
         {
-            stock = new Stock();
-            assortment = stock.GetAssortment();
-            UpdatePages(AssortmentToStrings());
             selectedMedicines = new List<Medicine>();
         }
         public List<Medicine> GetSample()
@@ -96,182 +94,152 @@ namespace NEA.MENU
             }
             PrintOptions();
         }
-        public void FilterRows(string attribute)
+        public void FilterByID()
         {
-            string attributeToFilter = attribute;
             int biggestID = stock.GetBiggestID();
-            if (attributeToFilter == attributes[0])
-            {
-                Console.WriteLine();
-                Console.WriteLine($"Enter minimum id value (In range from 1 to {biggestID}):");
-                string ID = Console.ReadLine();
-                try 
-                {
-                    int startRange = int.Parse(ID) - 1;
-                    int endRange;
-                    if (startRange + 1 == 0 || startRange + 1 > biggestID)
-                    {
-                        throw new OverflowException();
-                    }
-                    else if (startRange + 1 == biggestID)
-                    {
-                        endRange = 0;
-                        FilterByID(startRange, endRange);
-                    }
-                    else if (startRange + 2 == biggestID)
-                    {
-                        endRange = biggestID + 1;
-                        FilterByID(startRange, endRange);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Enter maximum id value (In range from {startRange + 2} to {biggestID}):");
-                        ID = Console.ReadLine();
-                        if (int.Parse(ID) + 1 > startRange)
-                        {
-                            endRange = int.Parse(ID) + 1;
-                            FilterByID(startRange, endRange);
-                        }
-                        else
-                        {
-                            throw new MenuException("You entered invalid maximum id value.");
-                        }
-                    }
-                }
-                catch (OverflowException)
-                {
-                    throw new MenuException("Entered id was out of the range. ");
-                }
-                catch (FormatException)
-                {
-                    throw new MenuException("Invalid id value. ");
-                }
-            }
-            else if (attributeToFilter == attributes[1])
-            {
-                Console.WriteLine();
-                Console.WriteLine("Enter name of the medicine. You can enter only one part of the name if the name is like 'Misinopril Ultra'.");
-                Console.WriteLine("Entering only 'L' , followed by '+' (L+), you will get all the statisticRecords starting with 'L' , entreing 'Li+' you will get all the statisticRecords starting with 'Li' and so on.");
-                string choice = Console.ReadLine();
-                try
-                {
-                    if(choice.Last() == '+')
-                    {
-                        int length = choice.Length - 1;
-                        choice = choice.Substring(0,length);
-                        assortment = stock.FindByName(choice, true, false);
-                    }
-                    else
-                    {
-                        assortment = stock.FindByName(choice, true, true);
-                    }
-                    UpdatePages(AssortmentToStrings());
-                }
-                catch (DomainException e) 
-                {
-                    throw new MenuException(e.Message);
-                }
-            }
-            else if (attributeToFilter == attributes[2])
-            {
-                Console.WriteLine();
-                Console.WriteLine("Enter name of the company. You can enter only one part of the name if the name is like 'Viabes Collum'.");
-                Console.WriteLine("Entering only 'L' , followed by '+'(L +), you will get all the statisticRecords starting with 'L' , entreing 'Li+' you will get all the statisticRecords starting with 'Li' and so on.");
-                string choice = Console.ReadLine();
-                try
-                {
-                    if (choice.Last() == '+')
-                    {
-                        int length = choice.Length - 1;
-                        choice = choice.Substring(0, length);
-                        assortment = stock.FindByName(choice, false, false);
-                    }
-                    else
-                    {
-                        assortment = stock.FindByName(choice, false, true);
-                    }
-                    UpdatePages(AssortmentToStrings());
-                }
-                catch (DomainException e)
-                {
-                    throw new MenuException(e.Message);
-                }
-            }
-            else if (attributeToFilter == attributes[3])
-            {
-                Console.WriteLine();
-                Console.WriteLine("Enter ATC code. Entering not a full code(7 digits) you will get all the statisticRecords within the subgroup you have just ended with");
-                string choice = Console.ReadLine();
-                try
-                {
-                    assortment = stock.FilterByActiveSubstance(choice);
-                    UpdatePages(AssortmentToStrings());
-                }
-                catch (DomainException e)
-                {
-                    throw new MenuException(e.Message);
-                }
-            }
-            else
-                throw new MenuException();
-        }
-        public void ResetSelection()
-        {
-            selectedMedicines = new List<Medicine>();
-        }
-        public override void SortRows(string attribute, OrderBy order)
-        {
             Console.WriteLine();
-
-            if (attribute == attributes[0])
+            Console.WriteLine($"Enter minimum id value (In range from 1 to {biggestID}):");
+            string ID = Console.ReadLine();
+            try
             {
-                assortment = stock.Sort(assortment, medicine => medicine.GetID(), order);
+                int startRange = int.Parse(ID);
+                int endRange;
+                if (startRange < 1 || startRange > biggestID)
+                {
+                    throw new OverflowException();
+                }
+                else if (startRange + 1 == biggestID || startRange == biggestID)
+                {
+                    endRange = biggestID;
+                }
+                else
+                {
+                    Console.WriteLine($"Enter maximum id value (In range from {startRange + 1} to {biggestID}):");
+                    ID = Console.ReadLine();
+                    if (int.Parse(ID) > startRange && int.Parse(ID) <= biggestID)
+                    {
+                        endRange = int.Parse(ID);
+                    }
+                    else
+                    {
+                        throw new MenuException("You entered invalid maximum id value.");
+                    }
+                }
+                items = stock.FilterByID(startRange, endRange);
             }
-            else if (attribute == attributes[1])
+            catch (OverflowException)
             {
-                assortment = stock.Sort(assortment, medicine => medicine.GetName(), order);
+                throw new MenuException("Entered id was out of the range. ");
             }
-            else if (attribute == attributes[2])
+            catch (FormatException)
             {
-                assortment = stock.Sort(assortment, medicine => medicine.GetCompanyName(), order);
+                throw new MenuException("Invalid id value. ");
             }
-            else if (attribute == attributes[3])
-            {
-                assortment = stock.Sort(assortment, medicine => medicine.GetActiveSubstance(), order);
-            }
-            else
-            {
-                throw new MenuException();
-            }
-            
-            var tableRows = AssortmentToStrings();
-            UpdatePages(tableRows);
         }
-        public override void ResetToInitialTable()
-        {
-            assortment = stock.GetAssortment();
-            UpdatePages(AssortmentToStrings());
-        }
-        protected List<string> AssortmentToStrings()
-        {
-            var result = new List<string>();
-            foreach (var medicine in assortment)
-            {
-                result.Add(medicine.ToString());
-            }
-            return result;
-        }
-        private void FilterByID(int startRange, int endRange)
+        public void FilterRows()
         {
             try
             {
-                assortment = stock.FilterByID(startRange, endRange);
-                UpdatePages(AssortmentToStrings());
+                string attributeToFilter = ReceiveAttributeFromUser();
+                if (attributeToFilter == attributesKeys[ConsoleKey.D1])
+                {
+                    FilterByID();
+                }
+                else if(attributeToFilter == attributesKeys[ConsoleKey.D2] || attributeToFilter == attributesKeys[ConsoleKey.D3])
+                {
+                    FilterByName(attributeToFilter);
+                }
+                else if (attributeToFilter == attributesKeys[ConsoleKey.D4])
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Enter ATC code. Entering not a full code(7 digits) you will get all the codes within the subgroup you have just ended with");
+                    items = stock.FilterByActiveSubstance(Console.ReadLine());
+                }
+                else
+                    throw new MenuException("Invalid key was pressed");
             }
             catch (DomainException e)
             {
                 throw new MenuException(e.Message);
             }
+            catch (Exception) 
+            {
+                throw new MenuException("Invaild value was given");
+            }
+            
+        }
+        private void FilterByName(string attributeToFilter)
+        {
+
+            Console.WriteLine();
+            Console.WriteLine(GetFilterInstructionForNames());
+            string choice = Console.ReadLine();
+            if (choice.Last() == '+')
+            {
+                choice = choice.Substring(0, choice.Length - 1);
+                if (attributeToFilter == attributesKeys[ConsoleKey.D2])
+                {
+                    items = stock.FindByPartName(choice);
+                }
+                else
+                {
+                    items = stock.FindByPartCompanyName(choice);
+                }
+            }
+            else
+            {
+                if (attributeToFilter == attributesKeys[ConsoleKey.D2])
+                {
+                    items = stock.FindByName(choice);
+                }
+                else
+                    items = stock.FindByCompanyName(choice);
+            }
+        }
+        private string GetFilterInstructionForNames()
+        {
+            return "You can enter only one part of the name."
+                + "Entering only 'L' , followed by '+'(L +), you will get all the names starting with 'L' , " +
+                "entreing 'Li+' you will get all the names starting with 'Li' and so on.";
+        }
+        public void ResetSelection()
+        {
+            selectedMedicines = new List<Medicine>();
+        }
+        public override void SortRows()
+        {
+            Console.WriteLine();
+            string attribute = ReceiveAttributeFromUser();
+            OrderBy order = ReceiveSortOrderFromUser();
+            if (attribute == attributesKeys[ConsoleKey.D1])
+            {
+                items = stock.Sort(items, medicine => medicine.GetID(), order);
+            }
+            else if (attribute == attributesKeys[ConsoleKey.D2])
+            {
+                items = stock.Sort(items, medicine => medicine.GetName(), order);
+            }
+            else if (attribute == attributesKeys[ConsoleKey.D3])
+            {
+                items = stock.Sort(items, medicine => medicine.GetCompanyName(), order);
+            }
+            else if (attribute == attributesKeys[ConsoleKey.D4])
+            {
+                items = stock.Sort(items, medicine => medicine.GetActiveSubstance(), order);
+            }
+            else
+            {
+                throw new MenuException();
+            }
+        }
+        public override void ResetFiltersAndSorts()
+        {
+            items = stock.GetAssortment();
+        }
+
+        protected override List<Medicine> GetItems()
+        {
+            return stock.GetAssortment();
         }
     }
 }

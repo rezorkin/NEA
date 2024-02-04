@@ -12,10 +12,12 @@ namespace NEA.DOMAIN
     {
         private List<SaleRecord> salesHistory;
         private int roundingLength;
-        public SalesAnalyser(List<SaleRecord> salesHistory, int roundingLength) 
+        private Medicine inspectedMedicine;
+        public SalesAnalyser(Medicine inspectedMedicine, List<SaleRecord> salesHistory, int roundingLength) 
         {
             this.salesHistory = salesHistory;
             this.roundingLength = roundingLength;
+            this.inspectedMedicine = inspectedMedicine;
         }
         public SalesStatistic GetStatistics() 
         {
@@ -25,9 +27,9 @@ namespace NEA.DOMAIN
                 double median = CalculateMedian();
                 var saleExtremums = GetSaleExtremums();
                 double standrardDeviation = CalculateStandartDeviation();
-                return new SalesStatistic(mean, median, saleExtremums, standrardDeviation, salesHistory[0].GetMedicine());
+                return new SalesStatistic(mean, median, saleExtremums, standrardDeviation, inspectedMedicine);
             }
-            return new SalesStatistic(-1, -1, (-1,-1), -1, salesHistory[0].GetMedicine());
+            return new SalesStatistic(-1, -1, (-1,-1), -1, inspectedMedicine);
 
         }
         public double CalculateMedian()

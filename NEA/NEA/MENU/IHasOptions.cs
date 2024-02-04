@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NEA.MENU
 {
-    internal interface IPrintable
+    internal interface IHasOptions
     {
         void PrintOptions();
     }

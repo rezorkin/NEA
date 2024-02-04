@@ -14,51 +14,30 @@ namespace NEA.DAO
 {
     internal class MedicineDAO : DAO<Medicine>, IMedicineDAO
     {
-        private const string tableName = "AssortmentOfTheMedicalSupplies";
+        protected override string tableName => "AssortmentOfTheMedicalSupplies";
         public MedicineDAO() : base() {}
 
        
-        public List<Medicine> FindAllByActiveSubstance(string activeSubstance)
+        public List<Medicine> FindByActiveSubstance(string activeSubstance)
         {
-            string command = $"SELECT * FROM AssortmentOfTheMedicalSupplies WHERE ActiveSubstance like \"{activeSubstance}%\"";
-            return ExecuteSQlQuerry(command);
+            return FindByPart("ActiveSubstance", activeSubstance);
         }
-        public List<Medicine> FindAllByCompanyName(string companyName, bool IsCompleteName)
+        public List<Medicine> FindByCompanyName(string companyName)
         {
-            if (IsCompleteName == true)
-            {
-                return FindByAttributeValue(tableName, "CompanyName", companyName);
-            }
-            else
-            {
-                string command = $"SELECT *\r\nFROM AssortmentOfTheMedicalSupplies\r\nWHERE CompanyName like \"{companyName}%\"";
-                return ExecuteSQlQuerry(command);
-            }
+            return FindByAttributeValue("CompanyName", companyName);
         }
 
-        public List<Medicine> FindAllByName(string name, bool IsCompleteName)
+        public List<Medicine> FindByName(string name)
         {
-            if(IsCompleteName == true)
-            {
-                return FindByAttributeValue(tableName, "ProductName", name);
-            }
-            else
-            {
-                string command = $"SELECT *\r\nFROM AssortmentOfTheMedicalSupplies\r\nWHERE ProductName like \"{name}%\"";
-                return ExecuteSQlQuerry(command);
-            }
+            return FindByAttributeValue("ProductName", name);
         }
+        
         public Medicine FindByID(int id)
         {
-            string command = $"SELECT *\r\nFROM AssortmentOfTheMedicalSupplies\r\nWHERE ProductID = {id}";
-            return ExecuteSQlQuerry(command)[0];
+            return FindByAttributeValue("ProductID", id.ToString()).First();
         }
 
         public List<Medicine> GetAll()
-        {
-            return GetAll(OrderBy.ASC);
-        }
-        private List<Medicine> ExecuteSQlQuerry(string commandStatement)
         {
             try
             {
@@ -69,7 +48,41 @@ namespace NEA.DAO
                     connection.Open();
                     using (SQLiteCommand command = new SQLiteCommand(connection))
                     {
-                        command.CommandText = commandStatement;
+                        command.CommandText = $"SELECT *\r\nFROM {tableName}";
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                NameValueCollection currentRowValues = reader.GetValues();
+                                undecodedResultSet.Add(currentRowValues);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+                foreach (NameValueCollection row in undecodedResultSet)
+                {
+                    result.Add(MapDBRowToItemFields(row));
+                }
+                return result;
+            }
+            catch (SQLiteException)
+            {
+                throw new DAOException();
+            }
+        }
+        private List<Medicine> FindByPart(string attributeName, string value)
+        {
+            try
+            {
+                List<Medicine> result = new List<Medicine>();
+                List<NameValueCollection> undecodedResultSet = new List<NameValueCollection>();
+                using (SQLiteConnection connection = new SQLiteConnection(DAOConnecter.GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = new SQLiteCommand(connection))
+                    {
+                        command.CommandText = $"SELECT *\r\nFROM {tableName}\r\nWHERE {attributeName} like \"{value}%\"";
                         using (SQLiteDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
@@ -102,48 +115,42 @@ namespace NEA.DAO
             return new Medicine(medicineID, medicineName, medicineCompanyName, medicineActiveSubstance);
         }
 
-        public List<Medicine> GetAll(OrderBy order)
-        {
-            string orderCommand = $"ORDER BY ProductID ";
-            if (order == OrderBy.DESC)
-            {
-                orderCommand += "DESC";
-            }
-            else
-                orderCommand += "ASC";
-            string command = $"SELECT ProductID, ProductName, CompanyName, ActiveSubstance\r\n" +
-                            $"FROM {tableName} {orderCommand}"; 
-            return ExecuteSQlQuerry(command);
-        }
         public List<Medicine> FindInIDRange(int startRange, int endRange)
-        {
-            string rangeStatement;
-            if (startRange == 0 && endRange > 0)
-            {
-                rangeStatement = $"ProductID < {endRange}";
-            }
-            else if(startRange > 0 && endRange > startRange)
-            {
-                rangeStatement = $"ProductID > {startRange} AND ProductID < {endRange}";
-            }
-            else if(startRange > 0 && endRange == 0)
-            {
-                rangeStatement = $"ProductID > {startRange}";
-            }
-            else
-            {
-                throw new DAOException(" Wrong boundaries ");
-            }
+        {   
             try
             {
-                string command = $"SELECT ProductID, ProductName, CompanyName, ActiveSubstance\r\n" +
-                $"FROM AssortmentOfTheMedicalSupplies\r\n" +
-                $"WHERE {rangeStatement}";
-                return ExecuteSQlQuerry(command);
+                string commandText = $"SELECT ProductID, ProductName, CompanyName, ActiveSubstance\r\n" +
+                $"FROM {tableName}\r\n" +
+                $"WHERE ProductID > {startRange - 1} AND ProductID < {endRange + 1}";
+
+                List<Medicine> result = new List<Medicine>();
+                List<NameValueCollection> undecodedResultSet = new List<NameValueCollection>();
+                using (SQLiteConnection connection = new SQLiteConnection(DAOConnecter.GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = new SQLiteCommand(connection))
+                    {
+                        command.CommandText = commandText;
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                NameValueCollection currentRowValues = reader.GetValues();
+                                undecodedResultSet.Add(currentRowValues);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+                foreach (NameValueCollection row in undecodedResultSet)
+                {
+                    result.Add(MapDBRowToItemFields(row));
+                }
+                return result;
             }
             catch(SQLiteException)
             {
-                throw new DAOException(" Wrong boundaries");
+                throw new DAOException("Wrong boundaries");
             }
             
         }
@@ -151,23 +158,115 @@ namespace NEA.DAO
         {
            try
            {
+                if (isAlreadyInAssortment(m) == true)
+                throw new DAOException("Identical medicine is already in assortment");
+
                 using (SQLiteConnection conn = new SQLiteConnection(DAOConnecter.GetConnectionString()))
                 {
                     conn.Open();
                     using(SQLiteCommand cmd = conn.CreateCommand()) 
                     {
-                        cmd.CommandText = $"INSERT INTO AssortmentOfTheMedicalSupplies\r\nVALUES({m.GetID()},\"{m.GetName()}\"," +
+                        cmd.CommandText = $"INSERT INTO \"{tableName}\" VALUES({m.GetID()},\"{m.GetName()}\"," +
                             $"\"{m.GetCompanyName()}\",\"{m.GetActiveSubstance()}\")";
+                        cmd.ExecuteNonQuery();
                         cmd.Dispose();
                     }
                     conn.Close();
                 }
                 return true;
            }
-           catch(SQLiteException)
+           catch(SQLiteException e)
            {
-                return false;
+                throw new DAOException(e.Message);
            }
+        }
+        private bool isAlreadyInAssortment(Medicine medicine)
+        {
+            try
+            {
+                string commandText = $"SELECT *" +
+                $"FROM {tableName}\r\n" +
+                $"WHERE ProductName = \"{medicine.GetName()}\" AND CompanyName = \"{medicine.GetCompanyName()}\" AND Activesubstance = \"{medicine.GetActiveSubstance()}\"";
+
+                List<Medicine> result = new List<Medicine>();
+                List<NameValueCollection> undecodedResultSet = new List<NameValueCollection>();
+                using (SQLiteConnection connection = new SQLiteConnection(DAOConnecter.GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = new SQLiteCommand(connection))
+                    {
+                        command.CommandText = commandText;
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                NameValueCollection currentRowValues = reader.GetValues();
+                                undecodedResultSet.Add(currentRowValues);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+                if(undecodedResultSet.Count > 0) 
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (SQLiteException e)
+            {
+                throw new DAOException(e.Message);
+            }
+        }
+
+        public List<Medicine> FindByPartName(string name)
+        {
+            return FindByPart("ProductName", name);
+        }
+
+        public List<Medicine> FindByPartCompanyName(string name)
+        {
+            return FindByPart("CompanyName", name);
+        }
+
+        public int GetLastID()
+        {
+            try
+            {
+                string commandText = $"SELECT ProductID " +
+                $"FROM {tableName} ORDER BY ProductID DESC";
+                int result;
+                using (SQLiteConnection connection = new SQLiteConnection(DAOConnecter.GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = new SQLiteCommand(connection))
+                    {
+                        command.CommandText = commandText;
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            bool b = reader.Read();
+                            if (b == false)
+                            {
+                                result = 0;
+                            }
+                            else
+                            {
+                                result = MapDBRowToItemFields(reader.GetValues()).GetID();
+                            }
+                            
+                        }
+                    }
+                    connection.Close();
+                }
+                return result;
+            }
+            catch (SQLiteException e)
+            {
+                throw new DAOException(e.Message);
+            }
         }
     }
 }

@@ -31,8 +31,7 @@ namespace NEA.DOMAIN
             return obj is Medicine medicine &&
                    name == medicine.name &&
                    companyName == medicine.companyName &&
-                   activeSubstance == medicine.activeSubstance &&
-                   ID == medicine.ID;
+                   activeSubstance == medicine.activeSubstance;
         }
         public static bool operator ==(Medicine left, Medicine right)
         {

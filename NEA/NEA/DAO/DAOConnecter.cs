@@ -20,7 +20,7 @@ namespace NEA.DAO
         public static void ConnectToLocalDB()
         {
             path = "PharmacyDB.db;";
-            connectionString = "Data Source= " + path + "Version=3;New=False;Compress=True;Read Only=true";
+            connectionString = "Data Source= " + path + "Version=3;New=False;Compress=True;Read Only=false;FailIfMissing=True;";
             try
             {
                 using(SQLiteConnection conn = new SQLiteConnection(connectionString))
@@ -55,7 +55,6 @@ namespace NEA.DAO
                    }
                    conn.Close();
                 }
-                connectionString += "Read Only=true";
             }
             catch (SQLiteException)
             {
@@ -68,7 +67,7 @@ namespace NEA.DAO
         }
         private static string GetWareHouseInspectionTableCreateStatement()
         {
-            return "CREATE TABLE \"WarehouseInspections\" (\r\n\t\"Date\"\tTEXT,\r\n\t\"MedicineID\"\tINTEGER,\r\n\t\"Amount\"\tINTEGER,\r\n\tPRIMARY KEY(\"Date\",\"MedicineID\"),\r\n\tFOREIGN KEY(\"MedicineID\") REFERENCES \"AssortmentOfTheMedicalSupplies\"(\"ProductID\")\r\n)";
+            return "CREATE TABLE \"StockInspections\" (\r\n\t\"Date\"\tTEXT,\r\n\t\"MedicineID\"\tINTEGER,\r\n\t\"Amount\"\tINTEGER,\r\n\tPRIMARY KEY(\"Date\",\"MedicineID\"),\r\n\tFOREIGN KEY(\"MedicineID\") REFERENCES \"AssortmentOfTheMedicalSupplies\"(\"ProductID\")\r\n)";
         }
         private static string GetPurchaseOrderTableCreateStatement()
         {

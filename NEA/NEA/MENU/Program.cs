@@ -10,10 +10,10 @@ namespace NEA.MENU
 {
     static internal class Program
     {
+        static MainMenu menu;
         static void Main(string[] args)
         {
-            MainMenu menu = new MainMenu();
-            menu.defaultFontColour = ConsoleColor.White;
+            menu = new MainMenu(5, 1, ConsoleColor.White);
             var furtherAction = ProgramAction.Default;
             while (furtherAction != ProgramAction.Exit)
             {
@@ -24,105 +24,55 @@ namespace NEA.MENU
                 {
                     menu.OpenAssortmentOfMedicine();
                 }
+                else if (furtherAction == ProgramAction.GoToRecordTable)
+                {
+                    menu.OpenRecordTable();
+                }
                 else if (furtherAction == ProgramAction.GoToSettings)
                 {
-                    menu = SetMenuTable(menu);
+                    menu.SetMenuTable();
                 }
                 else if (furtherAction == ProgramAction.GoToDataBaseSettings)
-                {   
-                    OpenDBSettings();
+                {
+                    menu.OpenDBSettings();
                 }
-
+                /*try
+                {
+                    Console.Clear();
+                    menu.PrintOptions();
+                    furtherAction = ReceiveInitialAction();
+                    if (furtherAction == ProgramAction.GoToAssortmentTable)
+                    {
+                        menu.OpenAssortmentOfMedicine();
+                    }
+                    else if (furtherAction == ProgramAction.GoToRecordTable)
+                    {
+                        menu.OpenRecordTable();
+                    }
+                    else if (furtherAction == ProgramAction.GoToSettings)
+                    {
+                        menu.SetMenuTable();
+                    }
+                    else if (furtherAction == ProgramAction.GoToDataBaseSettings)
+                    {
+                        menu.OpenDBSettings();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Press any key to move on");
+                    Console.ReadKey();
+                }*/
             }
             Console.ReadKey();
+            
         }
-        private static void OpenDBSettings()
-        {
-            DatabaseSettings table = new DatabaseSettings();
-            ConsoleKey key = new ConsoleKey();
-            while (key != ConsoleKey.D3)
-            {
-                Console.Clear();
-                table.PrintOptions();
-                key = Console.ReadKey(true).Key;
-                if (key == ConsoleKey.D1)
-                {
-                    try
-                    {
-                        table.ConnectToPracticeDB();
-                    }
-                    catch (MenuException e)
-                    {
-                        Console.WriteLine(e.Message + ". Try again");
-                        Console.ReadKey();
-                    }
-                }
-                else if (key == ConsoleKey.D2)
-                {
-                    try
-                    {
-                        table.ConnectCreateLocalDB();
-                    }
-                    catch (MenuException e)
-                    {
-                        Console.WriteLine(e.Message + ". Try again");
-                        Console.ReadKey();
-                    }
-                }
-            }
-        }
-        private static MainMenu SetMenuTable(MainMenu menu)
-        {
-            ProgramSettings table = new ProgramSettings(menu);
-            ConsoleKey key = new ConsoleKey();
-            while (key != ConsoleKey.D4)
-            {
-                Console.Clear();
-                table.PrintOptions();
-                key = Console.ReadKey(true).Key;
-                if(key == ConsoleKey.D1)
-                {
-                    try
-                    {
-                        table.ChangeRoundLength();
-                    }
-                    catch(MenuException e) 
-                    {
-                        Console.WriteLine(e.Message+ ". Try again");
-                        Console.ReadKey();
-                    }
-                }
-                else if(key == ConsoleKey.D2)
-                {
-                    try
-                    {
-                        table.ChangeItemsPerPage();
-                    }
-                    catch (MenuException e)
-                    {
-                        Console.WriteLine(e.Message + ". Try again");
-                        Console.ReadKey();
-                    }
-                }
-                else if (key == ConsoleKey.D3)
-                {
-                    try
-                    {
-                        table.ChangeTheme();
-                    }
-                    catch (MenuException e)
-                    {
-                        Console.WriteLine(e.Message + ". Try again");
-                        Console.ReadKey();
-                    }
-                }
-            }
-            return table.menu;
-        }
-
-        private enum ProgramAction
+       
+        enum ProgramAction
         {
             GoToAssortmentTable,
+            GoToRecordTable,
             GoToDataBaseSettings,
             GoToSettings,
             Exit,
@@ -139,13 +89,17 @@ namespace NEA.MENU
             }
             else if (key == ConsoleKey.D2)
             {
-                return ProgramAction.GoToDataBaseSettings;
+                return ProgramAction.GoToRecordTable;
             }
             else if (key == ConsoleKey.D3)
             {
-                return ProgramAction.GoToSettings;
+                return ProgramAction.GoToDataBaseSettings;
             }
             else if (key == ConsoleKey.D4)
+            {
+                return ProgramAction.GoToSettings;
+            }
+            else if (key == ConsoleKey.D5)
             {
                 return ProgramAction.Exit;
             }

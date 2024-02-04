@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace NEA.MENU
 {
-    internal class DatabaseSettings : IPrintable
+    internal class DatabaseSettings : IHasOptions
     {
-        DatabaseFinder finder = new DatabaseFinder();
+        private DatabaseFinder finder = new DatabaseFinder();
+        public bool canWriteNewRecords => !finder.IsConnectedToPracticeDB();
         public DatabaseSettings()  
         {
             finder = new DatabaseFinder();

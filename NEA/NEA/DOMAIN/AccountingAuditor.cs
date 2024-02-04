@@ -20,6 +20,12 @@ namespace NEA.DOMAIN
             purchaseOrderDAO = new PurchaseOrderDAO();
             this.roundingLength = roundingLength;
         }
+        public AccountingAuditor()
+        {
+            inspectionDAO = new StockInspectionDAO();
+            purchaseOrderDAO = new PurchaseOrderDAO();
+            this.roundingLength = 1;
+        }
         public List<PurchaseOrder> GetPurchaseOrderHistory(int medicineID, OrderBy order)
         {
             try
@@ -61,8 +67,8 @@ namespace NEA.DOMAIN
         {
             try
             {
-                var purchases = GetPurchaseOrderHistory(medicineID, OrderBy.DESC);
-                var inspections = GetStockInspectionHistory(medicineID, OrderBy.DESC);
+                var purchases = GetPurchaseOrderHistory(medicineID, OrderBy.ASC);
+                var inspections = GetStockInspectionHistory(medicineID, OrderBy.ASC);
                 return CalculateSalesHistory(purchases, inspections);
             }
             catch (DAOException e)
@@ -78,7 +84,7 @@ namespace NEA.DOMAIN
                 try
                 {
                     var saleshistory = GetSalesHistory(medicine.GetID());
-                    analyser = new SalesAnalyser(saleshistory, roundingLength);
+                    analyser = new SalesAnalyser(medicine, saleshistory, roundingLength);
                     result.Add(analyser.GetStatistics());
                 }
                 catch (DomainException)
@@ -109,30 +115,12 @@ namespace NEA.DOMAIN
                     {
                         throw new DomainException();
                     }
-                    analyser = new SalesAnalyser(boundedSalesHistory, roundingLength);
+                    analyser = new SalesAnalyser(record.GetMedicine(), boundedSalesHistory, roundingLength);
                     result.Add(analyser.GetStatistics());
                 }
                 catch (DomainException)
                 {
                     result.Add(new SalesStatistic(-1, -1, (-1,-1), -1, record.GetMedicine()));
-                }
-            }
-            return result;
-        }
-        public List<SalesStatistic> UpdateStatisticRecords(List<SalesStatistic> statistics)
-        {
-            var result = new List<SalesStatistic>();
-            foreach (SalesStatistic statistic in statistics)
-            {
-                try
-                {
-                    var saleshistory = GetSalesHistory(statistic.GetMedicineID());
-                    analyser = new SalesAnalyser(saleshistory, roundingLength);
-                    result.Add(analyser.GetStatistics());
-                }
-                catch (DomainException)
-                {
-                    result.Add(new SalesStatistic(-1, -1, (-1, -1), -1, statistic.GetMedicine()));
                 }
             }
             return result;
@@ -165,40 +153,51 @@ namespace NEA.DOMAIN
 
 
         } 
-            
         private List<SaleRecord> CalculateSalesHistory(List<PurchaseOrder> purchaseOrders, List<StockInspection> inspections)
         {
             var result = new List<SaleRecord>();
+            int cumulativeAmountLeft = 0;
             foreach (StockInspection inspection in inspections)
             {
-                DateTime saleDate = inspection.GetRecordDate();
-                int saleAmount = 0;
+                int year = inspection.GetRecordDate().Year;
+                int month = inspection.GetRecordDate().Month - 1;
+                if(inspection.GetRecordDate().Month == 1)
+                {
+                    year--;
+                    month = 12;
+                }
+                DateTime saleDate = new DateTime(year, month, inspection.GetRecordDate().Day);
+                int saleAmount = -1;
                 bool IsFirstPurchaseOrderInThisMonth = true;
+                Record previousMonth = new Record(inspection.GetMedicine(), inspection.GetAmount(), saleDate);
                 for (int i = 0; i < purchaseOrders.Count; i++)
                 {
-                    if (inspection == purchaseOrders[i] && IsFirstPurchaseOrderInThisMonth == true)
+                    if (previousMonth == purchaseOrders[i] && IsFirstPurchaseOrderInThisMonth == true)
                     {
-                        saleAmount = purchaseOrders[i].GetAmount() - inspection.GetAmount();
+                        saleAmount = purchaseOrders[i].GetAmount() + cumulativeAmountLeft - inspection.GetAmount();
                         IsFirstPurchaseOrderInThisMonth = false;
                     }
-                    else if (inspection.GetRecordDate() == purchaseOrders[i].GetRecordDate() && IsFirstPurchaseOrderInThisMonth != true)
+                    else if (previousMonth == purchaseOrders[i] && IsFirstPurchaseOrderInThisMonth != true)
                     {
                         saleAmount += purchaseOrders[i].GetAmount();
                     }
                 }
-                var sale = new SaleRecord(inspection.GetMedicine(), saleAmount, saleDate);
-                result.Add(sale);
+                cumulativeAmountLeft = inspection.GetAmount(); 
+                if (saleAmount >= 0)
+                {
+                    result.Add(new SaleRecord(inspection.GetMedicine(), saleAmount, saleDate));
+                }
             }
             return result;
         }
 
-        public List<SalesStatistic> Sort<TKey>(List<SalesStatistic> stats, Func<SalesStatistic, TKey> sorter, OrderBy order)
+        public List<SalesStatistic> Sort<TKey>(List<SalesStatistic> stats, Func<SalesStatistic, TKey> attributeToSortBy, OrderBy order)
         {
             if (order == OrderBy.ASC)
             {
-                return stats.OrderBy(sorter).ToList();
+                return stats.OrderBy(attributeToSortBy).ToList();
             }
-            return stats.OrderByDescending(sorter).ToList();
+            return stats.OrderByDescending(attributeToSortBy).ToList();
         }
         
         private static class MergeSort<T> where T : Record

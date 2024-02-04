@@ -8,40 +8,79 @@ using NEA.DOMAIN;
 
 namespace NEA.MENU
 {
-    internal abstract class Table : IPrintable
+    internal abstract class Table<T> : IHasOptions
     {
         private List<Page> pages;
         private int currentPageIndex;
         private readonly int pageSize;
+        protected List<T> items;
         protected ConsoleColor defaultFontColour { get; }
         protected abstract int spacesToDivider { get; }
-        protected abstract string[] attributes { get; }
+        protected abstract Dictionary<ConsoleKey, string> attributesKeys { get; }
         public Table(int pageLength, ConsoleColor defaultFontColour) 
         {
             this.pageSize = pageLength;
             pages = new List<Page>();
             this.defaultFontColour = defaultFontColour;
+            items = new List<T>();
+            currentPageIndex = 0;
         }
+        protected abstract List<T> GetItems();
         public abstract void PrintOptions();
-        public abstract void SortRows(string attribute, OrderBy order);
+        public abstract void SortRows();
         public abstract void Select();
-        public abstract void ResetToInitialTable();
-
-        public string[] GetAttributes()
+        public abstract void ResetFiltersAndSorts();
+        protected string ReceiveAttributeFromUser()
         {
-            return attributes;
+            try
+            {
+                Console.WriteLine();
+                Console.WriteLine("Choose attribute by pressing:");
+                var keys = attributesKeys.Keys.ToList();
+                for (int i = 0; i < attributesKeys.Count; i++)
+                {
+                    Console.Write($"'{i + 1}' for {attributesKeys[keys[i]]} ");
+                }
+                var pressedKey = Console.ReadKey(true).Key;
+                return attributesKeys[pressedKey];
+            }
+            catch(Exception)
+            {
+                throw new MenuException("Wrong key was pressed");
+            }
         }
-        protected void UpdatePages(List<string> newRows)
+        protected OrderBy ReceiveSortOrderFromUser()
         {
-            pages = new List<Page>();
-            CutRowsToPages(newRows);
+            Console.WriteLine("Press 'A' for ascending order and 'D' for descending");
+            var pressedKey = Console.ReadKey(true).Key;
+            if (pressedKey == ConsoleKey.A)
+            {
+                return OrderBy.ASC;
+            }
+            else if (pressedKey == ConsoleKey.D)
+            {
+                return OrderBy.DESC;
+            }
+            else
+                throw new MenuException("Wrong key was pressed");
+        }
+        private void UpdatePages()
+        {
+            pages.Clear();
+            var result = new List<string>();
+            if(items.Count == 0)
+            {
+                items = GetItems();
+            }
+            foreach (T item in items)
+            {
+                result.Add(item.ToString());
+            }
+            CutRowsToPages(result);
         }
         public virtual void OutputTable()
-        { 
-            if(currentPageIndex >= pages.Count) 
-            {
-                currentPageIndex = 0;
-            }
+        {
+            UpdatePages();
             pages[currentPageIndex].DisplayPage();
             Console.WriteLine();
             Console.Write($"Current page: {currentPageIndex+1}                                       Pages:");
@@ -77,14 +116,14 @@ namespace NEA.MENU
             {
                 if(g == pageSize) 
                 {
-                    pages.Add(new Page(attributes, cutedSet, spacesToDivider));
+                    pages.Add(new Page(attributesKeys.Values.ToArray(), cutedSet, spacesToDivider));
                     g = 0;
                     cutedSet = new string[pageSize];
                 }
                 cutedSet[g] = rows[i].ToString();
                 g++;
             }
-            pages.Add(new Page(attributes, cutedSet, spacesToDivider));
+            pages.Add(new Page(attributesKeys.Values.ToArray(), cutedSet, spacesToDivider));
         }
     }
 }

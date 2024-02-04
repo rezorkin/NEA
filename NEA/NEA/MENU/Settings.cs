@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace NEA.MENU
 {
-    internal class ProgramSettings : IPrintable
+    internal class Settings : IHasOptions
     {
-        public MainMenu menu { get; }
 
-        public ProgramSettings(MainMenu table)       
-        {
-            menu = table;
-        }
         public void PrintOptions()
         {
             Console.WriteLine("Press 1 to change variables' round length");
@@ -21,7 +16,7 @@ namespace NEA.MENU
             Console.WriteLine("Press 3 to change the theme");
             Console.WriteLine("Press 4 to get back to the main menu");
         }
-        public void ChangeRoundLength()
+        public int GetRoundLength()
         {
             Console.WriteLine();
             Console.WriteLine("Press '1' to set rounding to 1dp, '2' for 2dp, '3' for 3dp and '4' for 4dp");
@@ -47,9 +42,9 @@ namespace NEA.MENU
             {
                 throw new MenuException("Inappropriate key");
             }
-            menu.roundingLength = roundingLength;
+            return roundingLength;
         }
-        public void ChangeTheme()
+        public ConsoleColor ChangeTheme()
         {
             Console.WriteLine();
             Console.WriteLine("Press '1' to set black theme, '2' to set white theme");
@@ -58,20 +53,20 @@ namespace NEA.MENU
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.White;
-                menu.defaultFontColour = ConsoleColor.White;
+                return ConsoleColor.White;
             }
             else if (key == ConsoleKey.D2)
             {
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Black;
-                menu.defaultFontColour = ConsoleColor.Black;
+                return ConsoleColor.Black;
             }
             else
             {
                 throw new MenuException("Inappropriate key");
             }
         }
-        public void ChangeItemsPerPage()
+        public int ChangeItemsPerPage()
         {
             Console.WriteLine();
             Console.WriteLine("Press '1' to set 5 items per page, '2' for 10, '3' for 20");
@@ -93,7 +88,7 @@ namespace NEA.MENU
             {
                 throw new MenuException("Inappropriate key");
             }
-            menu.pageLength = pageLength;
+            return pageLength;
         }
     }
 }

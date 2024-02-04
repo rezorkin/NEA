@@ -60,6 +60,7 @@
     <Compile Include="DOMAIN\AccountingAuditor.cs" />
     <Compile Include="DOMAIN\DatabaseFinder.cs" />
     <Compile Include="DOMAIN\ISortable.cs" />
+    <Compile Include="DOMAIN\RecordWriter.cs" />
     <Compile Include="DOMAIN\SalesStatistic.cs" />
     <Compile Include="DOMAIN\SaleRecord.cs" />
     <Compile Include="DOMAIN\SalesAnalyser.cs" />
@@ -77,9 +78,10 @@
     <Compile Include="DOMAIN\OrderBy.cs" />
     <Compile Include="MENU\Page.cs" />
     <Compile Include="MENU\AnalysisTable.cs" />
+    <Compile Include="MENU\RecordTable.cs" />
     <Compile Include="MENU\Table.cs" />
-    <Compile Include="MENU\ProgramSettings.cs" />
-    <Compile Include="MENU\IPrintable.cs" />
+    <Compile Include="MENU\Settings.cs" />
+    <Compile Include="MENU\IHasOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

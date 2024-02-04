@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NEA.DOMAIN;
+using System.ComponentModel;
 
 namespace NEA.DAO
 {
@@ -12,6 +13,6 @@ namespace NEA.DAO
     {
        List<T> GetRecordHistory(Medicine selectedMedicine);
        List<T> GetRecordHistory(int medicineID);
-        T GetByDateID(Medicine selectedMedicine, DateTime Date);
+       bool AddNewRecord(int MedicineID, int amount, DateTime date);
     }
 }

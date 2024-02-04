@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NEA.DOMAIN
 {
-    internal abstract class Record
+    internal class Record
     {
         private Medicine medicineInspected;
         private int amount;
@@ -97,7 +97,6 @@ namespace NEA.DOMAIN
         {
             return $"Record date: {recordDate.Month}/{recordDate.Year}, amount: {amount}";
         }
-
         public override int GetHashCode()
         {
             return medicineInspected.GetHashCode() ^ amount.GetHashCode() ^ recordDate.GetHashCode();

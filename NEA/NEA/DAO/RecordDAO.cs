@@ -11,32 +11,9 @@ namespace NEA.DAO
 {
     internal abstract class RecordDAO<T> : DAO<T>, IRecordDAO<T> where T : Record
     {
-        protected readonly string tableName;
-        protected abstract string setTableName();
-        public RecordDAO() : base() 
-        {
-            tableName = setTableName();
-        }
-        public T GetByDateID(Medicine selectedMedicine, DateTime Date)
-        {
-            List<T> foundByDate = FindByAttributeValue(tableName, "Date", ConvertDateToString(Date));
-            List<T> foundByID = FindByAttributeValue(tableName, "MedicineID", selectedMedicine.GetID().ToString()); 
-            foreach (T record in foundByDate)
-            {
-                for (int i = 0; i < foundByID.Count; i++)
-                {
-                    if (record == foundByID[i])
-                    {
-                        return record;
-                    }
-                }
-            }
-            throw new DAOException("Particular record by Date and ID was not found");
-        }
-
         public List<T> GetRecordHistory(Medicine selectedMedicine)
         {
-            return FindByAttributeValue(tableName, "MedicineID", selectedMedicine.GetID().ToString());
+            return FindByAttributeValue("MedicineID", selectedMedicine.GetID().ToString());
         }
 
         protected abstract override T MapDBRowToItemFields(NameValueCollection row);     
@@ -59,7 +36,9 @@ namespace NEA.DAO
 
         public List<T> GetRecordHistory(int medicineID)
         {
-            return FindByAttributeValue(tableName, "MedicineID", medicineID.ToString());
+            return FindByAttributeValue("MedicineID", medicineID.ToString());
         }
+
+        public abstract bool AddNewRecord(int MedicineID, int amount, DateTime date);
     }
 }
