@@ -40,7 +40,7 @@ namespace NEA.DOMAIN
             try
             {
                 int ID = medicineDAO.GetLastID() + 1;
-                Medicine medicine = new Medicine(ID, name, companyName, activeSubstance);
+                Medicine medicine = new Medicine(ID, name, companyName, activeSubstance.ToUpper());
                 bool IsSucessful = medicineDAO.AddNewMedicine(medicine);
                 if (IsSucessful == false)
                 {

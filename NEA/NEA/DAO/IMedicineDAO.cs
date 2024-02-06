@@ -12,9 +12,9 @@ namespace NEA.DAO
     {
         List<Medicine> GetAll();
         int GetLastID();
-        List<Medicine> FindByName(string name);
+        List<Medicine> FindByStartLettersName(string name);
         List<Medicine> FindByPartName(string name);
-        List<Medicine> FindByCompanyName(string companyName);
+        List<Medicine> FindByStartCompanyName(string companyName);
         List<Medicine> FindByPartCompanyName(string name);
         List<Medicine> FindByActiveSubstance(string activeSubstance);
         Medicine FindByID(int id);

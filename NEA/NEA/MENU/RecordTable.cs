@@ -116,7 +116,7 @@ namespace NEA.MENU
             {
                 Console.WriteLine("Enter year:");
                 int year = int.Parse(Console.ReadLine());
-                Console.WriteLine("Enter month, without 0 if signle digit");
+                Console.WriteLine("Enter month, without 0 if single digit");
                 int month = int.Parse(Console.ReadLine());
                 Console.WriteLine("Enter day, without 0 if single digit");
                 int day = int.Parse(Console.ReadLine());

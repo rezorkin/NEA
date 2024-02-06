@@ -31,11 +31,11 @@ namespace NEA.DOMAIN
                 return new List<Medicine>();
             }
         }
-        public List<Medicine> FindByName(string name)
+        public List<Medicine> FindByStartLettersName(string name)
         {
             try
             {
-                return medicineDAO.FindByName(name); ;
+                return medicineDAO.FindByStartLettersName(name); ;
             }
             catch (DAOException)
             {
@@ -46,18 +46,18 @@ namespace NEA.DOMAIN
         {
             try
             {
-                return medicineDAO.FindByName(name); ;
+                return medicineDAO.FindByPartName(name); ;
             }
             catch (DAOException)
             {
                 throw new DomainException("Nothing was found");
             }
         }
-        public List<Medicine> FindByCompanyName(string name)
+        public List<Medicine> FindByStartLettersCompanyName(string name)
         {
             try
             {
-                return medicineDAO.FindByCompanyName(name);
+                return medicineDAO.FindByStartCompanyName(name);
             }
             catch (DAOException)
             {
@@ -68,7 +68,7 @@ namespace NEA.DOMAIN
         {
             try
             {
-                return medicineDAO.FindByCompanyName(name);
+                return medicineDAO.FindByPartCompanyName(name);
             }
             catch (DAOException)
             {

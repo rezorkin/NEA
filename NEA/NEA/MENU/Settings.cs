@@ -12,7 +12,7 @@ namespace NEA.MENU
         public void PrintOptions()
         {
             Console.WriteLine("Press 1 to change variables' round length");
-            Console.WriteLine("Press 2 to change the number of medicines showed per page");
+            Console.WriteLine("Press 2 to change the length of pages in the tables");
             Console.WriteLine("Press 3 to change the theme");
             Console.WriteLine("Press 4 to get back to the main menu");
         }

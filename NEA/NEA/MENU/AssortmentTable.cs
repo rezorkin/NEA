@@ -179,21 +179,21 @@ namespace NEA.MENU
                 choice = choice.Substring(0, choice.Length - 1);
                 if (attributeToFilter == attributesKeys[ConsoleKey.D2])
                 {
-                    items = stock.FindByPartName(choice);
+                    items = stock.FindByStartLettersName(choice);
                 }
                 else
                 {
-                    items = stock.FindByPartCompanyName(choice);
+                    items = stock.FindByStartLettersCompanyName(choice);
                 }
             }
             else
             {
                 if (attributeToFilter == attributesKeys[ConsoleKey.D2])
                 {
-                    items = stock.FindByName(choice);
+                    items = stock.FindByPartName(choice);
                 }
                 else
-                    items = stock.FindByCompanyName(choice);
+                    items = stock.FindByPartCompanyName(choice);
             }
         }
         private string GetFilterInstructionForNames()

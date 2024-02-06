@@ -17,26 +17,7 @@ namespace NEA.MENU
             var furtherAction = ProgramAction.Default;
             while (furtherAction != ProgramAction.Exit)
             {
-                Console.Clear();
-                menu.PrintOptions();
-                furtherAction = ReceiveInitialAction();
-                if (furtherAction == ProgramAction.GoToAssortmentTable)
-                {
-                    menu.OpenAssortmentOfMedicine();
-                }
-                else if (furtherAction == ProgramAction.GoToRecordTable)
-                {
-                    menu.OpenRecordTable();
-                }
-                else if (furtherAction == ProgramAction.GoToSettings)
-                {
-                    menu.SetMenuTable();
-                }
-                else if (furtherAction == ProgramAction.GoToDataBaseSettings)
-                {
-                    menu.OpenDBSettings();
-                }
-                /*try
+                try
                 {
                     Console.Clear();
                     menu.PrintOptions();
@@ -63,7 +44,7 @@ namespace NEA.MENU
                     Console.WriteLine(ex.Message);
                     Console.WriteLine("Press any key to move on");
                     Console.ReadKey();
-                }*/
+                }
             }
             Console.ReadKey();
             

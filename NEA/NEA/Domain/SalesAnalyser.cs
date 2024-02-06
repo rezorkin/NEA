@@ -19,7 +19,7 @@ namespace NEA.DOMAIN
             this.roundingLength = roundingLength;
             this.inspectedMedicine = inspectedMedicine;
         }
-        public SalesStatistic GetStatistics() 
+        public SalesStatistic GetStatistics(bool isSampleDeviation) 
         {
             if(salesHistory.Count > 0) 
             {
@@ -27,6 +27,10 @@ namespace NEA.DOMAIN
                 double median = CalculateMedian();
                 var saleExtremums = GetSaleExtremums();
                 double standrardDeviation = CalculateStandartDeviation();
+                if (isSampleDeviation == true) 
+                {
+                    standrardDeviation = CalculateSampleDeviation();
+                }
                 return new SalesStatistic(mean, median, saleExtremums, standrardDeviation, inspectedMedicine);
             }
             return new SalesStatistic(-1, -1, (-1,-1), -1, inspectedMedicine);
@@ -41,7 +45,7 @@ namespace NEA.DOMAIN
             {
                 int leftMedianIndex = salesValues.Length / 2 - 1;
                 int rightMedianIndex = salesValues.Length / 2;
-                double median = (salesValues[leftMedianIndex] + salesValues[rightMedianIndex]) / 2;
+                double median = ((double)salesValues[leftMedianIndex] + (double)salesValues[rightMedianIndex]) / 2.0;
                 return median;
                  
             }
@@ -54,7 +58,7 @@ namespace NEA.DOMAIN
         public double CalculateMean()
         {
             int[] salesValues = GetSales();
-            int totalSum = 0;
+            double totalSum = 0;
             foreach (int salesValue in salesValues)
             {
                 totalSum += salesValue;
@@ -86,10 +90,10 @@ namespace NEA.DOMAIN
             int[] salesValues = GetSales();
             foreach (int saleValue in salesValues)
             {
-                double squareDistance = Math.Pow((saleValue - mean), 2);
+                double squareDistance = Math.Pow(((double)saleValue - mean), 2);
                 sumOfSquareDistances += squareDistance;
             }
-            double variance = sumOfSquareDistances / salesValues.Length;
+            double variance = sumOfSquareDistances / (double)salesValues.Length;
             return variance;
         }
         private double CalculateSampleVariance()

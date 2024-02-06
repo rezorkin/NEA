@@ -25,7 +25,7 @@ namespace NEA.DAO
                     using (SQLiteCommand cmd = conn.CreateCommand())
                     {
                         int orderNumber = GetLastOrderNumber() + 1;
-                        cmd.CommandText = $"INSERT INTO {tableName}\r\nVALUES(\"{ConvertDateToString(date)}\",{ID}," +
+                        cmd.CommandText = $"INSERT INTO \"{tableName}\" VALUES(\"{ConvertDateToString(date)}\",{ID}," +
                             $"{amount}, {orderNumber})";
                         cmd.ExecuteNonQuery();
                         cmd.Dispose();

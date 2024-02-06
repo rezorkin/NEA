@@ -85,7 +85,7 @@ namespace NEA.DOMAIN
                 {
                     var saleshistory = GetSalesHistory(medicine.GetID());
                     analyser = new SalesAnalyser(medicine, saleshistory, roundingLength);
-                    result.Add(analyser.GetStatistics());
+                    result.Add(analyser.GetStatistics(false));
                 }
                 catch (DomainException)
                 {
@@ -116,7 +116,7 @@ namespace NEA.DOMAIN
                         throw new DomainException();
                     }
                     analyser = new SalesAnalyser(record.GetMedicine(), boundedSalesHistory, roundingLength);
-                    result.Add(analyser.GetStatistics());
+                    result.Add(analyser.GetStatistics(true));
                 }
                 catch (DomainException)
                 {

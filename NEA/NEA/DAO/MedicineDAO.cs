@@ -20,16 +20,16 @@ namespace NEA.DAO
        
         public List<Medicine> FindByActiveSubstance(string activeSubstance)
         {
-            return FindByPart("ActiveSubstance", activeSubstance);
+            return FindByStartingLetters("ActiveSubstance", activeSubstance);
         }
-        public List<Medicine> FindByCompanyName(string companyName)
+        public List<Medicine> FindByStartCompanyName(string companyName)
         {
-            return FindByAttributeValue("CompanyName", companyName);
+            return FindByStartingLetters("CompanyName", companyName);
         }
 
-        public List<Medicine> FindByName(string name)
+        public List<Medicine> FindByStartLettersName(string name)
         {
-            return FindByAttributeValue("ProductName", name);
+            return FindByStartingLetters("ProductName", name);
         }
         
         public Medicine FindByID(int id)
@@ -71,7 +71,7 @@ namespace NEA.DAO
                 throw new DAOException();
             }
         }
-        private List<Medicine> FindByPart(string attributeName, string value)
+        private List<Medicine> FindByStartingLetters(string attributeName, string value)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace NEA.DAO
                     connection.Open();
                     using (SQLiteCommand command = new SQLiteCommand(connection))
                     {
-                        command.CommandText = $"SELECT *\r\nFROM {tableName}\r\nWHERE {attributeName} like \"{value}%\"";
+                        command.CommandText = $"SELECT *\r\nFROM {tableName}\r\nWHERE {attributeName} LIKE \"{value}%\"";
                         using (SQLiteDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
@@ -224,12 +224,12 @@ namespace NEA.DAO
 
         public List<Medicine> FindByPartName(string name)
         {
-            return FindByPart("ProductName", name);
+            return FindByAttributeValue("ProductName", name);
         }
 
         public List<Medicine> FindByPartCompanyName(string name)
         {
-            return FindByPart("CompanyName", name);
+            return FindByAttributeValue("CompanyName", name);
         }
 
         public int GetLastID()
